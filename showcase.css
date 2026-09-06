@@ -1,0 +1,598 @@
+/* ==================================================================
+   NEBULA SHOWCASE  —  the page around the specimens
+   ------------------------------------------------------------------
+   nebula.css is the language. THIS file is only the documentation
+   scaffolding that frames it: the two-column doc layout, the specimen
+   frames, the swatch grid, the lab panels. It obeys the same four
+   rules — square, blurred glass, one accent for state, mono for the
+   furniture — because a showcase that broke them would be arguing
+   against itself.
+   ================================================================== */
+
+/* ==================================================================
+   THE NOVA BACKDROP  —  a documented departure, not a departure
+   ------------------------------------------------------------------
+   nebula.css ships the figure for a PHOTOGRAPH: drained to near-grey
+   and held back to .72, because a photograph behind the page
+   introduces a FOREIGN hue that every blurred pane over it picks up,
+   and that cast is what the whole palette pass was about.
+
+   Nova has no foreign hue to introduce. It is brand art drawn in the
+   accent's own colour, so draining it removes the one thing it was
+   made to say — which is why it is served with the tint OFF. An app
+   spells this `wallpaper_tint = off`; it is a supported setting.
+
+   Two figures change, and both are consequences of the same fact:
+     · no grayscale, and brightness .95 rather than .72 — nova arrives
+       dark by construction (its own gradient falls to #07070d), so
+       the photograph's figure crushed it;
+     · the dim is FLAT rather than .62 -> .82 — that ramp exists to
+       darken a photograph towards the footer of a scrolling page, and
+       nova already falls off downward on its own, so the ramp landed
+       on the artwork's own falloff and the bottom half went black.
+
+   This is what overriding the language correctly looks like: four
+   token values, each with the reason written next to it, and not one
+   rule touched. The configurator does exactly this.
+   ================================================================== */
+:root{
+  --wallpaper-filter: brightness(.95) contrast(1.04);
+  --wallpaper-shade-top: rgba(0,0,0,0.62);
+  --wallpaper-shade-bot: rgba(0,0,0,0.62);
+}
+
+.wrap{
+  max-width:1460px;
+  margin:0 auto;
+  padding:0 var(--page-pad);
+}
+
+/* ---- hero ------------------------------------------------------- */
+.hero{
+  position:relative;
+  padding:96px 0 72px;
+  border-bottom:1px solid var(--line);
+}
+.hero__mark{
+  display:flex; align-items:center; gap:20px;
+  margin-bottom:26px;
+}
+.hero__mark img{ height:52px; filter:drop-shadow(0 0 26px rgba(var(--acc-rgb),.4)); }
+.hero__word{
+  font-family:var(--display-font);
+  font-size:clamp(34px, 7vw, 84px);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  line-height:1;
+  margin:0;
+  color:var(--title-a);
+  background:linear-gradient(168deg, var(--title-a) 14%, var(--title-b) 98%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero__lead{
+  max-width:60ch;
+  font-size:16.5px;
+  color:var(--text-dim);
+  margin:0 0 26px;
+}
+.hero__lead b{ color:var(--text); font-weight:500; }
+
+/* the four rules, as four square plates */
+.rules{
+  list-style:none; margin:34px 0 0; padding:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.rule{
+  background:var(--surface);
+  padding:18px 20px 22px;
+  display:flex; flex-direction:column; gap:9px;
+  min-width:0;
+}
+.rule__n{
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:.24em;
+  color:var(--acc);
+}
+.rule__t{
+  font-size:15px; font-weight:600; letter-spacing:.01em;
+  color:var(--text-head);
+}
+.rule__d{ font-size:13px; color:var(--text-dim); line-height:1.5; }
+
+/* ---- doc layout -------------------------------------------------- */
+.doc{
+  display:grid;
+  grid-template-columns:212px minmax(0,1fr);
+  gap:44px;
+  align-items:start;
+  padding:44px 0 0;
+}
+.sidenav{
+  position:sticky;
+  top:calc(var(--nav-h) + 24px);
+  display:flex; flex-direction:column; gap:1px;
+  border-left:1px solid var(--line);
+  max-height:calc(100vh - var(--nav-h) - 60px);
+  overflow-y:auto;
+  scrollbar-width:thin;
+}
+.sidenav a{
+  display:flex; align-items:baseline; gap:9px;
+  padding:7px 12px;
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--text-ghost);
+  border-left:2px solid transparent;
+  margin-left:-1px;
+  transition:color .15s, background .15s, border-color .15s;
+}
+.sidenav a:hover{ color:var(--text); background:rgba(var(--chrome-rgb),.05); border-left-color:var(--chrome); }
+.sidenav a.is-active{ color:var(--acc); background:rgba(var(--acc-rgb),.08); border-left-color:var(--acc); }
+.sidenav a i{ color:var(--text-ghost); font-size:9px; }
+.sidenav a.is-active i{ color:var(--acc); }
+
+.chapter{ padding:0 0 68px; scroll-margin-top:calc(var(--nav-h) + 20px); }
+.chapter__lead{ max-width:78ch; color:var(--text-dim); font-size:14.5px; margin:0 0 26px; }
+.chapter__lead b{ color:var(--text); font-weight:500; }
+.chapter__lead + .chapter__lead{ margin-top:-14px; }
+
+h3.sub{
+  margin:34px 0 12px;
+  font-size:14px; font-weight:600; letter-spacing:.01em;
+  color:var(--text-head);
+}
+
+/* ---- specimen frame ---------------------------------------------
+   A specimen sits on the page's own ground behind a hairline, with a
+   mono caption above it and prose below. No filled header bar: the
+   page already stacks enough bands. */
+.spec{ margin:0 0 22px; }
+.spec__label{
+  display:flex; align-items:baseline; gap:10px;
+  margin:0 0 9px;
+  font-family:var(--mono);
+  font-size:9.5px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--text-ghost);
+}
+.spec__label .n{ margin-left:auto; color:var(--text-ghost); }
+.spec__stage{
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.34);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  padding:22px;
+  display:flex; flex-wrap:wrap; gap:14px;
+  align-items:center;
+  min-width:0;
+}
+.spec__stage--block{ display:block; }
+.spec__stage--flush{ padding:0; }
+.spec__note{
+  margin:9px 0 0;
+  font-size:12.5px; line-height:1.55;
+  color:var(--text-ghost);
+  max-width:82ch;
+}
+.spec__note b{ color:var(--text-dim); font-weight:500; }
+
+/* ---- swatches ---------------------------------------------------- */
+.swatches{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(min(100%, 176px), 1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.swatch{
+  appearance:none; text-align:left;
+  background:var(--surface);
+  border:0; padding:0;
+  cursor:pointer;
+  display:flex; flex-direction:column;
+  min-width:0;
+  transition:background .15s;
+}
+.swatch:hover{ background:var(--surface-2); }
+.swatch__chip{
+  height:52px;
+  border-bottom:1px solid var(--line);
+  background:var(--swatch, #000);
+}
+.swatch__chip--split{
+  background:
+    linear-gradient(135deg, var(--swatch) 0 50%, transparent 50% 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 5px, transparent 5px 10px),
+    var(--bg-2);
+}
+.swatch__body{ padding:9px 11px 11px; display:flex; flex-direction:column; gap:3px; min-width:0; }
+.swatch__var{
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:.06em;
+  color:var(--label);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.swatch__val{
+  font-family:var(--mono);
+  font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--text-ghost);
+}
+.swatch__use{ font-size:11px; color:var(--text-ghost); line-height:1.4; margin-top:3px; }
+.swatch.is-copied .swatch__val{ color:var(--ok); }
+
+/* ---- lab (the interactive controls) ------------------------------ */
+.lab{
+  border:1px solid var(--line);
+  border-left:2px solid var(--acc);
+  background:var(--glass);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  padding:18px 20px 20px;
+  margin:0 0 24px;
+  display:flex; flex-direction:column; gap:16px;
+}
+.lab__head{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--label);
+}
+.lab__head i{ color:var(--acc); }
+.lab__head .hint{ margin-left:auto; color:var(--text-ghost); letter-spacing:.14em; }
+.lab__row{ display:flex; flex-wrap:wrap; gap:14px 18px; align-items:flex-end; }
+.lab__cell{ display:flex; flex-direction:column; gap:7px; min-width:0; }
+.lab__cell--grow{ flex:1 1 220px; }
+.lab__key{
+  font-family:var(--mono);
+  font-size:9.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--text-ghost);
+}
+.lab__val{
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:.1em;
+  color:var(--label);
+  font-variant-numeric:tabular-nums;
+}
+.lab__hex{
+  font-family:var(--mono);
+  font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+  width:120px;
+}
+.lab__note{
+  font-size:12px; line-height:1.5;
+  color:var(--text-ghost);
+  border-left:1px solid var(--line);
+  padding-left:12px;
+  max-width:84ch;
+}
+.lab__note b{ color:var(--text-dim); font-weight:500; }
+.lab__note.is-warn{ border-left-color:var(--amb); color:var(--amb); }
+
+/* the derived accent faces, as three stripes */
+.derived{ display:flex; gap:1px; background:var(--line); border:1px solid var(--line); flex:1 1 300px; min-width:0; }
+.derived__face{ flex:1 1 0; min-width:0; padding:11px 12px 12px; display:flex; flex-direction:column; gap:5px; }
+.derived__swatch{ height:26px; border:1px solid rgba(255,255,255,.14); }
+.derived__name{ font-family:var(--mono); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-ghost); }
+.derived__hex{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; color:var(--label); }
+.derived__on{ font-size:10.5px; padding:3px 6px; text-align:center; letter-spacing:.04em; }
+
+.presets{ display:flex; flex-wrap:wrap; gap:6px; }
+.preset{
+  appearance:none; cursor:pointer;
+  width:26px; height:26px;
+  border:1px solid var(--line-strong);
+  background:var(--preset);
+  transition:box-shadow .15s, border-color .15s;
+}
+.preset:hover{ border-color:var(--chrome); box-shadow:0 0 0 2px rgba(var(--chrome-rgb),.18); }
+.preset.is-on{ border-color:var(--acc); box-shadow:0 0 0 2px rgba(var(--acc-rgb),.45); }
+
+/* ---- do / don't --------------------------------------------------- */
+.dd{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  margin:0 0 22px;
+}
+.dd__col{ background:var(--surface); padding:16px 18px 18px; display:flex; flex-direction:column; gap:12px; min-width:0; }
+.dd__head{
+  display:flex; align-items:center; gap:9px;
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+}
+.dd--do    .dd__head{ color:var(--ok); }
+.dd--dont  .dd__head{ color:var(--red); }
+.dd__list{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px; }
+.dd__list li{
+  font-size:13px; line-height:1.5; color:var(--text-dim);
+  padding-left:15px; position:relative;
+}
+.dd__list li::before{
+  content:""; position:absolute; left:0; top:.55em;
+  width:6px; height:1px; background:var(--text-ghost);
+}
+.dd__list li b{ color:var(--text); font-weight:500; }
+.dd__list code{ font-size:11.5px; }
+
+/* ---- code -------------------------------------------------------- */
+.code{
+  margin:0 0 18px;
+  background:rgba(0,0,0,.55);
+  border:1px solid var(--line);
+  border-left:2px solid var(--line-strong);
+  padding:14px 16px;
+  font-family:var(--mono);
+  font-size:11.5px; line-height:1.65;
+  color:var(--text-dim);
+  overflow-x:auto;
+  white-space:pre;
+  tab-size:2;
+}
+.code b{ color:var(--text); font-weight:400; }
+.code i{ color:var(--text-ghost); font-style:normal; }
+.code u{ color:var(--acc); text-decoration:none; }
+.codewrap{ position:relative; }
+.codewrap .btn{ position:absolute; top:8px; right:8px; }
+
+/* ---- misc doc bits ------------------------------------------------ */
+.ol{ margin:0 0 20px; padding-left:20px; color:var(--text-dim); font-size:14px; line-height:1.65; max-width:84ch; }
+.ol li{ margin-bottom:9px; }
+.ol li b{ color:var(--text); font-weight:500; }
+.ol code{ font-size:12px; }
+
+.calloff{
+  border:1px solid var(--line);
+  border-left:2px solid var(--amb);
+  background:linear-gradient(180deg, rgba(var(--amb-rgb),.05), transparent 60%), var(--surface);
+  padding:14px 16px;
+  margin:0 0 22px;
+  font-size:13px; line-height:1.55;
+  color:var(--text-dim);
+  max-width:88ch;
+}
+.calloff b{ color:var(--amb); font-weight:500; }
+
+/* the sample app shell used in the "anatomy" specimen */
+.shell{ border:1px solid var(--line); background:var(--bg-2); }
+.shell__bar{
+  display:flex; align-items:center; gap:14px;
+  padding:0 14px; height:48px;
+  border-bottom:1px solid var(--line);
+  background:rgba(0,0,0,.6);
+}
+.shell__body{ padding:20px; display:flex; flex-direction:column; gap:18px; }
+.shell__cols{ display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:18px; align-items:start; }
+
+.tiles{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 132px), 1fr));
+  gap:1px; background:var(--line); border:1px solid var(--line);
+}
+.tile{ background:var(--surface); padding:13px 14px 15px; display:flex; flex-direction:column; gap:6px; min-width:0; }
+.tile__k{ font-family:var(--mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--text-ghost); }
+.tile__v{ font-family:var(--mono); font-size:20px; letter-spacing:.02em; color:var(--text); font-variant-numeric:tabular-nums; }
+.tile__d{ font-family:var(--mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--label); }
+.tile__d.is-up{ color:var(--ok); }
+.tile__d.is-down{ color:var(--red); }
+
+/* a bare-bones bar chart, drawn in CSS, no library — the way the
+   gallery's /stats page draws its own */
+.bars{ display:flex; align-items:flex-end; gap:5px; height:96px; padding-top:8px; }
+.bars__b{ flex:1 1 0; background:rgba(var(--label-rgb),.22); border-top:1px solid var(--label); min-width:0; transition:background .15s, border-color .15s; }
+.bars__b:hover{ background:rgba(var(--chrome-rgb),.3); border-top-color:var(--chrome); }
+.bars__b.is-peak{ background:rgba(var(--acc-rgb),.35); border-top-color:var(--acc); }
+
+/* ---- voice specimen ---------------------------------------------- */
+.voice{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap:1px; background:var(--line); border:1px solid var(--line);
+}
+.voice__col{ background:var(--surface); padding:16px 18px 18px; display:flex; flex-direction:column; gap:10px; }
+.voice__k{ font-family:var(--mono); font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--acc); }
+.voice__sample--mono{
+  font-family:var(--mono);
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--label);
+  line-height:1.9;
+}
+.voice__sample--sans{ font-size:14px; color:var(--text-dim); line-height:1.6; }
+.voice__sample--display{
+  font-family:var(--display-font);
+  font-size:calc(21px * var(--display-scale));
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--text);
+}
+.voice__use{ font-size:12px; color:var(--text-ghost); line-height:1.5; margin-top:auto; padding-top:6px; border-top:1px solid var(--line); }
+
+/* ==================================================================
+   THE HERESY SWITCHES
+   ------------------------------------------------------------------
+   Three classes the lab puts on <html> to break a rule on purpose, so
+   the page shows what the rule is FOR instead of asserting it. None
+   of them belongs in a real app.
+   ================================================================== */
+
+/* Rule 1 broken: the furniture takes the accent too. This is the
+   state that was rejected — "das lila ist zwar schön aber es ist
+   etwas viel". */
+html.heresy-violet{
+  --chrome:     var(--acc);
+  --chrome-rgb: var(--acc-rgb);
+  --label:      var(--acc-soft);
+  --label-rgb:  158,166,247;
+  --text-dim:   #b9bdf0;
+  --text-ghost: #8a8fd4;
+  --title-b:    var(--acc);
+  --line:       rgba(var(--acc-rgb),0.30);
+  --line-strong:rgba(var(--acc-rgb),0.55);
+}
+/* Rule 2 broken: rounded corners. */
+html.heresy-radius{ --radius:9px; }
+html.heresy-radius .card,
+html.heresy-radius .spec__stage,
+html.heresy-radius .panel,
+html.heresy-radius .stack,
+html.heresy-radius .tile,
+html.heresy-radius .menu,
+html.heresy-radius .code,
+html.heresy-radius .field,
+html.heresy-radius .card__img,
+html.heresy-radius .tiles,
+html.heresy-radius .swatches,
+html.heresy-radius .dd,
+html.heresy-radius .rules,
+html.heresy-radius .lab{ border-radius:var(--radius); overflow:hidden; }
+html.heresy-radius .card::before,
+html.heresy-radius .card::after{ display:none; }   /* brackets need corners */
+
+/* Rule 3 broken: legibility bought with darkness instead of blur. */
+html.heresy-opaque{
+  --glass:      rgba(4,4,5,.94);
+  --glass-hi:   rgba(10,10,12,.97);
+  --scrim:      rgba(0,0,0,.94);
+  --scrim-hi:   rgba(0,0,0,.98);
+  --glass-blur: none;
+  --scrim-blur: none;
+}
+/* Rule 4 broken: the chrome loses the mono/tracked voice and dissolves
+   into the content. */
+html.heresy-voice .card__meta,
+html.heresy-voice .card__idx,
+html.heresy-voice .card__hover span,
+html.heresy-voice .section__doc,
+html.heresy-voice .section__doc-mark,
+html.heresy-voice .eyebrow,
+html.heresy-voice .tag,
+html.heresy-voice .btn,
+html.heresy-voice .seg__opt,
+html.heresy-voice .menu__option,
+html.heresy-voice .menu__head,
+html.heresy-voice .field__label,
+html.heresy-voice .tile__k,
+html.heresy-voice .tile__v,
+html.heresy-voice .tile__d,
+html.heresy-voice .hud__bar,
+html.heresy-voice .status,
+html.heresy-voice .kv dd.num{
+  font-family:var(--sans);
+  letter-spacing:.01em;
+  text-transform:none;
+  font-size:13px;
+}
+
+/* the badge the lab shows while a rule is broken */
+.heresy-flag{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  z-index:400;
+  display:none;
+  align-items:center; gap:12px;
+  padding:9px var(--page-pad);
+  background:rgba(0,0,0,.9);
+  border-top:1px solid var(--red);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  font-family:var(--mono);
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--red);
+}
+html.heresy-violet .heresy-flag,
+html.heresy-radius .heresy-flag,
+html.heresy-opaque .heresy-flag,
+html.heresy-voice  .heresy-flag{ display:flex; }
+.heresy-flag__what{ color:var(--text-dim); }
+.heresy-flag .btn{ margin-left:auto; }
+
+/* ---- copy feedback ------------------------------------------------ */
+.btn.is-done{ color:var(--ok); border-color:rgba(var(--ok-rgb),.5); }
+
+/* ---- responsive --------------------------------------------------- */
+@media (max-width:1000px){
+  .doc{ grid-template-columns:minmax(0,1fr); gap:0; }
+  .sidenav{
+    position:static; max-height:none;
+    flex-direction:row; flex-wrap:wrap; gap:2px;
+    border-left:0; border-bottom:1px solid var(--line);
+    padding-bottom:12px; margin-bottom:26px;
+  }
+  .sidenav a{ border-left:0; border-bottom:2px solid transparent; margin-left:0; }
+  .sidenav a:hover{ border-bottom-color:var(--chrome); }
+  .sidenav a.is-active{ border-bottom-color:var(--acc); }
+  .shell__cols{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:760px){
+  .hero{ padding:56px 0 44px; }
+  .hero__mark img{ height:36px; }
+  .spec__stage{ padding:16px; }
+  .nav__search{ display:none; }
+}
+
+/* ==================================================================
+   SHOWCASE UTILITIES
+   ------------------------------------------------------------------
+   Every one-off size and position on the page lives here rather than
+   in a style attribute on the markup. Not pedantry: the apps this
+   language dresses run under a strict CSP (style-src 'self'), which
+   drops inline style attributes SILENTLY — a showcase that used them
+   would be demonstrating something that cannot ship.
+   ================================================================== */
+.push        { margin-left:auto; }
+.eyebrow--gap{ margin-top:24px; }
+.row--split  { justify-content:space-between; align-items:flex-start; }
+.note--gap   { margin-top:14px; }
+.note--beside{ flex:1 1 260px; margin:0; }
+
+/* the anchor a dropdown hangs off */
+.dropdown       { position:relative; }
+.menu--anchored { position:absolute; top:calc(100% + 4px); right:0; z-index:40; }
+
+/* a sort button reads as one sentence: label · value · caret */
+.sortbtn__label{ color:var(--label); }
+.sortbtn__val  { color:var(--text); font-weight:400; }
+
+.fieldgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap:8px;
+}
+.stack--narrow{ max-width:330px; }
+
+/* the plates standing in for photographs, and the surfaces over them */
+.plate{
+  width:100%; height:100%;
+  object-fit:cover; display:block;
+  filter:saturate(.85) brightness(.9);
+}
+.hud--surface{ flex:1 1 320px; min-height:190px; }
+.hud--surface .plate{ height:190px; }
+.hud--tall{ height:280px; }
+.card__idx--inset{ top:14px; left:14px; }
+.card__hover.is-shown{ opacity:1; }
+
+/* the throwaway textarea the clipboard fallback needs: off-screen, not
+   display:none — a hidden element cannot be selected */
+.offscreen{
+  position:fixed;
+  top:-1000px; left:-1000px;
+  opacity:0;
+  pointer-events:none;
+}
+
+/* The footer lockup: the mark plus the wordmark as TYPE, in the display
+   face — the one job that face has. The mark is a touch larger here than
+   the nav's 18px would suggest because it sits beside 17px caps rather
+   than a stacked two-line brand block. */
+.foot__brand img{ height:20px; opacity:.9; }
+.foot__wordmark{
+  font-family:var(--display-font);
+  font-size:calc(17px * var(--display-scale));
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+}

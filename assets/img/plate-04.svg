@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400" role="img" aria-label="Placeholder plate plate-04 (ridge)">
+  <defs>
+    <linearGradient id="sky-plate-04" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="hsl(150,62%,44%)"/>
+      <stop offset="52%"  stop-color="hsl(150,48%,20%)"/>
+      <stop offset="100%" stop-color="hsl(190,40%,7%)"/>
+    </linearGradient>
+    <radialGradient id="sun-plate-04" cx="62%" cy="34%" r="42%">
+      <stop offset="0%"   stop-color="hsl(190,92%,72%)" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="hsl(190,92%,72%)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#sky-plate-04)"/>
+  <circle cx="280" cy="163" r="43" fill="url(#sun-plate-04)"/>
+  <rect x="341" y="269" width="83" height="131" fill="hsl(190,38%,6%)" opacity=".85"/><rect x="125" y="210" width="32" height="190" fill="hsl(190,38%,11%)" opacity=".85"/><rect x="356" y="305" width="50" height="95" fill="hsl(190,38%,11%)" opacity=".85"/><rect x="309" y="214" width="75" height="186" fill="hsl(190,38%,10%)" opacity=".85"/>
+  <rect x="0" y="210" width="600" height="1" fill="#fff" opacity="0.139"/><rect x="0" y="235" width="600" height="2" fill="#fff" opacity="0.109"/><rect x="0" y="281" width="600" height="1" fill="#fff" opacity="0.103"/><rect x="0" y="309" width="600" height="1" fill="#fff" opacity="0.077"/><rect x="0" y="344" width="600" height="1" fill="#fff" opacity="0.112"/><rect x="0" y="374" width="600" height="3" fill="#fff" opacity="0.059"/><rect x="0" y="420" width="600" height="3" fill="#fff" opacity="0.092"/>
+</svg>

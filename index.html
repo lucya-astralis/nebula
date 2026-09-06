@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Nebula — the lucya.systems design language</title>
+<meta name="description" content="An interactive showcase of Nebula: the black-ground, square-cornered, one-accent design language every lucya.systems app wears — and how to build a new one.">
+
+<link rel="preload" href="assets/fonts/SpaceGrotesk-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/JetBrainsMono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="assets/logo/lucya_logo.svg" type="image/svg+xml">
+
+<link rel="stylesheet" href="nebula.css">
+<link rel="stylesheet" href="fa-icons.css">
+<link rel="stylesheet" href="showcase.css">
+<script src="showcase.js" defer></script>
+</head>
+<body>
+
+<!-- The backdrop: one fixed element, the artwork, a grid overlay and a single
+     accent bloom. Rule 3 starts here — everything above it is a blurred pane,
+     not a darker box.
+
+     The picture is NOVA, the house artwork, in the same two cuts the
+     configurator serves: the 16:9 for the page and the square one for a
+     phone, which is exactly what an app's `wallpaper` / `wallpaper_mobile`
+     pair does. Vector, so the whole backdrop costs 8 KB and nothing to
+     paint — and, being brand art drawn in the accent's own colour, it is the
+     one backdrop that is served with the tint OFF. See the Depth chapter. -->
+<div class="site-bg" aria-hidden="true">
+  <picture>
+    <source media="(max-width: 760px)" srcset="assets/img/nova-square.svg">
+    <img id="wallpaper" src="assets/img/nova-wide-16-9.svg" alt="" decoding="async">
+  </picture>
+</div>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="#top">
+      <img src="assets/logo/lucya_logo.svg" alt="lucya.systems">
+      <span class="brand-text">
+        <span class="brand-name">Nebula</span>
+        <span class="brand-sub">design language</span>
+      </span>
+    </a>
+
+    <label class="nav__search" aria-label="Search this document">
+      <i class="fa fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="docsearch" placeholder="Filter chapters" autocomplete="off">
+    </label>
+
+    <div class="seg" role="group" aria-label="Effects tier">
+      <button class="seg__opt is-on" data-fx="full" type="button">Full</button>
+      <button class="seg__opt" data-fx="lite" type="button">Lite</button>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+<!-- ================================================================
+     HERO
+     ================================================================ -->
+<header class="hero wrap">
+  <div class="hero__mark">
+    <img src="assets/logo/lucya_logo.svg" alt="">
+    <h1 class="hero__word">Nebula</h1>
+  </div>
+
+  <p class="hero__lead">
+    The design language every <b>lucya.systems</b> app wears — the gallery, the
+    configurator, and whatever comes next. Named after the one colour it
+    rations: <b>#5865F2</b>, Nebula&nbsp;Blue. This page is the specimen book
+    and the build instructions in one, and every control on it is live: the
+    accent, the corners, the depth and the voice can all be re-run, or broken
+    on purpose, to show what each rule is actually for.
+  </p>
+
+  <div class="section__doc">
+    <span>Language <b>Nebula</b></span>
+    <span>Accent <b id="doc-acc">#5865F2</b></span>
+    <span>Radius <b>0</b></span>
+    <span>Faces <b>3</b></span>
+    <span class="section__doc-mark">Square</span>
+    <span class="section__doc-mark">Black ground</span>
+    <span class="section__doc-mark is-ok">One accent</span>
+  </div>
+
+  <ol class="rules">
+    <li class="rule">
+      <span class="rule__n">Rule 01</span>
+      <span class="rule__t">Black ground, grey furniture, one accent</span>
+      <span class="rule__d">
+        <code>--acc</code> marks <b>state</b> and nothing else: links, focus,
+        active, selected, open, live. Everything that is merely furniture is
+        <code>--chrome</code> or <code>--label</code>.
+      </span>
+    </li>
+    <li class="rule">
+      <span class="rule__n">Rule 02</span>
+      <span class="rule__t">Square corners, always</span>
+      <span class="rule__d">
+        <code>--radius: 0</code>. Only genuinely round things — a status dot —
+        opt out with a <code>border-radius</code> of their own.
+      </span>
+    </li>
+    <li class="rule">
+      <span class="rule__n">Rule 03</span>
+      <span class="rule__t">Depth from blur, not from darkness</span>
+      <span class="rule__d">
+        Panes float on <code>--glass</code> / <code>--scrim</code> over a
+        drained backdrop. A surface that needs to read better gets more blur,
+        never a darker fill.
+      </span>
+    </li>
+    <li class="rule">
+      <span class="rule__n">Rule 04</span>
+      <span class="rule__t">Mono is the chrome, sans is the content</span>
+      <span class="rule__d">
+        Uppercase tracked mono marks the furniture <b>around</b> the content.
+        Anything a person actually reads is Space Grotesk in sentence case.
+      </span>
+    </li>
+  </ol>
+</header>
+
+<div class="wrap doc">
+
+  <!-- ============================================================
+       SIDE NAV
+       ============================================================ -->
+  <aside class="sidenav" id="sidenav" aria-label="Chapters">
+    <a href="#anatomy"><i class="fa fa-table-cells"></i> 00 · Anatomy</a>
+    <a href="#colour"><i class="fa fa-star"></i> 01 · Colour</a>
+    <a href="#shape"><i class="fa fa-expand"></i> 02 · Shape</a>
+    <a href="#depth"><i class="fa fa-layer-group"></i> 03 · Depth</a>
+    <a href="#voice"><i class="fa fa-align-left"></i> 04 · Voice</a>
+    <a href="#parts"><i class="fa fa-folder-tree"></i> 05 · Parts</a>
+    <a href="#wrong"><i class="fa fa-circle-info"></i> 06 · Wrong</a>
+    <a href="#build"><i class="fa fa-route"></i> 07 · Build one</a>
+  </aside>
+
+  <div class="chapters" id="chapters">
+
+  <!-- ============================================================
+       00 — ANATOMY
+       ============================================================ -->
+  <section class="chapter" id="anatomy" data-title="anatomy shell layout app">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Anatomy</span></div>
+    </div>
+    <p class="chapter__lead">
+      This is what a lucya.systems app looks like. Not a wireframe — the shell
+      below is built from <code>nebula.css</code>, the same file a real app
+      would load. Read it top to bottom: a bar, a meta line of facts, a
+      heading, the measurements, then the content. Every band you see is
+      carrying information; there is no band whose job is decoration.
+    </p>
+
+    <div class="spec">
+      <div class="spec__label"><span>Specimen</span><span>App shell</span><span class="n">01</span></div>
+      <div class="spec__stage spec__stage--block spec__stage--flush">
+        <div class="shell">
+
+          <div class="shell__bar">
+            <span class="nav__brand">
+              <img src="assets/logo/gallery-mark.svg" alt="" width="22" height="22">
+              <span class="brand-text">
+                <span class="brand-name">Aperture</span>
+                <span class="brand-sub">console</span>
+              </span>
+            </span>
+            <span class="seg" role="group" aria-label="View">
+              <button class="seg__opt is-on" type="button" data-demo-seg>Grid</button>
+              <button class="seg__opt" type="button" data-demo-seg>Table</button>
+              <button class="seg__opt" type="button" data-demo-seg>Map</button>
+            </span>
+            <span class="status push">
+              <span class="dot dot--ok"></span> Synced
+            </span>
+          </div>
+
+          <div class="shell__body">
+
+            <!-- the meta line: real facts in the mono voice, then a heading
+                 in the sans. Two bands, and the second one is a heading,
+                 not a bordered strip. -->
+            <div>
+              <div class="section__doc">
+                <span>Set <b>berlin_dec_2025</b></span>
+                <span>Frames <b>418</b></span>
+                <span>Span <b>04 – 09 Dec</b></span>
+                <span>Size <b>7.4 GB</b></span>
+                <span class="section__doc-mark">Collection</span>
+                <span class="section__doc-mark is-ok">Indexed</span>
+              </div>
+              <div class="section__head">
+                <div class="section__slug"><span class="name">berlin_dec_2025</span></div>
+              </div>
+            </div>
+
+            <div class="tiles">
+              <div class="tile"><span class="tile__k">Frames</span><span class="tile__v">418</span><span class="tile__d is-up">+ 26 today</span></div>
+              <div class="tile"><span class="tile__k">Featured</span><span class="tile__v">12</span><span class="tile__d">2.9 %</span></div>
+              <div class="tile"><span class="tile__k">Cameras</span><span class="tile__v">3</span><span class="tile__d">X100V · A7C · iPhone</span></div>
+              <div class="tile"><span class="tile__k">Queue</span><span class="tile__v">0</span><span class="tile__d is-down">− 14 processed</span></div>
+            </div>
+
+            <div class="shell__cols">
+              <div>
+                <div class="eyebrow"><i class="fa fa-chart-simple"></i> Frames per day <span class="eyebrow__n">6 d</span></div>
+                <div class="bars" id="demo-bars" aria-hidden="true"></div>
+
+                <div class="eyebrow eyebrow--gap"><i class="fa fa-images"></i> Sets <span class="eyebrow__n">3 of 9</span></div>
+                <ul class="card-grid">
+                  <li class="card">
+                    <a href="#anatomy">
+                      <span class="card__img">
+                        <img src="assets/img/plate-01.svg" alt="">
+                        <span class="card__idx">01</span>
+                        <span class="card__hover"><span>Open</span></span>
+                      </span>
+                      <span class="card__cap">
+                        <span class="card__name">Mitte, blue hour</span>
+                        <span class="card__meta"><span>96 frames</span><span class="date">09 Dec</span></span>
+                      </span>
+                    </a>
+                  </li>
+                  <li class="card">
+                    <a href="#anatomy">
+                      <span class="card__img">
+                        <img src="assets/img/plate-03.svg" alt="">
+                        <span class="card__idx">02</span>
+                        <span class="card__hover"><span>Open</span></span>
+                      </span>
+                      <span class="card__cap">
+                        <span class="card__name">Kreuzberg, night</span>
+                        <span class="card__meta"><span>142 frames</span><span class="date">07 Dec</span></span>
+                      </span>
+                    </a>
+                  </li>
+                  <li class="card">
+                    <a href="#anatomy">
+                      <span class="card__img">
+                        <span class="card__empty">No cover</span>
+                        <span class="card__idx">03</span>
+                        <span class="card__hover"><span>Open</span></span>
+                      </span>
+                      <span class="card__cap">
+                        <span class="card__name">Unsorted import</span>
+                        <span class="card__meta"><span>180 frames</span><span class="date">04 Dec</span></span>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="stack">
+                <div class="panel">
+                  <h2><i class="fa fa-camera"></i> Capture</h2>
+                  <dl class="kv">
+                    <dt>Camera</dt><dd>Fujifilm X100V</dd>
+                    <dt>Lens</dt><dd>23 mm f/2</dd>
+                    <dt>Aperture</dt><dd class="num">f/2.0</dd>
+                    <dt>Shutter</dt><dd class="num">1/125 s</dd>
+                    <dt>ISO</dt><dd class="num">1600</dd>
+                  </dl>
+                </div>
+                <div class="panel">
+                  <h2><i class="fa fa-tags"></i> Tags</h2>
+                  <div class="tag-bar">
+                    <span class="tag is-active">Night</span>
+                    <span class="tag">Street</span>
+                    <span class="tag">Snow</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        Count the accents: the selected segment, the selected tag, the one glyph
+        in front of each eyebrow, the peak bar, the synced dot's cousin in the
+        status colours, and the hairline under the top bar. <b>Six state marks
+        on a whole screen.</b> Everything else — labels, counts, measurements,
+        corner brackets, hovers — is grey. That ratio is the language.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       01 — COLOUR
+       ============================================================ -->
+  <section class="chapter" id="colour" data-title="colour accent palette tokens state furniture">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Colour</span></div>
+    </div>
+    <p class="chapter__lead">
+      One accent, and the discipline is not the hue — it is the <b>count</b>.
+      The palette this replaced tinted every surface and every grey towards
+      blue-violet, so a screen read as purple end to end and the real accents
+      had nothing quiet to sit against. Nothing in the ground ramp carries a
+      hue any more. Colour appears once, on purpose, where something carries
+      <b>state</b>.
+    </p>
+
+    <!-- ---- the lab ---- -->
+    <div class="lab" id="accent-lab">
+      <div class="lab__head">
+        <i class="fa fa-star"></i> Accent lab
+        <span class="hint">repaints this whole page</span>
+      </div>
+
+      <div class="lab__row">
+        <div class="lab__cell">
+          <label class="lab__key" for="acc-hex">Source hex</label>
+          <input class="lab__hex" type="text" id="acc-hex" value="#5865F2" spellcheck="false" autocomplete="off" maxlength="7">
+        </div>
+        <div class="lab__cell">
+          <span class="lab__key">Presets</span>
+          <div class="presets" id="acc-presets"></div>
+        </div>
+        <div class="lab__cell">
+          <span class="lab__key">&nbsp;</span>
+          <button class="btn" type="button" id="acc-reset"><i class="fa fa-clock-rotate-left"></i> Nebula blue</button>
+        </div>
+      </div>
+
+      <div class="lab__row">
+        <div class="derived" id="acc-derived">
+          <div class="derived__face">
+            <span class="derived__swatch" data-face="acc"></span>
+            <span class="derived__name">--acc</span>
+            <span class="derived__hex" data-hex="acc">#5865f2</span>
+            <span class="derived__on" data-on="acc">Black text on it</span>
+          </div>
+          <div class="derived__face">
+            <span class="derived__swatch" data-face="deep"></span>
+            <span class="derived__name">--acc-deep</span>
+            <span class="derived__hex" data-hex="deep">#404ee7</span>
+            <span class="derived__on" data-on="deep">White text on it</span>
+          </div>
+          <div class="derived__face">
+            <span class="derived__swatch" data-face="soft"></span>
+            <span class="derived__name">--acc-soft</span>
+            <span class="derived__hex" data-hex="soft">#9ea6f7</span>
+            <span class="derived__on" data-on="soft">Hover face</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="lab__note" id="acc-note">
+        The three faces are <b>derived, not picked</b>: lightness moves along the
+        source hue until each one clears 4.5:1 against the text it has to carry.
+        A colour typed into a config file lands with the same guarantees as the
+        built-in one — which is the whole reason an app may expose an accent
+        knob at all.
+      </p>
+    </div>
+
+    <h3 class="sub">The two groups, and the question that sorts them</h3>
+    <p class="chapter__lead">
+      Before colouring anything purple, ask: <b>does it carry state?</b> If it
+      doesn't, it is <code>--chrome</code> (hovers, brackets, HUD strokes) or
+      <code>--label</code> (the static mono furniture). Click a swatch to copy
+      its token name.
+    </p>
+
+    <div class="swatches" id="swatches"></div>
+
+    <h3 class="sub">What breaking rule 01 looks like</h3>
+    <div class="lab">
+      <div class="lab__head">
+        <i class="fa fa-circle-info"></i> Heresy switch
+        <span class="hint">rule 01</span>
+      </div>
+      <div class="lab__row">
+        <div class="seg" role="group" aria-label="Rule 01">
+          <button class="seg__opt is-on" type="button" data-heresy="violet" data-on="false">Accent = state only</button>
+          <button class="seg__opt" type="button" data-heresy="violet" data-on="true">Accent = everything</button>
+        </div>
+      </div>
+      <p class="lab__note">
+        Flip it and scroll. Nothing has changed except <b>which elements are
+        allowed the colour</b> — same hue, same components, same layout. That
+        second state is the one the operator rejected with "das Lila ist zwar
+        schön, aber es ist etwas viel": with the furniture wearing it too,
+        the accent stops meaning anything, and the content has nowhere quiet
+        to sit.
+      </p>
+    </div>
+
+    <div class="dd">
+      <div class="dd__col dd--do">
+        <div class="dd__head"><span class="dot dot--ok"></span> Accent earns it</div>
+        <ul class="dd__list">
+          <li>A link, and focus on anything.</li>
+          <li><b>Active / selected / open</b> — the current tab, the applied filter, the open menu row.</li>
+          <li>A featured or pinned mark, and the tile outline that goes with it.</li>
+          <li>A progress fill, a live counter, the value being watched right now.</li>
+          <li>The one glyph in front of a section label.</li>
+        </ul>
+      </div>
+      <div class="dd__col dd--dont">
+        <div class="dd__head"><span class="dot dot--red"></span> Accent does not</div>
+        <ul class="dd__list">
+          <li>Section labels, counts, badges, measured values — those are <code>--label</code>.</li>
+          <li>Hover states, corner brackets, HUD strokes — those are <code>--chrome</code>.</li>
+          <li>Headings and page titles: hierarchy is <b>weight and size</b>, not hue.</li>
+          <li>Borders, dividers, panel edges. A border is furniture.</li>
+          <li>Icons in general. An icon is a label with a picture in it.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="calloff">
+      <b>The quarantine clause.</b> A module whose colours <em>mean</em> something
+      an accent cannot — upcoming vs. live vs. done, a weather condition, a
+      diff — gets its own named palette outside the accent system, and that
+      palette is deliberately not derived from <code>--acc</code>, so a
+      per-app accent cannot repaint an instrument. The gallery's trip timeline
+      is the one that exists. Nothing outside such a module may use its
+      colours, and nothing inside it may use <code>--acc</code>.
+    </div>
+  </section>
+
+  <!-- ============================================================
+       02 — SHAPE
+       ============================================================ -->
+  <section class="chapter" id="shape" data-title="shape square radius corners brackets">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Shape</span></div>
+    </div>
+    <p class="chapter__lead">
+      <code>--radius: 0</code>, everywhere, with no soft variant hiding in a
+      component. Square is not permission for flat coloured tiles or dense
+      uppercase blocks, though — this is not Metro. Depth still comes from
+      rule 03; the corners are just never rounded off.
+    </p>
+
+    <div class="lab">
+      <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 02</span></div>
+      <div class="lab__row">
+        <div class="seg" role="group" aria-label="Rule 02">
+          <button class="seg__opt is-on" type="button" data-heresy="radius" data-on="false">--radius: 0</button>
+          <button class="seg__opt" type="button" data-heresy="radius" data-on="true">--radius: 9px</button>
+        </div>
+      </div>
+      <p class="lab__note">
+        Rounding the corners costs more than the corners: <b>the bracket idiom
+        stops working</b>. A corner bracket is a fragment of a right angle,
+        and there is no right angle left to quote. Watch the cards below lose
+        their frames when you flip it.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>Specimen</span><span>Corner brackets · hover a card</span><span class="n">02</span></div>
+      <div class="spec__stage spec__stage--block">
+        <ul class="card-grid">
+          <li class="card">
+            <a href="#shape">
+              <span class="card__img">
+                <img src="assets/img/plate-02.svg" alt="">
+                <span class="card__idx">01</span>
+                <span class="card__hover"><span>Enter</span></span>
+              </span>
+              <span class="card__cap">
+                <span class="card__name">Dunes</span>
+                <span class="card__meta"><span>84 frames</span><span class="date">Mar 2026</span></span>
+              </span>
+            </a>
+          </li>
+          <li class="card">
+            <a href="#shape">
+              <span class="card__img">
+                <img src="assets/img/plate-04.svg" alt="">
+                <span class="card__idx">02</span>
+                <span class="card__hover"><span>Enter</span></span>
+              </span>
+              <span class="card__cap">
+                <span class="card__name">Ridge line</span>
+                <span class="card__meta"><span>51 frames</span><span class="date">Jul 2025</span></span>
+              </span>
+            </a>
+          </li>
+          <li class="card">
+            <a href="#shape">
+              <span class="card__img">
+                <img src="assets/img/plate-06.svg" alt="">
+                <span class="card__idx">03</span>
+                <span class="card__hover"><span>Enter</span></span>
+              </span>
+              <span class="card__cap">
+                <span class="card__name">Coast, late</span>
+                <span class="card__meta"><span>203 frames</span><span class="date">Aug 2025</span></span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <p class="spec__note">
+        The brackets are <b><code>--chrome</code>, not the accent</b>, and they
+        appear on hover and focus only — they are a frame, and a frame that is
+        always on every card is wallpaper. On a permanently framed group (a
+        curated set) they stay lit, because there they are what tells the set
+        from the loose grid under it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       03 — DEPTH
+       ============================================================ -->
+  <section class="chapter" id="depth" data-title="depth blur glass scrim wallpaper backdrop fx-lite">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Depth</span></div>
+    </div>
+    <p class="chapter__lead">
+      Four tokens are the whole surface scale. <code>--glass</code> /
+      <code>--glass-hi</code> for panes over the page; <code>--scrim</code> /
+      <code>--scrim-hi</code> for chips laid <b>on</b> an image, where the
+      backdrop is whatever the picture happens to be there. Each is paired with
+      a blur. A legibility change is one edit, not sixty — and the backdrop
+      those panes float over is four more token values, which is exactly how
+      this page is dressed in the nova artwork without touching a rule.
+    </p>
+
+    <div class="lab">
+      <div class="lab__head"><i class="fa fa-layer-group"></i> Backdrop <span class="hint">the wallpaper under everything</span></div>
+
+      <div class="lab__row">
+        <div class="seg" role="group" aria-label="Backdrop treatment">
+          <button class="seg__opt is-on" type="button" data-wp="nova">Brand art (nova)</button>
+          <button class="seg__opt" type="button" data-wp="photo">Photograph</button>
+        </div>
+      </div>
+
+      <div class="lab__row">
+        <div class="lab__cell lab__cell--grow">
+          <label class="lab__key" for="wp-tint">Tint kept <span class="lab__val" id="wp-tint-val">100 %</span></label>
+          <input type="range" id="wp-tint" min="0" max="100" value="100">
+        </div>
+        <div class="lab__cell lab__cell--grow">
+          <label class="lab__key" for="wp-dim">Brightness <span class="lab__val" id="wp-dim-val">95 %</span></label>
+          <input type="range" id="wp-dim" min="20" max="100" value="95">
+        </div>
+        <div class="lab__cell">
+          <span class="lab__key">&nbsp;</span>
+          <button class="btn" type="button" id="wp-reset"><i class="fa fa-clock-rotate-left"></i> Default</button>
+        </div>
+      </div>
+
+      <p class="lab__note" id="wp-note">
+        The picture behind this page is <b>nova</b>, the house artwork, and it is
+        the one kind of backdrop served with the <b>tint off</b>. A photograph
+        introduces a foreign hue that every blurred pane above it picks up —
+        that cast is what the palette pass was about, and it is why the
+        language's own default drains a wallpaper to near-grey. Nova has no
+        foreign hue to introduce: it is drawn in the accent's own colour, so
+        draining it removes the one thing it was made to say. Pull the tint
+        down and watch that happen.
+      </p>
+    </div>
+
+    <div class="lab">
+      <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 03</span></div>
+      <div class="lab__row">
+        <div class="seg" role="group" aria-label="Rule 03">
+          <button class="seg__opt is-on" type="button" data-heresy="opaque" data-on="false">Blurred glass</button>
+          <button class="seg__opt" type="button" data-heresy="opaque" data-on="true">Opaque slabs</button>
+        </div>
+      </div>
+      <p class="lab__note">
+        Both states are legible. Only one of them is still a page: buying
+        legibility with darkness turns the screen into <b>a stack of black
+        rectangles</b> and throws the backdrop away. Blur keeps the pane bright
+        and the wallpaper readable through it. When a surface is not reading,
+        the fix is more blur or the <code>-hi</code> step, never a darker fill.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>Specimen</span><span>The four surfaces</span><span class="n">03</span></div>
+      <div class="spec__stage">
+        <div class="stack">
+          <div class="panel">
+            <h2><i class="fa fa-layer-group"></i> Panes over the page</h2>
+            <div class="row">
+              <span class="tag">--glass</span>
+              <span class="tag">--glass-hi</span>
+              <button class="btn" type="button">Also glass</button>
+              <span class="seg"><span class="seg__opt is-on">And this</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="hud hud--surface">
+          <img class="plate" src="assets/img/plate-05.svg" alt="">
+          <span class="card__idx card__idx--inset">--scrim on a picture</span>
+          <span class="card__hover is-shown"><span>--scrim-hi</span></span>
+        </div>
+      </div>
+      <p class="spec__note">
+        The distinction is not decorative: a chip on the page can rely on a
+        known ground and a light tint, a chip on a picture cannot — it has to
+        survive a white sky and a black doorway in the same frame, which is
+        why <b>the scrim is darker and the blur is tighter</b>.
+      </p>
+    </div>
+
+    <h3 class="sub">Where the blur is not available</h3>
+    <p class="chapter__lead">
+      Phones and weak hardware switch <code>backdrop-filter</code> off for the
+      GPU cost, and then opacity is the only thing left doing the work. That is
+      one rule, in one place: <code>.fx-lite</code> <b>redefines the same four
+      tokens</b> more opaque and sets the blurs to <code>none</code>. Nothing
+      else in the sheet knows about it. Try it in the <b>Full / Lite</b> switch
+      up in the bar.
+    </p>
+    <pre class="code">.fx-lite{
+  <u>--glass</u>:      rgba(22,22,25,.80);   <i>/* was .42 + blur(18px) */</i>
+  <u>--glass-hi</u>:   rgba(36,36,40,.90);
+  <u>--scrim</u>:      rgba(0,0,0,.76);
+  <u>--scrim-hi</u>:   rgba(6,6,7,.88);
+  <u>--glass-blur</u>: none;
+  <u>--scrim-blur</u>: none;
+}</pre>
+  </section>
+
+  <!-- ============================================================
+       04 — VOICE
+       ============================================================ -->
+  <section class="chapter" id="voice" data-title="voice type typography mono sans display">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Voice</span></div>
+    </div>
+    <p class="chapter__lead">
+      Three faces, three jobs, and the split is the line the whole stylesheet
+      is sorted on. It took two corrections to find: stripping the chrome to
+      sentence sans made a grid <b>look unfinished</b>, because the labels
+      stopped separating the furniture from the content and dissolved into it.
+    </p>
+
+    <div class="voice">
+      <div class="voice__col">
+        <span class="voice__k">JetBrains Mono · uppercase · .16–.24em</span>
+        <span class="voice__sample--mono">Featured &nbsp; Archive &nbsp; 418 frames<br>f/2.0 · 1/125 s · ISO 1600<br>Sort by · Newest first</span>
+        <span class="voice__use">
+          The chrome <b>around</b> the content: section labels, counts, badges,
+          dates, corner indices, filters, sort controls, meta lines, and every
+          measured value. If it is a fact the software knows about itself, it
+          is in this voice.
+        </span>
+      </div>
+      <div class="voice__col">
+        <span class="voice__k">Space Grotesk · sentence case</span>
+        <span class="voice__sample--sans">
+          Four days in Berlin, mostly after dark. The snow arrived on the
+          second evening and stayed until we left.
+        </span>
+        <span class="voice__use">
+          Everything a person <b>reads</b>: page titles, descriptions, panel
+          bodies, leads, help text, empty states, error copy. Sentence case,
+          normal tracking, no shouting.
+        </span>
+      </div>
+      <div class="voice__col">
+        <span class="voice__k">Display face · brand only</span>
+        <span class="voice__sample--display">Nebula</span>
+        <span class="voice__use">
+          The wordmark, one big word on a landing screen, a 404 numeral.
+          <b>Never a heading.</b> The face is swappable per deployment, which
+          is why every rule that sets display type wraps its size in a
+          <code>calc()</code> against <code>--display-scale</code>: faces
+          disagree wildly about how much of the em they ink.
+        </span>
+      </div>
+    </div>
+
+    <div class="lab">
+      <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 04</span></div>
+      <div class="lab__row">
+        <div class="seg" role="group" aria-label="Rule 04">
+          <button class="seg__opt is-on" type="button" data-heresy="voice" data-on="false">Mono chrome</button>
+          <button class="seg__opt" type="button" data-heresy="voice" data-on="true">Everything in sans</button>
+        </div>
+      </div>
+      <p class="lab__note">
+        Flip it and look at the anatomy shell again. Nothing moved and nothing
+        changed colour; the counts, the tags and the buttons simply stopped
+        announcing that they are <b>controls and readouts rather than
+        content</b>, and the screen went soft.
+      </p>
+    </div>
+
+    <div class="calloff">
+      <b>The one trap.</b> Never put a <code>text-transform</code> on an element
+      that carries <em>data</em> — a folder name, a filename, a user's search
+      query, an identifier. Casing it is restyling the data:
+      <code>Pride_MUC_26</code> is not <code>PRIDE_MUC_26</code>. Uppercase is
+      for fixed UI words only.
+    </div>
+  </section>
+
+  <!-- ============================================================
+       05 — PARTS
+       ============================================================ -->
+  <section class="chapter" id="parts" data-title="parts components buttons segmented tags menu fields panel hud">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Parts</span></div>
+    </div>
+    <p class="chapter__lead">
+      The component vocabulary, all live. Everything here is in
+      <code>nebula.css</code> under the class name shown — copy the file, use
+      the names, and a new app is already wearing the language.
+    </p>
+
+    <div class="spec">
+      <div class="spec__label"><span>.btn</span><span>Buttons</span><span class="n">04</span></div>
+      <div class="spec__stage">
+        <button class="btn" type="button">Default</button>
+        <button class="btn btn--primary" type="button"><i class="fa fa-download"></i> Commit</button>
+        <button class="btn btn--ghost" type="button">Ghost</button>
+        <button class="btn btn--danger" type="button"><i class="fa fa-xmark"></i> Delete</button>
+        <button class="btn btn--sm" type="button">Small</button>
+        <button class="btn" type="button" disabled>Disabled</button>
+      </div>
+      <p class="spec__note">
+        Exactly <b>one</b> button in a row may be <code>--primary</code>: the one
+        that commits. Everything else hovers in <code>--chrome</code>, because
+        a button that merely opens a picker carries no state. Danger is a
+        <em>hover</em> state, not a resting colour — a delete button that is red
+        while nobody is touching it reads as an alarm on an idle screen.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.seg</span><span>Segmented control — tabs, language, mode, view</span><span class="n">05</span></div>
+      <div class="spec__stage">
+        <div class="seg" role="group" aria-label="Demo tabs">
+          <button class="seg__opt is-on" type="button" data-demo-seg>Site</button>
+          <button class="seg__opt" type="button" data-demo-seg>Album</button>
+          <button class="seg__opt" type="button" data-demo-seg>Photos</button>
+          <button class="seg__opt" type="button" data-demo-seg>Trip</button>
+        </div>
+        <div class="seg" role="group" aria-label="Demo language">
+          <button class="seg__opt is-on" type="button" data-demo-seg>EN</button>
+          <button class="seg__opt" type="button" data-demo-seg>DE</button>
+          <button class="seg__opt" type="button" data-demo-seg>JP</button>
+        </div>
+        <div class="seg" role="group" aria-label="Demo state">
+          <button class="seg__opt is-on" type="button" data-demo-seg>Default</button>
+          <button class="seg__opt" type="button" data-demo-seg>Off</button>
+          <button class="seg__opt" type="button" disabled>Locked</button>
+        </div>
+      </div>
+      <p class="spec__note">
+        <b>One idiom for "pick one of these"</b>, wherever it appears. Tabs, a
+        language selector and a three-state toggle are the same control doing
+        the same job — giving each its own look is how two screens of one app
+        stop looking related.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.tag · .menu</span><span>Filters and a dropdown</span><span class="n">06</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="row row--split">
+          <div class="tag-bar" id="demo-tags">
+            <button class="tag is-active" type="button" data-tag="all">All</button>
+            <button class="tag" type="button" data-tag="night">Night</button>
+            <button class="tag" type="button" data-tag="street">Street</button>
+            <button class="tag" type="button" data-tag="snow">Snow</button>
+            <button class="tag" type="button" data-tag="portrait">Portrait</button>
+          </div>
+          <div class="dropdown">
+            <button class="btn" type="button" id="demo-sort-btn" aria-expanded="false" aria-haspopup="true">
+              <i class="fa fa-arrow-down-wide-short"></i>
+              <span class="sortbtn__label">Sort by</span>
+              <b class="sortbtn__val" id="demo-sort-val">Newest first</b>
+              <i class="fa fa-chevron-down"></i>
+            </button>
+            <div class="menu menu--anchored" id="demo-sort-menu" hidden>
+              <div class="menu__head">Order</div>
+              <button class="menu__option is-active" type="button" data-sort="Newest first"><i class="fa fa-arrow-down-wide-short"></i> Newest first</button>
+              <button class="menu__option" type="button" data-sort="Oldest first"><i class="fa fa-arrow-turn-up"></i> Oldest first</button>
+              <button class="menu__option" type="button" data-sort="Name"><i class="fa fa-align-left"></i> Name</button>
+              <button class="menu__option" type="button" data-sort="Frame count"><i class="fa fa-images"></i> Frame count</button>
+              <button class="menu__option" type="button" data-sort="Random"><i class="fa fa-shuffle"></i> Random</button>
+            </div>
+          </div>
+        </div>
+        <p class="spec__note note--gap" id="demo-filter-note">
+          Filter: <b>all</b> · sorted by <b>newest first</b>. Both controls are live.
+        </p>
+      </div>
+      <p class="spec__note">
+        An applied filter and the current sort order are <b>state</b>, so both
+        wear the accent — the tag as a fill under black text (which is exactly
+        what <code>--acc</code> is derived to survive), the menu row on its
+        leading edge. A tick glyph or a filled row would be a second way of
+        saying the same thing.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.field</span><span>Form controls · the left edge is the state channel</span><span class="n">07</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="fieldgrid">
+          <label class="field">
+            <span class="field__top"><span class="field__label">Site title</span></span>
+            <input type="text" value="lucya.systems" spellcheck="false">
+            <span class="field__help">Shown in the bar and the browser tab.</span>
+          </label>
+          <label class="field is-edited">
+            <span class="field__top"><span class="field__label">Accent</span><span class="field__flag">Staged</span></span>
+            <input type="text" value="#5865F2" spellcheck="false">
+            <span class="field__help">Staged, not written. Amber is the file-is-out-of-date colour.</span>
+          </label>
+          <label class="field is-unset">
+            <span class="field__top"><span class="field__label">Wallpaper</span></span>
+            <input type="text" placeholder="Not set — the default clip is used">
+            <span class="field__help">An unset key is still listed: it is part of the vocabulary. It just recedes.</span>
+          </label>
+          <div class="field">
+            <span class="field__top"><span class="field__label">Reel mode</span></span>
+            <div class="seg" role="group" aria-label="Reel mode">
+              <button class="seg__opt is-on" type="button" data-demo-seg>Featured</button>
+              <button class="seg__opt" type="button" data-demo-seg>Random</button>
+              <button class="seg__opt" type="button" data-demo-seg>Off</button>
+            </div>
+            <span class="field__help">Three states, so a segmented control and not a checkbox.</span>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        The <b>label is furniture</b> (mono, tracked, <code>--label</code>) and
+        the <b>help is prose</b> (sans, sentence case) — rule 04 applied inside
+        a single component. The left border carries the state so a screen of
+        forty keys can be scanned without reading one of them: accent = set,
+        grey = unset, amber = staged.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.panel · .kv</span><span>A read-out of facts</span><span class="n">08</span></div>
+      <div class="spec__stage">
+        <div class="stack stack--narrow">
+          <div class="panel">
+            <h2><i class="fa fa-camera"></i> Exposure</h2>
+            <dl class="kv">
+              <dt>Camera</dt><dd>Sony A7C</dd>
+              <dt>Lens</dt><dd>35 mm f/1.8</dd>
+              <dt>Aperture</dt><dd class="num">f/1.8</dd>
+              <dt>Shutter</dt><dd class="num">1/60 s</dd>
+              <dt>ISO</dt><dd class="num">3200</dd>
+              <dt>Taken</dt><dd class="num">2025-12-07 18:44</dd>
+            </dl>
+          </div>
+          <div class="panel">
+            <h2><i class="fa fa-shield-halved"></i> Status</h2>
+            <div class="row">
+              <span class="status"><span class="dot dot--ok"></span> Indexed</span>
+              <span class="status"><span class="dot dot--amb"></span> Thumbs pending</span>
+              <span class="status"><span class="dot dot--red"></span> No EXIF</span>
+            </div>
+          </div>
+        </div>
+        <p class="spec__note note--beside">
+          Panels stack hairline-to-hairline inside a <code>.stack</code> — one
+          shared border, a 1px gap on a <code>--line</code> ground — rather
+          than floating as separate boxes each with a border of its own. The
+          key is prose; only the <b>measured</b> values take the mono voice
+          (<code>.num</code>). A camera name is something you read; an aperture
+          is something the software measured.
+        </p>
+      </div>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.hud</span><span>The viewfinder idiom — for screens that are instruments</span><span class="n">09</span></div>
+      <div class="spec__stage spec__stage--flush">
+        <div class="hud hud--tall" id="demo-hud">
+          <img class="plate" src="assets/img/plate-01.svg" alt="">
+          <span class="hud__thirds"></span>
+          <span class="hud__corner hud__corner--tl"></span>
+          <span class="hud__corner hud__corner--tr"></span>
+          <span class="hud__corner hud__corner--bl"></span>
+          <span class="hud__corner hud__corner--br"></span>
+          <span class="hud__reticle"></span>
+          <div class="hud__bar hud__bar--top">
+            <span class="hud__rec"><span class="dot"></span> Rec</span>
+            <span>Live view</span>
+            <span class="spacer"></span>
+            <span>Frm <b id="hud-frm">0148</b> <span class="ghost">/ 0418</span></span>
+            <span><span class="dot dot--ok"></span> AF · Lock</span>
+          </div>
+          <div class="hud__bar hud__bar--bottom">
+            <span>f/2.0</span><span>1/125</span><span>ISO 1600</span>
+            <span class="spacer"></span>
+            <span><b>berlin_dec_2025</b></span>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        Reserved for screens where the page <b>is</b> an instrument — a capture
+        view, a live monitor. It is the one place a blinking dot and a reticle
+        are honest. Do not lift them into ordinary page chrome: an idle list
+        with a blinking REC light on it is lying about what it is doing. The
+        reticle flashes the accent while work is in flight — press the button
+        to see it.
+      </p>
+      <div class="row note--gap">
+        <button class="btn" type="button" id="hud-fire"><i class="fa fa-camera"></i> Fire the reticle</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       06 — WRONG
+       ============================================================ -->
+  <section class="chapter" id="wrong" data-title="wrong antipatterns mistakes bands stamps">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Wrong</span></div>
+    </div>
+    <p class="chapter__lead">
+      Everything here was actually built, shipped, and taken back out. They are
+      the failure modes this language keeps re-inventing, so they are worth
+      recognising before writing the CSS rather than after.
+    </p>
+
+    <div class="dd">
+      <div class="dd__col dd--dont">
+        <div class="dd__head"><span class="dot dot--red"></span> Too many bands</div>
+        <ul class="dd__list">
+          <li>A segmented <code>FILE / CLASS / RDY</code> readout bar, an index
+            number, a title and a bilingual ornament — <b>four bands saying what
+            one heading says</b>.</li>
+          <li>Before adding a bordered, filled strip, <b>count how many the page
+            already stacks</b>. Hierarchy is typographic: a heading is a heading,
+            not a bar.</li>
+        </ul>
+      </div>
+      <div class="dd__col dd--dont">
+        <div class="dd__head"><span class="dot dot--red"></span> Ornament posing as data</div>
+        <ul class="dd__list">
+          <li>Dashed "stamp" chips, a decorative <code>01</code>, a slug in a
+            second language nobody set — all removed. <b>They carried no
+            information.</b></li>
+          <li>A mark on a meta line is a hairline outline and a word. If you
+            cannot say what fact it states, it is decoration.</li>
+        </ul>
+      </div>
+      <div class="dd__col dd--dont">
+        <div class="dd__head"><span class="dot dot--red"></span> Legibility by darkness</div>
+        <ul class="dd__list">
+          <li>A pass that raised every surface's opacity was rejected outright:
+            <b>"nicht zu dunkle Hintergründe"</b>.</li>
+          <li>When a pane does not read, reach for the blur or the
+            <code>-hi</code> step. Never paint it darker.</li>
+        </ul>
+      </div>
+      <div class="dd__col dd--dont">
+        <div class="dd__head"><span class="dot dot--red"></span> Neon status colours</div>
+        <ul class="dd__list">
+          <li>Bright amber and red on a black-and-grey page <b>read as an alarm,
+            not as information</b>, and they fight the accent. Both are dulled
+            on purpose.</li>
+          <li>A status colour that is brighter than the accent has quietly
+            become the accent.</li>
+        </ul>
+      </div>
+      <div class="dd__col dd--dont">
+        <div class="dd__head"><span class="dot dot--red"></span> A hover that repaints, on a phone</div>
+        <ul class="dd__list">
+          <li>A colour or border <code>:hover</code> <b>costs the first tap</b>:
+            the tap lands as a hover, the element repaints, and the visitor has
+            to tap again.</li>
+          <li>Gate every colour hover behind <code>@media (hover: hover)</code>;
+            on touch keep the movement only.</li>
+        </ul>
+      </div>
+      <div class="dd__col dd--dont">
+        <div class="dd__head"><span class="dot dot--red"></span> Transform collisions</div>
+        <ul class="dd__list">
+          <li>Never animate <code>transform</code> in a shared keyframe or an
+            <code>:active</code> rule: a centred control already carries its own
+            <code>translate(-50%,-50%)</code>, and the animation <b>throws it
+            across the screen</b>.</li>
+          <li>Use the independent <code>translate</code> / <code>scale</code>
+            properties, and list them in the <code>transition</code> — a
+            property not listed there does not transition at all.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       07 — BUILD ONE  (the instructions for Claude)
+       ============================================================ -->
+  <section class="chapter" id="build" data-title="build claude instructions how to make a nebula app">
+    <div class="section__head">
+      <div class="section__doc">
+        <span>Audience <b>Claude</b></span>
+        <span>Source <b>nebula/NEBULA.md</b></span>
+        <span class="section__doc-mark">Read before writing CSS</span>
+      </div>
+      <div class="section__slug"><span class="name">Build one</span></div>
+    </div>
+    <p class="chapter__lead">
+      Instructions for building a new lucya.systems app in Nebula. The same
+      text lives in <code>nebula/NEBULA.md</code> next to this page, which is
+      the file to read into context — this section is it, rendered.
+    </p>
+
+    <h3 class="sub">Step 1 — Take the sheet, don't reinvent it</h3>
+    <p class="chapter__lead">
+      Copy <code>nebula/nebula.css</code> and <code>nebula/assets/fonts/</code>
+      into the new app's static directory and link the sheet first. It carries
+      the tokens, the base, and every component on this page. Your app's own
+      stylesheet loads <b>after</b> it and adds only what is genuinely new.
+      Do not fork the token block: if a value is wrong for every app, it is
+      wrong in the language and gets fixed there.
+    </p>
+    <pre class="code"><i>app/static/</i>
+  <b>nebula.css</b>      <i>← the language: tokens + base + components (copy verbatim)</i>
+  <b>app.css</b>         <i>← this app's own layout and its own components only</i>
+  <b>fa-icons.css</b>    <i>← generated glyph subset, if you use icons</i>
+  <i>fonts/</i>          <i>← static per-weight woff2 instances, never a variable font</i></pre>
+
+    <h3 class="sub">Step 2 — The decision procedure</h3>
+    <ol class="ol">
+      <li><b>Is this element carrying state?</b> Current, selected, open, active,
+        focused, live, featured, in progress. Yes → <code>--acc</code>. No → go on.</li>
+      <li><b>Is it interactive furniture?</b> A hover, a corner bracket, a HUD
+        stroke, a frame. → <code>--chrome</code>.</li>
+      <li><b>Is it a static label, count, badge or measured value?</b> →
+        <code>--label</code>, in the mono voice, uppercase, tracked.</li>
+      <li><b>Is it something a person reads?</b> → Space Grotesk, sentence case,
+        <code>--text</code> / <code>--text-dim</code>.</li>
+      <li><b>Does it sit on the page?</b> → <code>--glass</code>. <b>On an
+        image?</b> → <code>--scrim</code>. Never an opaque fill.</li>
+      <li><b>Does it have corners?</b> → they are square. <code>--radius: 0</code>.</li>
+    </ol>
+
+    <h3 class="sub">Step 3 — The rules that are not about looks</h3>
+    <ol class="ol">
+      <li><b>Fonts are static per-weight woff2 instances</b>, built from the
+        variable source, and <code>@font-face</code> carries <b>no
+        <code>local()</code></b>. Instantiating a variable face and searching the
+        system fonts cost close to a second of a phone's first layout, under the
+        entrance animations. Weight <em>ranges</em> (400 → 100-450, 500 → 451-550,
+        600 → 551-650, 700 → 651-900) so a request always lands on one file and
+        never on a synthesised bold.</li>
+      <li><b>Gate the expensive effects.</b> One JS check for weak hardware / data
+        saver / reduced motion sets <code>html.fx-lite</code>, and lite mode
+        redefines the four surface tokens instead of overriding rules. Background
+        video, backdrop blur and long auto-advancing animations all hang off that
+        one class.</li>
+      <li><b>Gate repainting hovers behind <code>@media (hover: hover)</code></b>,
+        or they cost the first tap on every phone.</li>
+      <li><b>Assume a strict CSP</b> (<code>style-src 'self'</code>): inline
+        <code>style</code> attributes are silently dropped. Data-driven sizes ride
+        SVG geometry attributes or CSS custom properties set from a stylesheet or
+        script — never an inline attribute you assume will survive.</li>
+      <li><b>Never uppercase data.</b> <code>text-transform</code> belongs on fixed
+        UI words only, never on a name, path, filename or query.</li>
+      <li><b>One config vocabulary.</b> If the app is themable, the knobs are
+        <code>accent</code>, <code>wallpaper</code>, <code>wallpaper_tint</code>,
+        <code>wallpaper_dim</code> and the display face — the same names, and a
+        hand-typed hex goes through the derivation below so it lands with the
+        contrast guarantees rather than raw.</li>
+    </ol>
+
+    <h3 class="sub">Step 4 — The accent derivation, if the app is themable</h3>
+    <p class="chapter__lead">
+      One colour in, three faces out, by moving only <b>lightness</b> along the
+      source hue until each face clears 4.5:1 against the text it has to carry.
+      This is the whole reason an accent knob can be exposed to a config file at
+      all. The showcase runs this exact function in JS; the gallery runs it in
+      Python as <code>_accent_shades()</code>.
+    </p>
+    <div class="codewrap">
+      <button class="btn btn--sm" type="button" data-copy="#code-derive">Copy</button>
+      <pre class="code" id="code-derive">def accent_shades(rgb):
+    <i># --acc: small text on black AND a fill under black label text.</i>
+    <i># Both readings want luminance, so a too-dark colour is LIFTED.</i>
+    h, l, s = rgb_to_hls(*[v / 255 for v in rgb])
+    acc_l = l
+    while acc_l &lt; 0.97 and contrast(hls_rgb(h, acc_l, s), BLACK) &lt; 4.5:
+        acc_l += 0.02
+    <i># --acc-deep: the one face carrying WHITE text, so it goes the other</i>
+    <i># way. Saturation is capped here alone: at full chroma a mid-lightness</i>
+    <i># hue turns electric, which no other shade of the same colour does.</i>
+    deep_s, deep_l = min(s, 0.78), min(acc_l, 0.58)
+    while deep_l &gt; 0.12 and contrast(hls_rgb(h, deep_l, deep_s), WHITE) &lt; 4.5:
+        deep_l -= 0.02
+    return {
+        <u>"acc"</u>:  hls_rgb(h, acc_l, s),
+        <u>"deep"</u>: hls_rgb(h, deep_l, deep_s),
+        <u>"soft"</u>: hls_rgb(h, acc_l + (1 - acc_l) * 0.42, s),
+    }</pre>
+    </div>
+
+    <h3 class="sub">Step 5 — Ship checklist</h3>
+    <ol class="ol">
+      <li>Count the accents on one screen. More than a handful means furniture
+        has been painted with state colour — go back to step 2.</li>
+      <li>Grep the new CSS for <code>border-radius</code>. Every hit is either
+        <code>var(--radius)</code> or a genuinely round thing.</li>
+      <li>Grep for opaque fills on floating surfaces. Every pane is
+        <code>--glass</code> / <code>--scrim</code> plus a blur.</li>
+      <li>Check the phone: blur off, hovers gated, no variable font, no
+        <code>local()</code>.</li>
+      <li>Read the screen with the CSS off. If the meta line does not still say
+        real facts, it was a decoration bar.</li>
+      <li>If the app has a sibling app, make the change in <b>both</b>
+        stylesheets — they deploy separately and can never share a mount, so the
+        language only stays one language by hand.</li>
+    </ol>
+
+    <h3 class="sub">The brief, ready to paste</h3>
+    <p class="chapter__lead">
+      Hand this to Claude at the start of a session that will touch a
+      lucya.systems interface.
+    </p>
+    <div class="codewrap">
+      <button class="btn btn--sm" type="button" data-copy="#code-brief">Copy brief</button>
+      <pre class="code" id="code-brief">This app wears NEBULA, the lucya.systems design language.
+Read nebula/NEBULA.md and use nebula/nebula.css as the base sheet.
+
+Four rules:
+1. Black ground, grey furniture, ONE accent (--acc, #5865F2). The accent
+   marks STATE only: links, focus, active/selected/open, featured, live.
+   Furniture is --chrome (hovers, brackets, HUD strokes) or --label (the
+   static mono furniture: labels, counts, badges, measured values).
+   Before colouring something purple, ask whether it carries state.
+2. Square corners, always. --radius: 0. Only round things opt out.
+3. Depth from blur, not darkness. Panes are --glass / --scrim + their
+   blurs over a drained backdrop. A pane that does not read gets more
+   blur, never a darker fill.
+4. Mono, uppercase, .16-.24em tracked = the chrome AROUND the content.
+   Space Grotesk, sentence case = everything a person reads. The display
+   face is the wordmark's voice and never a heading's.
+
+Also: no local() in @font-face and no variable fonts (static per-weight
+woff2); gate blur/video/animation behind html.fx-lite; gate repainting
+hovers behind @media (hover: hover); assume a strict CSP so no inline
+style attributes; never text-transform data (names, paths, queries).</pre>
+    </div>
+  </section>
+
+  </div><!-- /chapters -->
+</div><!-- /doc -->
+
+</main>
+
+<footer class="foot">
+  <div class="foot__inner">
+    <!-- The lockup is built, not shipped as one asset: the mark, plus the
+         wordmark set in the display face. There IS a combined lettering SVG
+         in the repo (app/static/logo/lucya_logo_text.svg) and it is stale —
+         it has the previous drawing of the bird baked into it, so using it
+         next to the current mark in the bar would put two generations of the
+         logo on one page. Composing the lockup instead means the mark has
+         exactly one file and the wordmark is type, which is what
+         --display-font is for. -->
+    <span class="foot__brand">
+      <img src="assets/logo/lucya_logo.svg" alt="">
+      <span class="foot__wordmark">lucya</span>
+    </span>
+    <span class="foot__links">
+      <a href="../README.md">Gallery README</a>
+      <a href="NEBULA.md">NEBULA.md</a>
+      <a href="nebula.css">nebula.css</a>
+    </span>
+    <span class="foot__meta">
+      Nebula — the design language of <b>lucya.systems</b>. The colours, the
+      wordmark and the logo belong to whoever runs the app; the four rules do not.
+    </span>
+  </div>
+</footer>
+
+<div class="heresy-flag" id="heresy-flag" role="status">
+  <span><i class="fa fa-circle-info"></i> Rule broken on purpose</span>
+  <span class="heresy-flag__what" id="heresy-what">—</span>
+  <button class="btn btn--sm" type="button" id="heresy-restore">Restore</button>
+</div>
+
+</body>
+</html>
