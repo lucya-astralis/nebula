@@ -223,6 +223,16 @@ grep -oE '(padding|gap|margin|font-size|letter-spacing):[^;]*[0-9]+px' app.css
 Nothing back means the app is speaking the language. `nebula.css` itself returns
 nothing.
 
+**The one exception, and it is not a size.** `font-size: 16px` on a text input
+is the threshold under which iOS Safari zooms the page on focus, leaving the
+layout scrolled sideways with no way back. That figure is a **behaviour**, not
+a type size: it does not come off the scale, and snapping it to the nearest
+step (`--fs-text-lg`, 15px) re-arms the zoom. Both apps carry it, both carry
+the comment saying why, and a rule-5 pass that does not know about it will
+silently break the phone layout — this one did, in the configurator, and the
+grep is what found it again. If a number in a sheet is a threshold something
+else enforces, write the reason next to it and leave it raw.
+
 ### 6. The environment can overrule the look
 
 Blur, translucency, motion and hover are **capabilities, not guarantees**. Each
@@ -422,7 +432,13 @@ def accent_shades(rgb):
 - [ ] `grep -n 'border-radius' new.css` — every hit is `var(--radius)` or a
       genuinely round thing.
 - [ ] `grep -oE '(padding|gap|margin|font-size|letter-spacing):[^;]*[0-9]+px' new.css`
-      — nothing back. (Rule 5.)
+      — nothing back, except thresholds that carry their reason in a comment
+      next to them (the 16px input, above). (Rule 5.)
+- [ ] **Every `--fs-*` token matches the voice of the thing it sizes.** A rule
+      that only overrides a size — a desktop type-scale block is all of these —
+      says nothing about its own voice, so it is the easy place to land a
+      `--fs-text-*` on a mono eyebrow. Check it against what the browser
+      computes, not against what the rule looks like.
 - [ ] No opaque fill on a floating surface, and **no bevel**: no
       `inset 0 1px 0 rgba(255,255,255,…)`, no gloss gradient down a pane.
 - [ ] **Tab through the whole screen.** Every control is reachable, the ring is
