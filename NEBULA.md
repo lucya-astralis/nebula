@@ -97,7 +97,7 @@ Six tokens are the whole surface scale:
 |---|---|
 | `--glass` / `--glass-hi` | Panes over the page: fields, buttons, cards, panels |
 | `--scrim` / `--scrim-hi` | Chips laid **on** a picture, where the backdrop is whatever the image happens to be there |
-| `--pane` | The app bar — always present, spans the viewport |
+| `--pane` / `--pane-scrolled` | The app bar — always present, spans the viewport. **Deep black**, and the deeper step for once content is under it |
 | `--overlay` | Menus and dialogs — they must read over **any** content |
 
 It used to be four, and `.nav` and `.menu` carried hand-typed fills and their
@@ -110,6 +110,26 @@ the system.
 The blur is a **ladder**, `--blur-1` to `--blur-3`, so "give it more blur" is an
 actual move rather than advice. A surface that is not reading gets **more blur
 or the `-hi` step, never a darker fill**.
+
+**`--pane` is the one exception, and it is deep black on purpose.** It does not
+take the top of the ladder, and its fill carries no hue at all —
+`rgba(0,0,0,.86)` over `--blur-1`. Two things put colour into a bar: a hue in
+the fill, and saturation in the blur behind it. `--pane` was once
+`rgba(6,6,10,.72)` over `--blur-3` (`saturate(165%)`) and had both — 28% of a
+re-saturated wallpaper is enough to tint the bar whatever the album behind it
+is, and `6,6,10` is a blue step that rule 1 does not allow in the ground ramp
+anyway. The bar spans the viewport on every screen: it is the frame the whole
+page is read inside, and a frame that changes colour per album has stopped
+being furniture. *"header bars sollen tiefschwarz bleiben, da andere Farben
+hier einfach was kaputt machen"* (user, 2026-09-07).
+
+It is still glass — the wallpaper moves behind it — but it reads black under
+every accent. `--pane-scrolled` is the deeper step for a bar with content
+underneath. That is **not** the darker fill this rule forbids: that one is
+reaching for opacity because a surface will not *read*, and the answer to that
+is still more blur or the `-hi` step. This is a state cue on the one surface
+the language holds to black, and it goes deeper rather than lighter, because
+black is the whole point of `--pane`.
 
 **A pane is a fill, a blur and a hairline — no bevel, no gloss.** No lit top
 edge, no wash falling down its face. Those two marks are what make translucency
@@ -292,8 +312,9 @@ For every element, in order:
 4. **Is it something a person reads?** → Space Grotesk, sentence case,
    `--text` / `--text-dim` / `--text-ghost`.
 5. **Does it sit on the page?** → `--glass` (`--glass-hi` if it is read).
-   **On an image?** → `--scrim`. **Is it the app bar?** → `--pane`. **A menu or
-   dialog?** → `--overlay`. Never an opaque fill, and never a bevel.
+   **On an image?** → `--scrim`. **Is it the app bar?** → `--pane`, which is
+   deep black and stays deep black. **A menu or dialog?** → `--overlay`.
+   Never an opaque fill, and never a bevel.
 6. **Does it have corners?** → they are square.
 7. **Did you type a number?** → it comes off a scale in rule 5, or it does not
    go in.
@@ -485,7 +506,9 @@ Six rules:
    (menus). Each with a step off --blur-1..3. A pane that does not read
    gets more blur or the -hi step, never a darker fill. A pane is a
    fill, a blur and a hairline: NO bevel, NO gloss gradient — that is
-   Aero, and it argues with rule 2.
+   Aero, and it argues with rule 2. --pane is the exception to the
+   ladder: DEEP BLACK, no hue in the fill and --blur-1 behind it, so
+   the app bar never takes an album's colour.
 4. Mono, uppercase, tracked = the chrome AROUND the content. Space
    Grotesk, sentence case = everything a person reads. The display face
    is the wordmark's voice and never a heading's. Use --fs-chrome-* vs
