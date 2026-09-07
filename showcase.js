@@ -31,7 +31,8 @@
      the source hue. Each face answers a legibility question the
      stylesheet cannot answer for itself:
 
-       acc   small text on black AND a fill under black label text.
+       acc   small text on a PANEL (not on the page floor — see
+             SURFACE below) and a fill under --on-acc label text.
              Both readings want luminance, so a colour too dark to
              read is LIFTED (and we say so).
        deep  the single face that carries WHITE text, so it goes the
@@ -41,6 +42,26 @@
        soft  the hover step above acc, again under black text.
      ================================================================ */
   var MIN_CONTRAST = 4.5;
+
+  /* THE REFERENCE SURFACE.
+     This used to be [0,0,0], and that was the bug: the accent is
+     almost never on #000. It is a link inside a .panel, an active
+     .menu__option, the glyph in front of an .eyebrow — every one of
+     them on --surface or a step above it. Measuring against the
+     floor let the loop stop the instant it cleared the EASIEST
+     surface in the system, so the whole 4.5 margin was already spent
+     before the colour was used: #5865F2 clears 4.56:1 on #000 and
+     only 4.19:1 on --surface.
+
+     --surface (#0e0e10) is the highest ground accent-coloured TEXT
+     actually sits on, so it is what the loop has to satisfy. It
+     lifts the built-in one step, #5865F2 -> #616EF3, and that one
+     step is the difference between a promise and a rounding error.
+
+     Accent text on an accent TINT is not in this list on purpose:
+     the sheet no longer does it. See the note over .btn in
+     nebula.css — on an accent fill the label is --on-acc or --text. */
+  var SURFACE = [0x0e, 0x0e, 0x10];
 
   function srgbLum(rgb) {
     var c = rgb.map(function (v) {
@@ -110,7 +131,7 @@
     var h = hls[0], l = hls[1], s = hls[2];
 
     var accL = l;
-    while (accL < 0.97 && contrast(hlsRgb(h, accL, s), [0, 0, 0]) < MIN_CONTRAST) accL += 0.02;
+    while (accL < 0.97 && contrast(hlsRgb(h, accL, s), SURFACE) < MIN_CONTRAST) accL += 0.02;
 
     var deepS = Math.min(s, 0.78);
     var deepL = Math.min(accL, 0.58);
@@ -304,7 +325,8 @@
     violet: 'Rule 01 — the accent is painting furniture too',
     radius: 'Rule 02 — corners are rounded, and the brackets are gone',
     opaque: 'Rule 03 — legibility is being bought with darkness',
-    voice:  'Rule 04 — the chrome lost the mono voice'
+    voice:  'Rule 04 — the chrome lost the mono voice',
+    measure:'Rule 05 — every value is off the scale by a pixel or two'
   };
   var heresyWhat = $('#heresy-what');
 
@@ -508,7 +530,11 @@
     });
     $$('.menu__option', sortMenu).forEach(function (opt) {
       opt.addEventListener('click', function () {
-        $$('.menu__option', sortMenu).forEach(function (o) { o.classList.toggle('is-active', o === opt); });
+        $$('.menu__option', sortMenu).forEach(function (o) {
+          var on = o === opt;
+          o.classList.toggle('is-active', on);
+          o.setAttribute('aria-selected', String(on));
+        });
         state.sort = opt.dataset.sort;
         if (sortVal) sortVal.textContent = state.sort;
         noteState();
@@ -521,11 +547,64 @@
 
   $$('#demo-tags .tag').forEach(function (t) {
     t.addEventListener('click', function () {
-      $$('#demo-tags .tag').forEach(function (x) { x.classList.toggle('is-active', x === t); });
+      $$('#demo-tags .tag').forEach(function (x) {
+        var on = x === t;
+        x.classList.toggle('is-active', on);
+        /* the class is what the sheet paints; aria-pressed is what a
+           screen reader reads. A filter chip has to carry both, or
+           half the visitors get an unlabelled toggle. */
+        x.setAttribute('aria-pressed', String(on));
+      });
       state.tag = t.textContent.trim().toLowerCase();
       noteState();
     });
   });
+
+  /* ================================================================
+     THE SPACE RULER
+     ----------------------------------------------------------------
+     Read from the live tokens rather than from a list typed here, so
+     the specimen cannot drift from the sheet it is documenting — and
+     so the rule-05 heresy switch visibly moves it. Widths ride a
+     custom property, never an inline style attribute: strict CSP.
+     ================================================================ */
+  var ruler = $('#ruler');
+  if (ruler) {
+    var cs = getComputedStyle(document.documentElement);
+    var steps = ['--s-0','--s-1','--s-2','--s-3','--s-4','--s-5','--s-6','--s-7','--s-8'];
+    var USE = {
+      '--s-0':'bezel — a track inset',
+      '--s-1':'hairline gaps, chip padding',
+      '--s-2':'tight inner padding',
+      '--s-3':'the default gap',
+      '--s-4':'control padding',
+      '--s-5':'panel padding',
+      '--s-6':'between components',
+      '--s-7':'block separation',
+      '--s-8':'section separation'
+    };
+    var draw = function () {
+      var vals = steps.map(function (k) { return parseFloat(cs.getPropertyValue(k)) || 0; });
+      var max = Math.max.apply(null, vals);
+      ruler.textContent = '';
+      steps.forEach(function (k, i) {
+        var li = document.createElement('li');
+        if (k === '--s-0') li.className = 'is-bezel';
+        var tok = document.createElement('span'); tok.textContent = k;
+        var px  = document.createElement('span'); px.className = 'px'; px.textContent = vals[i] + ' px';
+        var bar = document.createElement('span'); bar.className = 'bar';
+        bar.style.setProperty('--w', (vals[i] / max * 100) + '%');
+        bar.title = USE[k];
+        li.appendChild(tok); li.appendChild(px); li.appendChild(bar);
+        ruler.appendChild(li);
+      });
+    };
+    draw();
+    /* the heresy switch rewrites the scale, so the ruler has to follow
+       it — otherwise the one specimen that is ABOUT the scale would be
+       the one thing on the page not obeying it */
+    new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
 
   /* the bar chart: server-rendered in a real app (the gallery's /stats
      draws its charts in three layers of CSS and no JS at all), built

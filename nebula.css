@@ -7,9 +7,9 @@
    production instances of it; this file is what a THIRD app starts
    from, and what the showcase next to it demonstrates.
 
-   Four rules. Every decision in here is one of them:
+   Six rules. Every decision in here is one of them:
 
-     1. Black ground, grey furniture, ONE purple accent.
+     1. Black ground, grey furniture, ONE accent.
         --acc marks STATE and nothing else. Furniture is --chrome or
         --label. Before colouring something purple, ask whether it
         carries state. If it doesn't, it isn't purple.
@@ -22,9 +22,16 @@
         the content. Everything a person actually reads is Space
         Grotesk in sentence case. The display face is the wordmark's
         voice and is not a heading's.
+     5. MEASURE IS RATIONED LIKE COLOUR. Every size, space, duration
+        and blur in this file comes off a named scale. A raw px value
+        in an app sheet is the same mistake as a raw hex.
+     6. THE ENVIRONMENT CAN OVERRULE THE LOOK. Blur, translucency,
+        motion and hover are capabilities, not guarantees. Each has a
+        declared fallback, and every one of them is reached by
+        redefining tokens — never by overriding rules.
 
    The colours, the wordmark and the logo belong to whoever runs the
-   app. The language does not: it is the same four rules whatever the
+   app. The language does not: it is the same six rules whatever the
    accent is set to.
    ================================================================== */
 
@@ -51,12 +58,15 @@
 @font-face{ font-family:'Ethnocentric'; src:url('assets/fonts/Ethnocentric-Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
 
 :root{
-  /* ---- ground -----------------------------------------------------
+  /* ================================================================
+     GROUND
+     ----------------------------------------------------------------
      Black is the floor, grey is the whole body. NOTHING in this ramp
      carries a hue: the palette this replaced mixed every surface
      towards blue-violet, so a screen read as purple end to end and
      the actual accents had nothing quiet to sit against. Colour
-     appears once, on purpose, as --acc. */
+     appears once, on purpose, as --acc.
+     ================================================================ */
   --bg:          #000000;
   --bg-2:        #08080a;
   --surface:     #0e0e10;
@@ -64,33 +74,80 @@
   --line:        rgba(255,255,255,0.09);
   --line-strong: rgba(255,255,255,0.20);
 
-  --text:        #f2f2f4;
-  --text-dim:    #a1a1a8;
-  --text-ghost:  #6b6b73;
+  /* ---- the text ramp ---------------------------------------------
+     Measured, not picked. Every value here carries a stated contrast
+     floor against --surface (#0e0e10), because that — not #000 — is
+     what text in this system actually sits on: panels, cards, fields
+     and menus are all one or two steps up from the floor.
+
+       4.5:1  anything a person READS  (body, help, empty states,
+              and the label of any control that can be operated)
+       3.0:1  furniture that is not read as language (hairlines,
+              disabled states, decorative marks)
+
+     The reference is --surface AND the --glass-hi composite, which
+     are held within a step of each other on purpose: once panels and
+     cards float on glass, the ground under reading text is no longer
+     a fixed colour, it is whatever the wallpaper happens to be there.
+     --glass-hi is opaque enough to bound that drift. This is the cost
+     of a glass reading surface and it is worth paying once, in one
+     token, rather than discovering it per app.
+
+     --text-ghost is a GHOST: de-emphasised furniture, a placeholder,
+     a disabled label. It is not a colour for text that has to be
+     read. Anything a person reads bottoms out at --text-dim.
+
+     --text-ghost used to be #6b6b73, which was 3.65:1 on --surface
+     and 3.42:1 on --surface-2 — under the floor everywhere it was
+     used, and it was used for help text, placeholders and the
+     UNSELECTED segments of a segmented control. It is lifted here. */
+  --text:        #f2f2f4;   /* 17.3:1 on surface */
+  --text-dim:    #a1a1a8;   /*  7.5:1 */
+  --text-ghost:  #7d7d86;   /*  4.7:1 — the floor for read text */
   /* one step down from --text: a heading that stops competing with
      the page title above it and the content below it */
-  --text-head:   #cdcdd4;
+  --text-head:   #cdcdd4;   /* 12.2:1 */
   /* the two ends of the display-title gradient */
   --title-a:     #ffffff;
   --title-b:     #8b8b94;
 
-  /* ---- the one accent --------------------------------------------
-     #5865F2, "Nebula Blue" — the colour the language is named after.
-     It reads blue-violet rather than violet, which is the point. The
-     shade was never the problem; how MANY things wore it was.
+  /* ================================================================
+     THE ONE ACCENT
+     ----------------------------------------------------------------
+     #5865F2, "Nebula Blue", is the BRAND hex — the value a config
+     file supplies and the value the wordmark is drawn in. It is not
+     used raw. Like any hand-typed accent it goes through the
+     derivation (nebulaAccent() in showcase.js, _accent_shades() in
+     the gallery's main.py) and comes out as three faces, each one
+     lifted or dropped until it clears 4.5:1 against the text it has
+     to carry.
 
-     Three faces, one colour under three constraints, all derived
-     rather than hand-picked (see nebulaAccent() in showcase.js and
-     _accent_shades() in the gallery's main.py — same algorithm):
-       --acc       small text on black AND a fill under black label
+     The derivation used to measure against --bg (#000000) and stop
+     the moment it cleared it. But the accent is almost never ON
+     #000: it is a link inside a .panel, an active .menu__option, an
+     .is-on segment — all of them on --surface or higher. #5865F2
+     clears 4.56:1 on #000 and only 4.19:1 on --surface, so the whole
+     margin was spent before it was used. The reference surface is
+     now --surface, which lifts the brand hex by one step:
+
+       #5865F2  (brand, config value)  ->  #616EF3  (--acc, in use)
+
+     Three faces, one colour under three constraints:
+       --acc       small text on a PANEL and a fill under black label
                    text; both readings want luminance, so a colour
                    too dark to read is LIFTED
        --acc-deep  the one face that carries WHITE text
-       --acc-soft  the lifted step, hover faces under black text */
-  --acc:         #5865f2;
-  --acc-rgb:     88,101,242;
-  --acc-deep:    #404ee7;
-  --acc-soft:    #9ea6f7;
+       --acc-soft  the lifted step, hover faces under black text
+       --on-acc    what goes ON TOP of an --acc fill. Today this is
+                   the same value as --bg; it is not the same IDEA,
+                   and the derivation already computes the constraint.
+                   Spell the idea, so a light-ground fork stays sane. */
+  --acc-src:     #5865f2;   /* the brand hex, for reference only */
+  --acc:         #616ef3;   /* 4.7:1 on --surface, 5.0:1 on --bg */
+  --acc-rgb:     97,110,243;
+  --acc-deep:    #404ee7;   /* 6.1:1 under white text */
+  --acc-soft:    #a4abf8;   /* 9.0:1 on --surface */
+  --on-acc:      #000000;
 
   /* ---- the grey that is NOT the accent ---------------------------
      Everything that is merely furniture takes one of these two. This
@@ -105,33 +162,204 @@
   /* ---- status, deliberately dulled -------------------------------
      Neon amber/red on a black-and-grey page reads as an alarm, not as
      information, and fights the accent. --ok is the exception: it is
-     picked off the same swatch as --acc, so it is bright. */
-  --amb:      #d9a24a;  --amb-rgb: 217,162,74;
-  --ok:       #58f298;  --ok-rgb:  88,242,152;
-  --red:      #e0625f;  --red-rgb: 224,98,95;
+     picked off the same swatch as --acc, so it is bright. Each has a
+     -deep face for the rare fill that must carry white text — the
+     same guarantee --acc-deep gives, so a danger button is not the
+     one place in the app with unchecked contrast. */
+  --amb:      #d9a24a;  --amb-rgb: 217,162,74;   --amb-deep:  #7a5410;
+  --ok:       #58f298;  --ok-rgb:  88,242,152;   --ok-deep:   #11723f;
+  --red:      #e0625f;  --red-rgb: 224,98,95;    --red-deep:  #97201d;
 
-  /* ---- translucent surfaces --------------------------------------
-     Four values are the whole surface scale, so a legibility change
-     is one edit instead of sixty:
-       --glass / --glass-hi   panes over the page background
-       --scrim / --scrim-hi   chips laid ON an image, where the
-                              backdrop is whatever is under them
-     Where blur is unavailable (phones, .fx-lite) the SAME tokens are
-     redefined more opaque — see .fx-lite below. That is the hook to
-     reach for when a surface needs retuning; never a per-rule
-     override. */
-  --glass:      rgba(26,26,30,.42);
-  --glass-hi:   rgba(40,40,45,.58);
-  --scrim:      rgba(0,0,0,.52);
-  --scrim-hi:   rgba(6,6,7,.70);
-  --glass-blur: blur(18px) saturate(140%);
-  --scrim-blur: blur(14px) saturate(130%);
+  /* ================================================================
+     RULE 5 — MEASURE
+     ----------------------------------------------------------------
+     Space, size, tracking, motion and blur, each on one named scale.
+     Before this block existed the sheet carried 23 distinct paddings,
+     13 gaps, 13 font sizes and 14 tracking values, every one of them
+     hand-typed — so "the same as the gallery" was something you had
+     to remember rather than something you could reference, and app
+     three could only drift.
 
-  /* ---- shape and metrics ----------------------------------------- */
+     The ship check is a grep, the same way rule 1's is a count:
+       grep -oE '(padding|gap|margin|font-size):[^;]*[0-9]+px' app.css
+     Nothing back means the app is speaking the language.
+     ================================================================ */
+
+  /* ---- space: a 4px rhythm ---------------------------------------
+     Eight steps, roughly 1.5x apart, so two adjacent values are
+     always visibly different. If a layout wants something between
+     two steps, the layout is wrong, not the scale.
+       1  hairline gaps, chip padding
+       2  tight inner padding
+       3  the default gap between related things
+       4  control padding, the gap inside a component
+       5  panel padding
+       6  the gap BETWEEN components
+       7  block separation
+       8  section separation */
+  /* The sub-step. Not a space: a BEZEL — the inset of a segmented
+     track, the hairline gutter of a stack. Anything a person would
+     call "distance between two things" starts at --s-1. */
+  --s-0:  2px;
+  --s-1:  4px;
+  --s-2:  6px;
+  --s-3:  8px;
+  --s-4:  12px;
+  --s-5:  16px;
+  --s-6:  24px;
+  --s-7:  32px;
+  --s-8:  48px;
+  /* Page rhythm. The scale stopped at 48 and the doc layout kept
+     reaching past it — a chapter gap, the space under a hero — which
+     is how off-scale values get typed even by someone holding to the
+     rule. If a scale does not cover the page, it only covers the
+     components. */
+  --s-9:  64px;
+  --s-10: 96px;
+
+  /* ---- type: two voices, four steps each -------------------------
+     The names carry rule 4, so the token you reach for tells you
+     which voice you are in: --fs-chrome-* is mono, uppercase and
+     tracked; --fs-text-* is Space Grotesk in sentence case. Picking
+     the wrong one is then visible in the source, not only on screen.
+
+     The old sheet had ten sizes between 9px and 15px — 10px and
+     10.5px are not a hierarchy anyone perceives, they are noise that
+     reads as inconsistency and lets two apps diverge invisibly. */
+  --fs-chrome-xs: 9.5px;   /* card index, field flag, menu head */
+  --fs-chrome-sm: 10.5px;  /* the workhorse: buttons, tags, meta */
+  --fs-chrome-md: 12px;    /* field labels, menu rows, search */
+  --fs-chrome-lg: 14px;    /* a measured value with its own line */
+  --fs-chrome-xl: 20px;    /* a headline number: a stat tile, a count */
+
+  --fs-text-sm:   12px;    /* help text, footer, key/value */
+  --fs-text-md:   13px;    /* inputs, panel body */
+  --fs-text-lg:   15px;    /* base body size, leads */
+  --fs-text-xl:   18px;    /* a panel heading that leads a screen */
+  --fs-title:     clamp(22px, 2.7vw, 33px);
+
+  /* ---- tracking, bound to size -----------------------------------
+     One formula, not fourteen opinions: tracking FALLS as size
+     rises, because the reason to track is optical, and small caps
+     need the air that large caps do not. Every --fs-chrome-* has
+     exactly one --tr-chrome-* that goes with it, same suffix. */
+  --tr-chrome-xs: .24em;
+  --tr-chrome-sm: .18em;
+  --tr-chrome-md: .14em;
+  --tr-chrome-lg: .10em;
+  --tr-chrome-xl: .04em;    /* the formula continues: bigger, tighter */
+  --tr-text:      .01em;
+  --tr-title:     .03em;
+  --tr-head:     -.005em;   /* a sans heading tightens, it never tracks */
+  --tr-num:       .06em;    /* mono digits in a value column */
+  --tr-display:   .14em;    /* the display face, which inks its own em */
+
+  /* Icons are sized off the type scale but are not type: a glyph at
+     the same px as its label reads a size too large, because it has
+     no x-height to sit under. Two steps is all any of this needs. */
+  --icon-sm:  10px;
+  --icon-md:  12px;
+  --fs-code:  .88em;   /* code is relative: it sits inside running text */
+
+  /* ---- motion ----------------------------------------------------
+     Three durations. Anything slower than --dur-3 is an animation
+     and belongs behind the fx gate, not in a transition. */
+  --dur-1:   .15s;   /* colour, border — a state change */
+  --dur-2:   .25s;   /* movement, a pane appearing */
+  --dur-3:   .35s;   /* an image settling, a scale */
+  --ease:     cubic-bezier(.4, 0, .2, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+
+  /* ================================================================
+     RULE 3 — DEPTH, AS A LADDER
+     ----------------------------------------------------------------
+     Rule 3's escape hatch is "a pane that does not read gets MORE
+     blur". That was not previously reachable: there was one blur
+     value per surface type and no second step to move to. Three
+     steps, so the instruction is an actual move.
+
+     Saturation climbs with the blur on purpose. Blur averages the
+     backdrop towards grey; pulling saturation back up is what keeps
+     a heavy pane looking like glass over a picture instead of like
+     a sheet of fog.
+     ================================================================ */
+  --blur-1: blur(10px) saturate(125%);
+  --blur-2: blur(20px) saturate(145%);
+  --blur-3: blur(32px) saturate(165%);
+
+  /* ---- the six surfaces ------------------------------------------
+     Four of these were tokens already; .nav and .menu used to carry
+     hand-typed fills and their own backdrop-filter, which meant the
+     documented promise of .fx-lite — "redefine the four tokens and
+     every surface retunes, nothing else has to know" — was false for
+     the two most persistent panes in any app. There are six
+     surfaces. Spelling all six is what makes the promise true.
+
+       --glass     panes over the page: fields, buttons, cards, bars
+       --scrim     chips laid ON a picture, where the backdrop is
+                   whatever the image happens to be there
+       --pane      the app bar: spans the viewport, always present,
+                   so it is the one surface that may sit lower
+       --overlay   menus and dialogs: they must read over ANY content
+                   underneath, so this is the one opaque-ish step
+
+     The -hi variant of each is the lifted step. A surface that is
+     not reading takes the -hi step or the next blur — never a
+     darker fill. */
+  --glass:      rgba(30,30,38,.36);
+  --glass-hi:   rgba(22,22,29,.74);
+  --scrim:      rgba(4,4,8,.46);
+  --scrim-hi:   rgba(6,6,10,.64);
+  --pane:       rgba(6,6,10,.72);
+  --overlay:    rgba(10,10,14,.82);
+
+  --glass-blur:   var(--blur-2);
+  --scrim-blur:   var(--blur-1);
+  --pane-blur:    var(--blur-3);
+  --overlay-blur: var(--blur-3);
+
+  /* ---- no bevel, on purpose --------------------------------------
+     A pane here is a HAIRLINE and a BLUR. It is not lit from the top
+     edge and it carries no gloss gradient down its face.
+
+     Those two things — a white inset on the top border and a light
+     wash falling off the top of the fill — are what make translucency
+     read as Aero: a raised, moulded sheet of glass with a thickness
+     to it. That is a different design language, and it fights every
+     other rule here. Square corners and a bevel are contradictory
+     claims about the same object; a bevel is a soft edge drawn on a
+     hard one.
+
+     What this language means by glass is flatness with DEPTH BEHIND
+     it: the pane itself is a plane, and what you see through it is
+     out of focus. All of the depth is in the blur, none of it is in
+     the surface. So there is no --sheen and no --edge token to
+     reach for, and a component that wants to look more present asks
+     for the next blur step or the -hi fill. */
+
+  /* ---- elevation --------------------------------------------------
+     Two shadows and one glow, instead of nine hand-typed one-offs
+     (the old sheet spent three different values on what was meant to
+     be the same accent glow). Shadows are for things that genuinely
+     float ABOVE the page — a menu, a dialog. A card does not float. */
+  --shadow-1: 0 2px 10px rgba(0,0,0,.35);
+  --shadow-2: 0 18px 44px rgba(0,0,0,.55);
+  --glow-acc: 0 0 20px -6px rgba(var(--acc-rgb),.70);
+  --ring-acc: 0 0 0 1px rgba(var(--acc-rgb),.22);
+
+  /* ---- shape and layout ------------------------------------------ */
   --radius:     0;         /* square, everywhere */
+  --hair:       1px;       /* the one border width in the system */
   --nav-h:      60px;
-  --page-pad:   20px;      /* the gutter every band holds to */
+  /* The gutter every band holds to. A clamp, not a constant: 20px is
+     right at 1440 and wasteful at 380, where it is the difference
+     between a card grid of one column and of two. */
+  --page-pad:   clamp(14px, 1.4vw + 9px, 24px);
   --page-max:   2000px;
+  /* The one breakpoint the language owns. Below it an app is a
+     single column, the bar sheds its middle, and touch targets grow.
+     Apps may add their own; they may not disagree about this one. */
+  --bp-narrow:  760px;
 
   /* The mono face, spelled once. The tail past the webfont matters:
      while JetBrains Mono is loading — or silently failing to — this is
@@ -144,7 +372,8 @@
      so whoever brings the face also says how to size it */
   --display-scale: 1;
 
-  /* How the wallpaper is treated before anything is laid over it. A
+  /* ---- the backdrop ----------------------------------------------
+     How the wallpaper is treated before anything is laid over it. A
      token because an app's config can retune it per page. */
   --wallpaper-filter: grayscale(.92) brightness(.72) contrast(1.04);
   /* The one COLOURED thing over the wallpaper. It belongs to the
@@ -160,19 +389,90 @@
      on the art's own falloff and the bottom half goes black. */
   --wallpaper-shade-top: rgba(0,0,0,0.62);
   --wallpaper-shade-bot: rgba(0,0,0,0.82);
+  --wallpaper-grid: rgba(255,255,255,.03);
 }
 
-/* Lite mode: JS-detected weak hardware / data saver / reduced motion.
-   No blur, so the panes lose the one thing making them readable — pay
-   for it in opacity instead. Redefining the four tokens once retunes
-   every surface; nothing else has to know. */
+/* ==================================================================
+   RULE 6 — THE ENVIRONMENT GATES
+   ------------------------------------------------------------------
+   Blur, translucency, motion and hover are capabilities, not
+   guarantees. Every gate below reaches its fallback by REDEFINING
+   TOKENS, never by overriding component rules — which is the only
+   reason a component can be written once and still be correct on a
+   four-year-old phone, in Windows high-contrast mode, and for a
+   visitor who has asked the OS for less.
+   ================================================================== */
+
+/* --- lite: JS-detected weak hardware / data saver / reduced motion.
+   No blur, so the panes lose the one thing making them readable —
+   pay for it in opacity instead. Nothing else changes, because
+   there is nothing else: a pane is a fill and a hairline, and the
+   blur was the only part the hardware could not afford. */
 .fx-lite{
-  --glass:      rgba(22,22,25,.80);
-  --glass-hi:   rgba(36,36,40,.90);
-  --scrim:      rgba(0,0,0,.76);
-  --scrim-hi:   rgba(6,6,7,.88);
-  --glass-blur: none;
-  --scrim-blur: none;
+  --glass:      rgba(22,22,27,.86);
+  --glass-hi:   rgba(36,36,44,.94);
+  --scrim:      rgba(0,0,0,.78);
+  --scrim-hi:   rgba(6,6,10,.88);
+  /* --pane and --overlay go FULLY opaque here, and the two glass
+     steps do not. The difference is what is behind them: the
+     wallpaper is behind a card, but PAGE CONTENT scrolls behind the
+     app bar and under a menu. Translucency without a blur to average
+     it is not glass, it is a smear — at .96 the hero title still
+     ghosted through the bar, because 4% of white over near-black is
+     visible. A surface with live content behind it has no business
+     being translucent once the blur is gone. */
+  --pane:       #04040a;
+  --overlay:    #0a0a0e;
+  --blur-1: none; --blur-2: none; --blur-3: none;
+}
+
+/* --- the OS-level version of the same request. .fx-lite is set by
+   script and can therefore never run before first paint; this one
+   does, so a visitor who has asked for less transparency never sees
+   a frame of the glass build. Same tokens, so nothing else changes. */
+@media (prefers-reduced-transparency: reduce){
+  :root{
+    --glass:      rgba(22,22,27,.92);
+    --glass-hi:   rgba(36,36,44,.96);
+    --scrim:      rgba(0,0,0,.88);
+    --scrim-hi:   rgba(6,6,10,.94);
+    --pane:       #04040a;
+    --overlay:    #0a0a0e;
+    --blur-1: none; --blur-2: none; --blur-3: none;
+  }
+}
+
+/* --- more contrast asked for: firm up every hairline and drop the
+   ghost step onto the read floor. The look does not change; the
+   edges simply stop being suggestions. */
+@media (prefers-contrast: more){
+  :root{
+    --line:        rgba(255,255,255,0.22);
+    --line-strong: rgba(255,255,255,0.42);
+    --text-ghost:  #9a9aa4;
+    --text-dim:    #c2c2c9;
+  }
+}
+
+/* --- forced colours (Windows high contrast). The entire depth model
+   here is translucency plus hairlines, and both are discarded by the
+   OS compositor — a page that says nothing about this renders as
+   unseparated text on one flat ground. So: give every surface a real
+   border in a SYSTEM colour, and let the OS own the palette. This is
+   the one place the language hands over its colours, and it should:
+   the visitor asked the OS for them, not us. */
+@media (forced-colors: active){
+  :root{
+    --line: CanvasText; --line-strong: CanvasText;
+    --glow-acc: none; --shadow-1: none; --shadow-2: none;
+  }
+  .nav, .menu, .card, .panel, .stack, .field, .btn, .seg, .tag,
+  .hud, .nav__search{ border:var(--hair) solid CanvasText; }
+  .card::before, .card::after, .hud__corner{ forced-color-adjust:none; }
+  .btn--primary, .tag.is-active, .seg__opt.is-on, .menu__option.is-active{
+    forced-color-adjust:none;
+    background:Highlight; color:HighlightText; border-color:Highlight;
+  }
 }
 
 /* ==================================================================
@@ -186,9 +486,9 @@ body{
   color:var(--text);
   background:var(--bg);
   font-family:var(--sans);
-  font-size:15px;
+  font-size:var(--fs-text-lg);
   line-height:1.55;
-  letter-spacing:.01em;
+  letter-spacing:var(--tr-text);
   min-height:100vh;
   /* clip, not hidden: overflow-x:hidden forces overflow-y to compute
      to auto, which turns <body> into a scroll container — and iOS
@@ -196,27 +496,54 @@ body{
   overflow-x:hidden;
   overflow-x:clip;
   isolation:isolate;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
 }
 
 a{ color:inherit; text-decoration:none; }
 a:hover{ color:var(--acc); }
 img{ user-select:none; -webkit-user-drag:none; max-width:100%; }
 
-:focus-visible{ outline:1px solid var(--acc); outline-offset:2px; }
+/* One focus ring for the whole system. Two layers on purpose: the
+   accent outline states WHERE focus is, the dark ring under it keeps
+   that outline legible when the focused thing sits on a bright card
+   image or on an accent fill. */
+:focus-visible{
+  outline:2px solid var(--acc);
+  outline-offset:2px;
+  box-shadow:0 0 0 4px rgba(0,0,0,.55);
+}
+/* Never take the ring away without giving one back. */
+:focus:not(:focus-visible){ outline:none; }
 
 code{
   font-family:var(--mono);
-  font-size:.88em;
+  font-size:var(--fs-code);
   background:rgba(255,255,255,.05);
-  border:1px solid var(--line);
-  padding:1px 6px;
+  border:var(--hair) solid var(--line);
+  padding:var(--hair) var(--s-2);
   color:var(--text);
 }
 
 .mono { font-family:var(--mono); letter-spacing:0; }
 .dim  { color:var(--text-dim); }
 .ghost{ color:var(--text-ghost); }
-.small{ font-size:12px; }
+.small{ font-size:var(--fs-text-sm); }
+
+/* The chrome voice, as one class — so an app that needs the voice on
+   an element the vocabulary does not cover still gets it right
+   instead of hand-typing a fourth set of numbers. */
+.chrome-voice{
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-sm);
+  letter-spacing:var(--tr-chrome-sm);
+  text-transform:uppercase;
+  color:var(--label);
+}
+
+/* Numbers that are compared down a column must not shift. Anything
+   measured — a count, a size, a timestamp — takes this. */
+.num, .tabular{ font-variant-numeric:tabular-nums; }
 
 /* ------------------------------------------------------------------
    THE SITE BACKDROP
@@ -249,8 +576,8 @@ code{
   content:"";
   position:absolute; inset:0;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(to right, var(--wallpaper-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--wallpaper-grid) 1px, transparent 1px),
     radial-gradient(ellipse at 78% 68%, var(--wallpaper-bloom) 0%, transparent 52%),
     linear-gradient(var(--wallpaper-shade-top), var(--wallpaper-shade-bot));
   background-size:32px 32px, 32px 32px, auto, auto;
@@ -258,15 +585,49 @@ code{
 }
 
 /* ==================================================================
+   THE GLASS TREATMENT
+   ------------------------------------------------------------------
+   Rule 3, as one reusable move, so an element the vocabulary does
+   not cover still floats the same way the vocabulary does. Every
+   pane in this sheet is this: a translucent fill, a blur behind it,
+   and a hairline border. Nothing else — no bevel, no gloss. Take
+   .u-glass on anything new.
+
+   The two -webkit- lines are not optional: Safari still ships the
+   prefixed property only, and without them a pane there is a flat
+   translucent rectangle over an unblurred backdrop, which is the one
+   result rule 3 exists to prevent.
+   ================================================================== */
+.u-glass{
+  background-color:var(--glass);
+  border:var(--hair) solid var(--line);
+  border-radius:var(--radius);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+}
+.u-scrim{
+  background-color:var(--scrim);
+  border:var(--hair) solid var(--line);
+  border-radius:var(--radius);
+  backdrop-filter:var(--scrim-blur);
+  -webkit-backdrop-filter:var(--scrim-blur);
+}
+
+/* ==================================================================
    NAV  —  the bar every app carries
+   ------------------------------------------------------------------
+   On --pane, not on a hand-typed fill: the bar is a surface like any
+   other, and it is the one every app shows on every screen, so it is
+   the first thing that must obey .fx-lite and reduced-transparency.
    ================================================================== */
 .nav{
   position:sticky; top:0; z-index:100;
   height:var(--nav-h);
-  background:rgba(0,0,0,.86);
-  backdrop-filter:blur(10px) saturate(120%);
-  -webkit-backdrop-filter:blur(10px) saturate(120%);
-  border-bottom:1px solid var(--line);
+  background-color:var(--pane);
+  backdrop-filter:var(--pane-blur);
+  -webkit-backdrop-filter:var(--pane-blur);
+  border-bottom:var(--hair) solid var(--line);
+  transition:background-color var(--dur-2) var(--ease);
 }
 /* the accent hairline riding on the bottom border — the one place the
    accent is decoration, and it is one pixel of it */
@@ -278,17 +639,17 @@ code{
     transparent 2%, rgba(var(--acc-rgb),.5) 30%,
     rgba(var(--acc-rgb),.45) 50%, rgba(var(--acc-rgb),.5) 70%, transparent 98%);
   opacity:.35;
-  transition:opacity .25s ease;
+  transition:opacity var(--dur-2) var(--ease);
 }
 .nav--scrolled::after{ opacity:.85; }
 .nav__inner{
   max-width:var(--page-max);
   margin:0 auto; height:100%;
   padding:0 var(--page-pad);
-  display:flex; align-items:center; gap:24px;
+  display:flex; align-items:center; gap:var(--s-6);
   min-width:0;
 }
-.nav__brand{ display:flex; align-items:center; gap:12px; color:var(--text); white-space:nowrap; min-width:0; }
+.nav__brand{ display:flex; align-items:center; gap:var(--s-4); color:var(--text); white-space:nowrap; min-width:0; }
 .nav__brand:hover{ color:var(--text); }
 .nav__brand img{
   height:28px; width:auto; display:block;
@@ -298,18 +659,18 @@ code{
 .nav__brand .brand-name{
   font-family:var(--display-font);
   font-size:calc(15px * var(--display-scale));
-  letter-spacing:.14em;
+  letter-spacing:var(--tr-display);
   text-transform:uppercase;
   color:var(--text);
 }
-/* The app name under the wordmark: 9.5px mono at .28em, identical in
-   every app so two of them read as two faces of one system. The
-   colour lifts the flat accent with a touch of the soft face — --acc
-   alone goes a little muddy against black at this size. */
+/* The app name under the wordmark: identical in every app, so two of
+   them read as two faces of one system. The colour lifts the flat
+   accent with a touch of the soft face — --acc alone goes a little
+   muddy against black at this size. */
 .nav__brand .brand-sub{
   font-family:var(--mono);
-  font-size:9.5px;
-  letter-spacing:.28em;
+  font-size:var(--fs-chrome-xs);
+  letter-spacing:var(--tr-chrome-xs);
   text-transform:uppercase;
   color:color-mix(in srgb, var(--acc-soft) 30%, var(--acc));
 }
@@ -317,32 +678,51 @@ code{
 .nav__search{
   flex:1; min-width:0; max-width:560px;
   margin-inline:auto;
-  display:flex; align-items:center; gap:9px;
-  border:1px solid var(--line);
+  display:flex; align-items:center; gap:var(--s-3);
+  background-color:var(--glass);
+  border:var(--hair) solid var(--line);
   border-radius:var(--radius);
-  background:var(--glass);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
-  padding:0 12px;
-  transition:border-color .15s, background .15s, box-shadow .15s;
+  padding:0 var(--s-4);
+  transition:border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 .nav__search:focus-within{
   border-color:var(--acc);
-  background:rgba(var(--acc-rgb),.05);
-  box-shadow:0 0 0 1px rgba(var(--acc-rgb),.18), 0 0 18px -8px rgba(var(--acc-rgb),.5);
+  background-color:rgba(var(--acc-rgb),.06);
+  box-shadow:var(--ring-acc), var(--glow-acc);
 }
-.nav__search i{ color:var(--text-ghost); font-size:11px; }
-.nav__search input{
-  flex:1; min-width:0;
-  background:transparent; border:0; outline:0;
+.nav__search i{ color:var(--text-ghost); font-size:var(--icon-md); }
+/* [type="search"] in the selector, not a bare `input`: the generic field
+   block further down this file matches on the same attribute and would
+   otherwise win on source order alone — same specificity, later in the
+   sheet — and drop a second bordered, filled, sans-serif box INSIDE the
+   bar. The wrapper owns the surface here; the input owns only the text. */
+.nav__search input[type="search"]{
+  flex:1; min-width:0; width:auto;
+  appearance:none; -webkit-appearance:none;
+  background:none; background-color:transparent;
+  border:0; border-radius:0; box-shadow:none; outline:0;
   color:var(--text);
   font-family:var(--mono);
-  font-size:12px; letter-spacing:.08em;
-  padding:9px 0;
+  font-size:var(--fs-chrome-md);
+  letter-spacing:var(--tr-chrome-lg);
+  padding:var(--s-3) 0;
 }
-.nav__search input::placeholder{
+/* the ring belongs to the bar, via :focus-within — never to the field
+   inside it, or the two of them draw the same state twice */
+.nav__search input[type="search"]:focus,
+.nav__search input[type="search"]:focus-visible{
+  background-color:transparent; border:0; box-shadow:none; outline:none;
+}
+.nav__search input[type="search"]::-webkit-search-decoration,
+.nav__search input[type="search"]::-webkit-search-cancel-button,
+.nav__search input[type="search"]::-webkit-search-results-button{
+  -webkit-appearance:none; appearance:none;
+}
+.nav__search input[type="search"]::placeholder{
   color:var(--text-ghost);
-  letter-spacing:.14em; text-transform:uppercase; font-size:11px;
+  letter-spacing:var(--tr-chrome-md); text-transform:uppercase; font-size:var(--fs-chrome-sm);
 }
 
 /* ==================================================================
@@ -356,31 +736,31 @@ code{
    ================================================================== */
 .section__doc{
   display:flex; flex-wrap:wrap; align-items:baseline;
-  gap:5px 18px;
-  margin:0 0 18px;
+  gap:var(--s-2) var(--s-5);
+  margin:0 0 var(--s-5);
   font-family:var(--mono);
-  font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
   color:var(--text-dim);
 }
-.section__doc > span{ display:inline-flex; align-items:baseline; gap:6px; min-width:0; }
-.section__doc b{ color:var(--text); font-weight:400; letter-spacing:.14em; }
+.section__doc > span{ display:inline-flex; align-items:baseline; gap:var(--s-2); min-width:0; }
+.section__doc b{ color:var(--text); font-weight:400; letter-spacing:var(--tr-chrome-md); }
 /* qualifiers are marks on the line, not stamps: a hairline outline,
    no dashed "sticker" border and no shouting */
 .section__doc-mark{
   color:var(--label);
-  border:1px solid rgba(var(--label-rgb),.35);
-  padding:3px 8px;
-  font-size:9.5px; letter-spacing:.2em;
+  border:var(--hair) solid rgba(var(--label-rgb),.35);
+  padding:var(--s-0) var(--s-3);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs);
 }
 .section__doc-mark.is-ok{ color:var(--ok); border-color:rgba(var(--ok-rgb),.4); }
 
-.section__head{ margin-bottom:24px; }
-.section__slug{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; min-width:0; margin:0; }
+.section__head{ margin-bottom:var(--s-6); }
+.section__slug{ display:flex; align-items:baseline; gap:var(--s-4); flex-wrap:wrap; min-width:0; margin:0; }
 .section__slug .name{
   font-family:var(--sans);
-  font-size:clamp(22px, 2.7vw, 33px);
+  font-size:var(--fs-title);
   font-weight:700;
-  letter-spacing:.03em;
+  letter-spacing:var(--tr-title);
   line-height:1.06;
   word-break:break-word;
   /* Weight instead of colour: white at the cap line falling to
@@ -392,6 +772,10 @@ code{
   background:linear-gradient(175deg, var(--title-a) 18%, var(--title-b) 96%);
   -webkit-background-clip:text; background-clip:text;
   -webkit-text-fill-color:transparent;
+  /* em-relative on purpose, and the one value in this sheet that is
+     not off the space scale: it is a descender guard for the gradient
+     text-clip, so it has to track the font size rather than the
+     layout rhythm. */
   padding-bottom:.04em;
 }
 .section__slug .name::selection{ -webkit-text-fill-color:var(--text); }
@@ -400,16 +784,16 @@ code{
    filled bar. One --acc glyph in front of the label is the whole
    licence the accent has here. */
 .eyebrow{
-  display:flex; align-items:baseline; gap:10px;
-  margin:0 0 12px; padding-bottom:8px;
-  border-bottom:1px solid var(--line);
+  display:flex; align-items:baseline; gap:var(--s-3);
+  margin:0 0 var(--s-4); padding-bottom:var(--s-3);
+  border-bottom:var(--hair) solid var(--line);
   font-family:var(--mono);
-  font-size:11px; font-weight:400; letter-spacing:.24em;
+  font-size:var(--fs-chrome-sm); font-weight:400; letter-spacing:var(--tr-chrome-xs);
   text-transform:uppercase;
   color:var(--label);
 }
-.eyebrow > i{ color:var(--acc); font-size:10px; }
-.eyebrow__n{ margin-left:auto; font-size:10px; letter-spacing:.18em; color:var(--text-dim); }
+.eyebrow > i{ color:var(--acc); font-size:var(--icon-sm); }
+.eyebrow__n{ margin-left:auto; font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-sm); color:var(--text-dim); }
 
 /* ==================================================================
    BUTTONS
@@ -418,47 +802,69 @@ code{
    the accent: a button that merely opens a picker carries no state.
    Exactly ONE button in a row may be --primary — the one that
    commits.
+
+   --primary's LABEL is --text, not --acc. Accent-on-accent-tint was
+   the worst contrast in the old sheet (4.14:1 on the tint it sits
+   on) and it was on the most important control in every row. The
+   general rule it comes from is worth remembering:
+
+     THE ACCENT NEVER SITS ON ITS OWN TINT.
+     On an accent fill or tint, the label is --on-acc or --text.
+     The accent is carried by the fill and the border instead.
+
+   The button reads MORE primary this way, not less: white on a
+   violet-lit face is the strongest thing in the row.
    ================================================================== */
 .btn{
   appearance:none;
-  background:var(--glass);
+  background-color:var(--glass);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
-  border:1px solid var(--line);
+  border:var(--hair) solid var(--line);
   border-radius:var(--radius);
   color:var(--text-dim);
   font-family:var(--mono);
-  font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
-  padding:7px 13px;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  padding:var(--s-2) var(--s-4);
   cursor:pointer; white-space:nowrap;
-  display:inline-flex; align-items:center; gap:8px;
-  transition:color .15s ease, border-color .15s ease, background .15s ease;
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--s-3);
+  transition:color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease),
+             background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 .btn:hover:not(:disabled){
   color:var(--chrome);
   border-color:var(--chrome);
-  background:rgba(var(--chrome-rgb),.06);
+  background-color:rgba(var(--chrome-rgb),.08);
 }
-.btn:disabled{ opacity:.35; cursor:not-allowed; }
+.btn:active:not(:disabled){ background-color:rgba(var(--chrome-rgb),.14); }
+.btn:disabled{ opacity:.4; cursor:not-allowed; }
 .btn--primary{
-  background:rgba(var(--acc-rgb),.14);
-  border-color:rgba(var(--acc-rgb),.55);
-  color:var(--acc);
+  background-color:rgba(var(--acc-rgb),.16);
+  border-color:rgba(var(--acc-rgb),.60);
+  color:var(--text);
 }
 .btn--primary:hover:not(:disabled){
-  background:rgba(var(--acc-rgb),.24);
+  background-color:rgba(var(--acc-rgb),.28);
   border-color:var(--acc);
-  color:var(--text);
-  box-shadow:0 0 20px -6px rgba(var(--acc-rgb),.7);
+  color:#fff;
+  box-shadow:var(--glow-acc);
 }
-.btn--ghost{ background:none; border-color:transparent; color:var(--text-ghost); }
-.btn--ghost:hover:not(:disabled){ background:rgba(255,255,255,.04); color:var(--text-dim); border-color:transparent; }
+.btn--ghost{ background-color:transparent; background-image:none; border-color:transparent; color:var(--text-ghost); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
+.btn--ghost:hover:not(:disabled){ background-color:rgba(255,255,255,.06); color:var(--text); border-color:transparent; }
 .btn--danger:hover:not(:disabled){
-  border-color:var(--red); color:var(--red); background:rgba(var(--red-rgb),.08);
+  border-color:var(--red); color:var(--red); background-color:rgba(var(--red-rgb),.10);
 }
-.btn--sm{ padding:4px 9px; font-size:9.5px; }
-.btn--icon{ padding:4px 8px; font-size:12px; letter-spacing:0; }
-.row{ display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+/* the committing destructive button: a real fill, so it is not one
+   hover away from looking like every other outline in the row */
+.btn--danger.btn--primary{
+  background-color:var(--red-deep); border-color:var(--red-deep); color:#fff;
+}
+.btn--danger.btn--primary:hover:not(:disabled){
+  background-color:var(--red); border-color:var(--red); color:var(--on-acc);
+}
+.btn--sm{ padding:var(--s-1) var(--s-3); font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-md); }
+.btn--icon{ padding:var(--s-1) var(--s-3); font-size:var(--fs-chrome-md); letter-spacing:0; }
+.row{ display:flex; gap:var(--s-3); align-items:center; flex-wrap:wrap; }
 
 /* ==================================================================
    SEGMENTED CONTROL
@@ -466,14 +872,15 @@ code{
    ONE idiom for "pick one of these", wherever it appears: tabs, a
    language selector, a three-state toggle, a view switcher. The
    selected segment is the only thing in it wearing the accent,
-   because it is the only thing carrying state.
+   because it is the only thing carrying state — as a FILL and a
+   ring, with a --text label, per the rule above.
    ================================================================== */
 .seg{
-  display:inline-flex; align-items:center; gap:2px;
-  padding:3px;
-  border:1px solid var(--line);
+  display:inline-flex; align-items:center; gap:var(--hair);
+  padding:var(--s-0);
+  background-color:var(--glass);
+  border:var(--hair) solid var(--line);
   border-radius:var(--radius);
-  background:var(--glass);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
   width:fit-content; max-width:100%;
@@ -482,44 +889,60 @@ code{
 .seg__opt{
   appearance:none; background:none; border:0;
   border-radius:var(--radius);
-  color:var(--text-ghost);
+  color:var(--text-dim);
   font-family:var(--mono);
-  font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
-  padding:6px 12px;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  padding:var(--s-2) var(--s-4);
   cursor:pointer; white-space:nowrap;
-  transition:color .15s ease, background .15s ease, box-shadow .15s ease;
+  transition:color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
-.seg__opt:hover:not(:disabled){ color:var(--text); background:rgba(255,255,255,.05); }
+.seg__opt:hover:not(:disabled):not(.is-on){ color:var(--text); background-color:rgba(255,255,255,.06); }
 .seg__opt.is-on{
-  color:var(--acc);
-  background:rgba(var(--acc-rgb),.12);
-  box-shadow:inset 0 0 0 1px rgba(var(--acc-rgb),.35);
+  color:var(--text);
+  background-color:rgba(var(--acc-rgb),.20);
+  box-shadow:inset 0 0 0 1px rgba(var(--acc-rgb),.55);
 }
 .seg__opt:disabled{ cursor:not-allowed; opacity:.45; }
 
 /* ==================================================================
    TAG  —  a filter chip. Active is state, so active is the accent,
-   and it is the accent as a FILL under black text (which is what
+   and it is the accent as a FILL under --on-acc text (which is what
    --acc is derived to survive).
+   ------------------------------------------------------------------
+   A tag is a CONTROL. Ship it as <button type="button" class="tag">,
+   never a <span>: a chip that cannot be focused or activated from a
+   keyboard is a filter half the visitors cannot use, and the styling
+   below assumes the button reset. Use `aria-pressed` for is-active.
    ================================================================== */
 .tag{
-  display:inline-block;
+  appearance:none;
+  display:inline-flex; align-items:center; gap:var(--s-2);
   font-family:var(--mono);
-  font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
   color:var(--text-dim);
-  padding:5px 10px;
-  border:1px solid var(--line);
+  padding:var(--s-1) var(--s-3);
+  border:var(--hair) solid var(--line);
   border-radius:var(--radius);
-  background:var(--glass);
+  background-color:var(--glass);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
   cursor:pointer;
-  transition:border-color .15s, color .15s, background .15s;
+  transition:border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
 }
-.tag:hover{ color:var(--text); border-color:var(--line-strong); background:var(--glass-hi); }
+.tag:hover{ color:var(--text); border-color:var(--line-strong); background-color:var(--glass-hi); }
 .tag.is-active,
-.tag.is-active:hover{ color:var(--bg); background:var(--acc); border-color:var(--acc); }
-.tag-bar{ display:flex; flex-wrap:wrap; gap:6px; }
+.tag[aria-pressed="true"],
+.tag.is-active:hover,
+.tag[aria-pressed="true"]:hover{
+  color:var(--on-acc); background-color:var(--acc); border-color:var(--acc);
+}
+.tag-bar{ display:flex; flex-wrap:wrap; gap:var(--s-2); }
+/* A tag that is a LABEL, not a control — a token name in prose, a
+   read-only qualifier on a record. It must not look clickable and
+   must not be a <button>: a focus stop that does nothing is worse
+   than no focus stop. Ship it as <span class="tag tag--static">. */
+.tag--static{ cursor:default; pointer-events:none; color:var(--label); }
+.tag--static:hover{ color:var(--label); border-color:var(--line); background-color:var(--glass); }
 
 /* ==================================================================
    FIELDS AND INPUTS
@@ -530,24 +953,24 @@ code{
    staged but not committed.
    ================================================================== */
 .field{
-  display:flex; flex-direction:column; gap:8px;
-  padding:11px 13px;
-  border:1px solid var(--line);
+  display:flex; flex-direction:column; gap:var(--s-3);
+  padding:var(--s-4);
+  border:var(--hair) solid var(--line);
   border-left:2px solid var(--acc-soft);
   border-radius:var(--radius);
   background:var(--surface);
   min-width:0;
 }
-.field.is-unset{ background:transparent; border-left-color:var(--line); }
+.field.is-unset{ background:transparent; border-left-color:var(--line-strong); }
 .field.is-edited{
   border-left-color:var(--amb);
   background:linear-gradient(180deg, rgba(var(--amb-rgb),.06), transparent 60%), var(--surface);
 }
-.field__top{ display:flex; align-items:center; gap:8px; }
+.field__top{ display:flex; align-items:center; gap:var(--s-3); }
 .field__label{
   flex:1 1 auto;
   font-family:var(--mono);
-  font-size:11px; font-weight:400; letter-spacing:.16em; text-transform:uppercase;
+  font-size:var(--fs-chrome-md); font-weight:400; letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
   color:var(--label);
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
@@ -555,42 +978,73 @@ code{
 .field__flag{
   flex:0 0 auto;
   font-family:var(--mono);
-  font-size:9px; letter-spacing:.16em; text-transform:uppercase;
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
   color:var(--amb);
 }
-.field__help{ color:var(--text-ghost); font-size:11px; line-height:1.45; }
+.field__help{ color:var(--text-ghost); font-size:var(--fs-text-sm); line-height:1.45; }
+/* an error is read, so it is sans — and it is announced, so it is
+   not colour alone: the glyph carries it for anyone who cannot see
+   the red. Never signal state with hue by itself. */
+.field__error{
+  display:flex; align-items:flex-start; gap:var(--s-2);
+  color:var(--red); font-size:var(--fs-text-sm); line-height:1.45;
+}
+.field.is-error{ border-left-color:var(--red); }
 
-input[type="text"], input[type="search"], input[type="number"], select, textarea{
+input[type="text"], input[type="search"], input[type="email"], input[type="url"],
+input[type="password"], input[type="number"], select, textarea{
   background:var(--surface);
-  border:1px solid var(--line);
+  border:var(--hair) solid var(--line-strong);
   border-radius:var(--radius);
   color:var(--text);
   font-family:var(--sans);
-  font-size:13px;
-  padding:8px 11px;
+  font-size:var(--fs-text-md);
+  padding:var(--s-3) var(--s-4);
   width:100%;
+  transition:border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 input::placeholder, textarea::placeholder{ color:var(--text-ghost); }
 input:focus, select:focus, textarea:focus{
   outline:none;
   border-color:var(--acc);
-  background:rgba(var(--acc-rgb),.05);
-  box-shadow:0 0 0 1px rgba(var(--acc-rgb),.18), 0 0 18px -8px rgba(var(--acc-rgb),.5);
+  background-color:rgba(var(--acc-rgb),.06);
+  box-shadow:var(--ring-acc), var(--glow-acc);
 }
+/* the field itself owns the focus ring, so the browser's default one
+   on top of it would be a second ring saying the same thing */
+input:focus-visible, select:focus-visible, textarea:focus-visible{ outline:none; }
 select{ cursor:pointer; }
 select option{ background:var(--surface); color:var(--text); }
+input[aria-invalid="true"], textarea[aria-invalid="true"]{ border-color:var(--red); }
 
+/* The rail is 2px. The CONTROL is not: the element box is the drag
+   target, so a 2px-tall input is a slider you have to hit within two
+   pixels to move at all. The box gets a real height and stays
+   transparent; the 2px line is drawn by the track pseudo-element. */
 input[type="range"]{
-  appearance:none;
-  height:2px; width:100%;
-  background:var(--line-strong);
+  appearance:none; -webkit-appearance:none;
+  height:20px; width:100%;
+  background:transparent;
+  border:0;
   border-radius:0;
   cursor:pointer;
-  padding:0;
+  padding:0; margin:0;
+  touch-action:none;                  /* a drag on it is a drag, not a scroll */
+}
+input[type="range"]::-webkit-slider-runnable-track{
+  height:2px;
+  background:var(--line-strong);
+  border:0; border-radius:0;
+}
+input[type="range"]::-moz-range-track{
+  height:2px;
+  background:var(--line-strong);
+  border:0; border-radius:0;
 }
 input[type="range"]::-webkit-slider-thumb{
-  appearance:none;
+  appearance:none; -webkit-appearance:none;
   width:12px; height:12px;
+  margin-top:-5px;                    /* centre the thumb on the 2px rail */
   border-radius:0;                    /* square, like everything else */
   background:var(--acc);
   border:0;
@@ -603,52 +1057,75 @@ input[type="range"]::-moz-range-thumb{
   border:0;
   cursor:pointer;
 }
+/* the generic input:focus ring matches a range too, and on a control
+   whose box is 20px of empty space around a 2px rail it draws a fat
+   rectangle around nothing. The thumb carries the focus here. */
+input[type="range"]:focus{
+  outline:none;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+input[type="range"]:focus-visible{ outline:none; }
+input[type="range"]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 3px rgba(var(--acc-rgb),.45); }
+input[type="range"]:focus-visible::-moz-range-thumb{ box-shadow:0 0 0 3px rgba(var(--acc-rgb),.45); }
+
+/* the accent as a native control colour, so a checkbox and a radio
+   are not the two things on the page wearing the browser's blue */
+input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:pointer; }
 
 /* ==================================================================
    MENU  —  a dropdown / popover
    The active row is marked on its LEADING EDGE, not by a tick glyph
-   and not by a filled row.
+   and not by a filled row. On --overlay: a menu has to read over
+   whatever the page happens to have under it, so it is the one
+   surface in the system that is nearly opaque — and it gets there
+   through a token, so .fx-lite still reaches it.
    ================================================================== */
 .menu{
   min-width:240px;
-  background:rgba(0,0,0,.96);
-  border:1px solid var(--line-strong);
-  box-shadow:0 18px 44px rgba(0,0,0,.55);
-  padding:4px 0;
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+  background-color:var(--overlay);
+  border:var(--hair) solid var(--line-strong);
+  box-shadow:var(--shadow-2);
+  padding:var(--s-1) 0;
+  backdrop-filter:var(--overlay-blur);
+  -webkit-backdrop-filter:var(--overlay-blur);
 }
 .menu[hidden]{ display:none; }
 .menu__head{
-  padding:8px 14px 6px;
+  padding:var(--s-3) var(--s-4) var(--s-2);
   font-family:var(--mono);
-  font-size:9.5px; letter-spacing:.24em; text-transform:uppercase;
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
   color:var(--text-ghost);
-  border-bottom:1px solid var(--line);
-  margin-bottom:4px;
+  border-bottom:var(--hair) solid var(--line);
+  margin-bottom:var(--s-1);
 }
 .menu__option{
-  display:flex; align-items:center; gap:8px;
-  padding:9px 14px;
+  appearance:none; width:100%; text-align:left;
+  background:none;
+  display:flex; align-items:center; gap:var(--s-3);
+  padding:var(--s-3) var(--s-4);
   font-family:var(--mono);
-  font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  font-size:var(--fs-chrome-md); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
   color:var(--text-dim);
   cursor:pointer;
-  border-left:2px solid transparent;
-  transition:color .15s, background .15s, border-color .15s;
+  border:0; border-left:2px solid transparent;
+  transition:color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
   white-space:nowrap;
 }
 .menu__option:hover{
   color:var(--text);
-  background:rgba(var(--chrome-rgb),.06);
+  background-color:rgba(var(--chrome-rgb),.08);
   border-left-color:var(--chrome);
 }
-.menu__option.is-active{
+.menu__option.is-active,
+.menu__option[aria-selected="true"]{
   color:var(--acc);
-  background:rgba(var(--acc-rgb),.08);
+  background-color:rgba(var(--acc-rgb),.06);
   border-left-color:var(--acc);
   font-weight:600;
 }
+.menu__option:focus-visible{ outline-offset:-3px; }
 
 /* ==================================================================
    CARD  —  a tile of content, with the corner brackets
@@ -656,49 +1133,65 @@ input[type="range"]::-moz-range-thumb{
    The brackets are --chrome and appear on hover/focus only. They are
    the frame that tells a curated set from a loose grid; without them
    a group of cards was indistinguishable from the grid under it.
+
+   The card floats on --glass. It used to be an opaque --surface fill,
+   which was the sheet quietly breaking its own step 5 ("Does it sit
+   on the page? -> --glass. Never an opaque fill.") in the component
+   that covers the most area of any real screen. Cards are most of
+   what a gallery IS, so an opaque card meant rule 3 barely applied
+   to the page a visitor actually looks at.
    ================================================================== */
 .card-grid{
   list-style:none; padding:0; margin:0;
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-  gap:14px;
+  gap:var(--s-4);
 }
 .card{
   position:relative;
-  background:var(--surface);
-  border:1px solid var(--line);
+  background-color:var(--glass);
+  border:var(--hair) solid var(--line);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
   margin:0;
   /* `scale` is in the list on purpose: a press cue drives the
      INDEPENDENT scale property (it must — the card can carry a hover
      translate at the same time), and a property not listed here does
      not transition at all. */
-  transition:background .2s, border-color .2s, transform .2s ease, scale .2s ease;
+  transition:background-color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease),
+             box-shadow var(--dur-2) var(--ease), translate var(--dur-2) var(--ease), scale var(--dur-2) var(--ease);
 }
 .card::before,
 .card::after{
   content:"";
   position:absolute;
   width:14px; height:14px;
-  border:1px solid var(--chrome);
+  border:var(--hair) solid var(--chrome);
   opacity:0; pointer-events:none; z-index:5;
-  transition:opacity .2s ease;
+  transition:opacity var(--dur-2) var(--ease);
 }
 .card::before{ top:-1px; left:-1px; border-right:0; border-bottom:0; }
 .card::after { bottom:-1px; right:-1px; border-left:0; border-top:0; }
-.card:hover{ background:var(--surface-2); border-color:var(--line-strong); transform:translateY(-2px); }
+.card:hover{
+  background-color:var(--glass-hi);
+  border-color:var(--line-strong);
+  translate:0 -2px;
+  box-shadow:var(--shadow-1);
+}
+.card:active{ scale:.995; }
 .card:hover::before, .card:hover::after,
 .card:focus-within::before, .card:focus-within::after{ opacity:1; }
 .card > a{ display:flex; flex-direction:column; color:var(--text); height:100%; }
 .card > a:hover{ color:var(--text); }
-.card > a:focus-visible{ outline:1px solid var(--acc); outline-offset:-2px; }
+.card > a:focus-visible{ outline-offset:-3px; }
 
 .card__img{ position:relative; aspect-ratio:3/2; overflow:hidden; background:var(--bg-2); }
 .card__img img{
   width:100%; height:100%; object-fit:cover; display:block;
   filter:saturate(.85) brightness(.9);
-  transition:transform .35s ease, filter .35s ease;
+  transition:scale var(--dur-3) var(--ease), filter var(--dur-3) var(--ease);
 }
-.card:hover .card__img img{ transform:scale(1.04); filter:saturate(1) brightness(1); }
+.card:hover .card__img img{ scale:1.04; filter:saturate(1) brightness(1); }
 .card__img::after{
   content:""; position:absolute; inset:0;
   background:linear-gradient(to top, rgba(0,0,0,.45) 0%, transparent 45%);
@@ -706,15 +1199,15 @@ input[type="range"]::-moz-range-thumb{
 }
 /* a chip laid ON the image: --scrim, not --glass */
 .card__idx{
-  position:absolute; top:8px; left:8px; z-index:3;
+  position:absolute; top:var(--s-3); left:var(--s-3); z-index:3;
   font-family:var(--mono);
-  font-size:9px; letter-spacing:.18em;
-  color:var(--text-dim);
-  background:var(--scrim);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-sm);
+  color:var(--text);
+  background-color:var(--scrim);
   backdrop-filter:var(--scrim-blur);
   -webkit-backdrop-filter:var(--scrim-blur);
-  border:1px solid var(--line);
-  padding:2px 6px;
+  border:var(--hair) solid var(--line);
+  padding:var(--s-0) var(--s-2);
   pointer-events:none;
 }
 .card__hover{
@@ -722,31 +1215,39 @@ input[type="range"]::-moz-range-thumb{
   display:flex; align-items:center; justify-content:center;
   opacity:0; pointer-events:none;
   background:linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,.1) 45%, transparent 75%);
-  transition:opacity .2s ease;
+  transition:opacity var(--dur-2) var(--ease);
 }
 .card__hover span{
   font-family:var(--mono);
-  font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
   color:var(--chrome);
-  border:1px solid var(--chrome);
-  background:var(--scrim);
+  border:var(--hair) solid var(--chrome);
+  background-color:var(--scrim);
   backdrop-filter:var(--scrim-blur);
   -webkit-backdrop-filter:var(--scrim-blur);
-  padding:8px 16px;
-  transform:translateY(6px);
-  transition:transform .25s ease;
+  padding:var(--s-3) var(--s-5);
+  translate:0 6px;
+  transition:translate var(--dur-2) var(--ease-out);
 }
 .card:hover .card__hover, .card:focus-within .card__hover{ opacity:1; }
-.card:hover .card__hover span, .card:focus-within .card__hover span{ transform:translateY(0); }
-.card__cap{ padding:11px 13px 13px; display:flex; flex-direction:column; gap:6px; border-top:1px solid var(--line); }
-.card__name{ font-size:14.5px; font-weight:600; letter-spacing:.03em; line-height:1.25; color:var(--text); word-break:break-word; }
-.card__meta{
-  display:flex; align-items:baseline; gap:10px; justify-content:space-between;
-  font-family:var(--mono);
-  font-size:10px; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--text-dim);
+.card:hover .card__hover span, .card:focus-within .card__hover span{ translate:0 0; }
+/* the caption is read, so it takes the lifted step: reading copy is
+   the one thing that never negotiates with the backdrop */
+.card__cap{
+  padding:var(--s-4);
+  display:flex; flex-direction:column; gap:var(--s-2);
+  border-top:var(--hair) solid var(--line);
+  background-color:var(--glass-hi);
 }
-.card__meta .date{ color:var(--text-ghost); white-space:nowrap; flex-shrink:0; }
+.card__name{ font-size:var(--fs-text-lg); font-weight:600; letter-spacing:var(--tr-title); line-height:1.25; color:var(--text); word-break:break-word; }
+.card__meta{
+  display:flex; align-items:baseline; gap:var(--s-3); justify-content:space-between;
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  color:var(--text-dim);
+  font-variant-numeric:tabular-nums;
+}
+.card__meta .date{ color:var(--text-dim); white-space:nowrap; flex-shrink:0; }
 /* the placeholder when a card has no image: hatching, not an icon */
 .card__empty{
   width:100%; height:100%;
@@ -756,7 +1257,7 @@ input[type="range"]::-moz-range-thumb{
   display:flex; align-items:center; justify-content:center;
   color:var(--text-ghost);
   font-family:var(--mono);
-  font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
 }
 
 /* ==================================================================
@@ -765,45 +1266,59 @@ input[type="range"]::-moz-range-thumb{
    a set of floating boxes with their own borders.
    ================================================================== */
 .stack{
-  display:flex; flex-direction:column; gap:1px;
+  display:flex; flex-direction:column; gap:var(--hair);
   background:var(--line);
-  border:1px solid var(--line);
+  border:var(--hair) solid var(--line);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
   width:100%;
 }
-.panel{ background:var(--surface); padding:16px 18px; width:100%; min-width:0; }
-.panel h2{
-  margin:0 0 12px;
-  font-family:var(--sans);
-  font-size:15px; font-weight:600; letter-spacing:-.005em;
-  color:var(--text-head);
-  border-bottom:1px solid var(--line);
-  padding-bottom:9px;
-  display:flex; align-items:center; gap:9px;
+.panel{
+  background-color:var(--glass-hi);
+  padding:var(--s-5);
+  width:100%; min-width:0;
 }
-.panel h2 > i{ color:var(--acc); font-size:12px; }
+.panel h2{
+  margin:0 0 var(--s-4);
+  font-family:var(--sans);
+  font-size:var(--fs-text-lg); font-weight:600; letter-spacing:var(--tr-head);
+  color:var(--text-head);
+  border-bottom:var(--hair) solid var(--line);
+  padding-bottom:var(--s-3);
+  display:flex; align-items:center; gap:var(--s-3);
+}
+.panel h2 > i{ color:var(--acc); font-size:var(--icon-md); }
 .kv{
   display:grid;
   grid-template-columns:110px minmax(0, 1fr);
-  gap:6px 14px;
+  gap:var(--s-2) var(--s-4);
   margin:0;
-  font-size:13px;
+  font-size:var(--fs-text-md);
   overflow-wrap:anywhere;
 }
 .kv dt{
-  font-size:12px; letter-spacing:.01em;
-  color:var(--text-ghost);
+  font-size:var(--fs-text-sm); letter-spacing:var(--tr-text);
+  color:var(--text-dim);
   align-self:center;
   word-break:normal; overflow-wrap:break-word; hyphens:auto;
 }
-.kv dd{ margin:0; color:var(--text); font-size:12px; }
+.kv dd{ margin:0; color:var(--text); font-size:var(--fs-text-sm); }
 /* a MEASURED value is furniture and gets the mono voice; a value a
    person reads (a name, a sentence) does not */
-.kv dd.num{ font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--label); }
+.kv dd.num{
+  font-family:var(--mono); font-size:var(--fs-chrome-md);
+  letter-spacing:var(--tr-num); color:var(--label);
+  font-variant-numeric:tabular-nums;
+}
 .kv dd a{ color:var(--acc); }
 .kv dd a:hover{ text-decoration:underline; }
 
 /* ==================================================================
    STATUS
+   ------------------------------------------------------------------
+   Never colour alone. A dot that means "live" to a sighted visitor
+   must mean it to everyone, so .status carries the word and the dot
+   is the ornament — not the other way round.
    ================================================================== */
 .dot{
   display:inline-block;
@@ -811,14 +1326,15 @@ input[type="range"]::-moz-range-thumb{
   border-radius:50%;              /* one of the few things that is round */
   background:var(--text-ghost);
   vertical-align:middle;
+  flex:0 0 auto;
 }
 .dot--ok  { background:var(--ok);  box-shadow:0 0 8px var(--ok); }
 .dot--amb { background:var(--amb); box-shadow:0 0 8px var(--amb); }
 .dot--red { background:var(--red); box-shadow:0 0 8px var(--red); }
 .status{
-  display:inline-flex; align-items:center; gap:8px;
+  display:inline-flex; align-items:center; gap:var(--s-3);
   font-family:var(--mono);
-  font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
   color:var(--text-dim);
 }
 
@@ -834,13 +1350,13 @@ input[type="range"]::-moz-range-thumb{
 .hud__corner{
   position:absolute;
   width:26px; height:26px;
-  border:1px solid rgba(var(--chrome-rgb),.75);
+  border:var(--hair) solid rgba(var(--chrome-rgb),.75);
   opacity:.9; pointer-events:none; z-index:4;
 }
-.hud__corner--tl{ top:14px; left:14px;  border-right:0; border-bottom:0; }
-.hud__corner--tr{ top:14px; right:14px; border-left:0;  border-bottom:0; }
-.hud__corner--bl{ bottom:14px; left:14px;  border-right:0; border-top:0; }
-.hud__corner--br{ bottom:14px; right:14px; border-left:0;  border-top:0; }
+.hud__corner--tl{ top:var(--s-5); left:var(--s-5);  border-right:0; border-bottom:0; }
+.hud__corner--tr{ top:var(--s-5); right:var(--s-5); border-left:0;  border-bottom:0; }
+.hud__corner--bl{ bottom:var(--s-5); left:var(--s-5);  border-right:0; border-top:0; }
+.hud__corner--br{ bottom:var(--s-5); right:var(--s-5); border-left:0;  border-top:0; }
 .hud__thirds{
   position:absolute; inset:0; z-index:3; pointer-events:none;
   background-image:
@@ -852,15 +1368,18 @@ input[type="range"]::-moz-range-thumb{
 .hud__reticle{
   position:absolute; left:50%; top:50%; z-index:3;
   width:58px; height:58px;
-  transform:translate(-50%,-50%);
-  border:1px solid rgba(255,255,255,.22);
+  /* the centring lives on translate, NOT on transform: a shared
+     keyframe or an :active rule that touches transform would throw a
+     centred control across the screen */
+  translate:-50% -50%;
+  border:var(--hair) solid rgba(255,255,255,.22);
   opacity:.55; pointer-events:none;
-  transition:border-color .25s, opacity .25s, box-shadow .25s;
+  transition:border-color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
 .hud__reticle::before,
 .hud__reticle::after{ content:""; position:absolute; left:50%; top:50%; background:rgba(255,255,255,.3); }
-.hud__reticle::before{ width:1px; height:10px; transform:translate(-50%,-50%); }
-.hud__reticle::after { width:10px; height:1px; transform:translate(-50%,-50%); }
+.hud__reticle::before{ width:1px; height:10px; translate:-50% -50%; }
+.hud__reticle::after { width:10px; height:1px; translate:-50% -50%; }
 .hud.is-busy .hud__reticle{
   border-color:var(--acc);
   opacity:1;
@@ -868,10 +1387,10 @@ input[type="range"]::-moz-range-thumb{
 }
 .hud__bar{
   position:absolute; left:0; right:0; z-index:5;
-  display:flex; align-items:center; gap:16px;
-  padding:14px 16px;
+  display:flex; align-items:center; gap:var(--s-5);
+  padding:var(--s-5);
   font-family:var(--mono);
-  font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
   color:var(--text-dim);
   pointer-events:none;
 }
@@ -879,7 +1398,7 @@ input[type="range"]::-moz-range-thumb{
 .hud__bar--bottom{ bottom:0; }
 .hud__bar b{ color:var(--text); font-weight:400; font-variant-numeric:tabular-nums; }
 .hud__bar .spacer{ margin-left:auto; }
-.hud__rec{ display:inline-flex; align-items:center; gap:8px; color:#e8908e; text-shadow:0 0 10px rgba(var(--red-rgb),.4); }
+.hud__rec{ display:inline-flex; align-items:center; gap:var(--s-3); color:#e8908e; text-shadow:0 0 10px rgba(var(--red-rgb),.4); }
 .hud__rec .dot{ background:var(--red); box-shadow:0 0 10px var(--red); animation:hud-blink 1.6s steps(2,start) infinite; }
 @keyframes hud-blink{ 50%{ opacity:.15; } }
 .fx-lite .hud__rec .dot{ animation:none; }
@@ -890,25 +1409,66 @@ input[type="range"]::-moz-range-thumb{
    ================================================================== */
 .foot{
   position:relative; z-index:10;
-  margin-top:48px;
-  border-top:1px solid var(--line);
-  background:#050505;
+  margin-top:var(--s-8);
+  border-top:var(--hair) solid var(--line);
+  background-color:var(--pane);
+  backdrop-filter:var(--pane-blur);
+  -webkit-backdrop-filter:var(--pane-blur);
 }
 .foot__inner{
   max-width:var(--page-max);
   margin:0 auto;
-  padding:22px var(--page-pad);
+  padding:var(--s-6) var(--page-pad);
   display:flex; align-items:center; justify-content:space-between;
-  gap:24px; flex-wrap:wrap;
-  font-size:12px; letter-spacing:.01em;
+  gap:var(--s-6); flex-wrap:wrap;
+  font-size:var(--fs-text-sm); letter-spacing:var(--tr-text);
   color:var(--text-ghost);
 }
-.foot__brand{ display:flex; align-items:center; gap:10px; color:var(--text-dim); }
+.foot__brand{ display:flex; align-items:center; gap:var(--s-3); color:var(--text-dim); }
 .foot__brand img{ height:18px; opacity:.85; }
-.foot__links{ display:flex; gap:18px; align-items:center; }
-.foot__links a{ color:var(--text-dim); border-bottom:1px solid transparent; padding-bottom:1px; transition:color .15s; }
+.foot__links{ display:flex; gap:var(--s-5); align-items:center; flex-wrap:wrap; }
+.foot__links a{ color:var(--text-dim); border-bottom:var(--hair) solid transparent; padding-bottom:var(--hair); transition:color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease); }
 .foot__links a:hover{ color:var(--acc); border-bottom-color:var(--acc); }
 .foot__meta b{ color:var(--text-dim); font-weight:400; }
+
+/* ==================================================================
+   THE NARROW SCREEN
+   ------------------------------------------------------------------
+   The language owns one breakpoint. It used to own none: every
+   responsive decision lived in showcase.css, the file the README
+   calls "not part of the language" — so the app bar's behaviour
+   under 760px was scaffolding a third app could not inherit, and
+   every app rediscovered it.
+
+   Below --bp-narrow: the bar sheds its middle, controls grow to a
+   real touch target, and the type stops shrinking.
+   ================================================================== */
+@media (max-width: 760px){
+  :root{
+    /* 44px is the smallest target that is reliably hit with a thumb;
+       under it, the tap that misses is read as a scroll. */
+    --tap: 44px;
+  }
+  /* The search field is the bar's middle and the first thing to go:
+     at this width it cannot be both full width and beside a brand.
+     An app that needs search on a phone promotes it to its own row
+     BELOW the bar — it does not shrink it into the corner. */
+  .nav__search{ display:none; }
+  .nav__inner{ gap:var(--s-4); justify-content:space-between; }
+
+  .btn, .seg__opt, .tag{ min-height:var(--tap); padding-inline:var(--s-4); }
+  .btn--sm{ min-height:36px; }
+  .menu__option{ min-height:var(--tap); }
+  .menu{ min-width:0; width:100%; }
+
+  .kv{ grid-template-columns:1fr; gap:var(--s-0) var(--s-4); }
+  .kv dt{ color:var(--text-dim); }
+  .kv dd{ margin-bottom:var(--s-3); }
+
+  .foot__inner{ flex-direction:column; align-items:flex-start; gap:var(--s-4); }
+  .hud__corner{ width:18px; height:18px; }
+  .hud__bar{ padding:var(--s-4); gap:var(--s-4); }
+}
 
 /* ==================================================================
    TOUCH AND MOTION
@@ -919,10 +1479,15 @@ input[type="range"]::-moz-range-thumb{
    (hover: hover), and touch keeps only the movement.
    ================================================================== */
 @media (hover: none){
-  .card:hover{ background:var(--surface); border-color:var(--line); transform:none; }
+  .card:hover{ background-color:var(--glass); border-color:var(--line); translate:none; box-shadow:none; }
   .card:hover::before, .card:hover::after{ opacity:0; }
-  .tag:hover{ color:var(--text-dim); border-color:var(--line); background:var(--glass); }
-  .btn:hover:not(:disabled){ color:var(--text-dim); border-color:var(--line); background:var(--glass); }
+  .card:hover .card__img img{ scale:1; filter:saturate(.85) brightness(.9); }
+  .card:hover .card__hover{ opacity:0; }
+  .tag:hover{ color:var(--text-dim); border-color:var(--line); background-color:var(--glass); }
+  .btn:hover:not(:disabled){ color:var(--text-dim); border-color:var(--line); background-color:var(--glass); }
+  .btn--primary:hover:not(:disabled){ color:var(--text); border-color:rgba(var(--acc-rgb),.60); background-color:rgba(var(--acc-rgb),.16); }
+  .menu__option:hover{ color:var(--text-dim); background:none; border-left-color:transparent; }
+  .foot__links a:hover{ color:var(--text-dim); border-bottom-color:transparent; }
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }

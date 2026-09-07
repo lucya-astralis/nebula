@@ -13,10 +13,16 @@ every rule below can be run, and broken on purpose, on a real page.
 
 ---
 
-## The four rules
+## The six rules
 
 Everything in `nebula.css` is one of these. If a decision is not obviously one
 of them, it is probably a decision that should not be made.
+
+Rules 1–4 are about what a thing looks like. Rules 5 and 6 are about what it
+*measures* and what happens when the machine cannot deliver it — and they exist
+because the first four were being enforced by memory. Every rule here can be
+checked: rule 1 by counting, rule 2 and rule 5 by `grep`, rule 3 by reading the
+token block, rule 6 by toggling a switch in the OS.
 
 ### 1. Black ground, grey furniture, ONE accent
 
@@ -26,11 +32,31 @@ greys. Colour appears once, on purpose.
 
 | Token | What wears it |
 |---|---|
-| `--acc` `#5865F2` | Links, focus, active / selected / open, featured marks, progress fills, live counters, the one glyph in front of a section label |
+| `--acc` `#616EF3` | Links, focus, active / selected / open, featured marks, progress fills, live counters, the one glyph in front of a section label |
 | `--acc-deep` | The single face that carries **white** text |
 | `--acc-soft` | The lifted step: hover faces under black text |
+| `--on-acc` | What goes **on top of** an `--acc` fill |
 | `--chrome` `#e8e8ee` | Furniture that reacts: hovers, corner brackets, HUD strokes |
 | `--label` `#b8b8c2` | Furniture that sits still: section labels, counts, badges, measured values |
+
+`#5865F2` is the **brand** hex — the value a config supplies, the colour the
+wordmark is drawn in. It is not used raw. Like any hand-typed accent it goes
+through the derivation (step 5) and comes out as `--acc` `#616EF3`, one step
+lifted. See step 5 for why the reference surface changed and what it bought.
+
+**The accent never sits on its own tint.** On an accent fill or an accent-tinted
+face, the label is `--on-acc` or `--text`; the accent is carried by the fill and
+the border instead. Accent-on-accent-tint was the lowest contrast in the whole
+sheet (4.14:1) and it was on `.btn--primary`, the most important control in any
+row. A white label on a violet-lit face reads *more* primary, not less.
+
+**The text ramp has a floor, and it is measured.** Anything a person reads
+clears **4.5:1** against `--surface` *and* against the `--glass-hi` composite;
+furniture that is not read as language clears 3:1. `--text-ghost` is a **ghost**
+— a placeholder, a disabled label, de-emphasised furniture. It is not a colour
+for text that has to be read; reading copy bottoms out at `--text-dim`. It used
+to be `#6b6b73`, which was 3.65:1 on `--surface` and was carrying help text,
+placeholders and the *unselected* segments of a segmented control.
 
 **Before colouring anything purple, ask whether it carries state.** If it
 doesn't, it is `--chrome` or `--label`. Painting both groups the accent colour
@@ -65,15 +91,38 @@ no right angle left to quote.
 
 ### 3. Depth comes from blur, not from darkness
 
-Four tokens are the whole surface scale:
+Six tokens are the whole surface scale:
 
 | Token | For |
 |---|---|
-| `--glass` / `--glass-hi` + `--glass-blur` | Panes over the page: bars, fields, buttons, menus, cards |
-| `--scrim` / `--scrim-hi` + `--scrim-blur` | Chips laid **on** a picture, where the backdrop is whatever the image happens to be there |
+| `--glass` / `--glass-hi` | Panes over the page: fields, buttons, cards, panels |
+| `--scrim` / `--scrim-hi` | Chips laid **on** a picture, where the backdrop is whatever the image happens to be there |
+| `--pane` | The app bar — always present, spans the viewport |
+| `--overlay` | Menus and dialogs — they must read over **any** content |
 
-A surface that is not reading gets **more blur or the `-hi` step, never a darker
-fill**. A pass that raised every surface's opacity was rejected outright:
+It used to be four, and `.nav` and `.menu` carried hand-typed fills and their
+own `backdrop-filter`. That made this rule's central promise — *redefine the
+tokens and every surface retunes, nothing else has to know* — **false for the
+two panes an app shows on every screen**: on weak hardware the bar and every
+dropdown kept their blur. If a surface is not spelled as a token, it is not in
+the system.
+
+The blur is a **ladder**, `--blur-1` to `--blur-3`, so "give it more blur" is an
+actual move rather than advice. A surface that is not reading gets **more blur
+or the `-hi` step, never a darker fill**.
+
+**A pane is a fill, a blur and a hairline — no bevel, no gloss.** No lit top
+edge, no wash falling down its face. Those two marks are what make translucency
+read as Aero: a raised, moulded sheet with a thickness to it. They also argue
+with rule 2 — a bevel is a soft edge drawn on a hard one, and square corners and
+a bevel are contradictory claims about the same object. What this language means
+by glass is a **flat plane with the depth behind it**, out of focus. All of the
+depth is in the blur; none of it is in the surface.
+
+**`--pane` and `--overlay` go fully opaque when the blur is gone**, and the two
+glass steps do not. What is behind a card is the wallpaper; what is behind the
+app bar is the page, scrolling. Translucency without a blur to average it is not
+glass, it is a smear. A pass that raised every surface's opacity was rejected outright:
 *"nicht zu dunkle Hintergründe"*. Opaque slabs are legible, but they throw the
 backdrop away and turn a page into a stack of black rectangles.
 
@@ -115,7 +164,7 @@ next to it, and not one rule touched.
 
 ### 4. The mono voice is the chrome; the sans voice is the content
 
-- **JetBrains Mono, uppercase, .16–.24em tracking** — the furniture *around*
+- **JetBrains Mono, uppercase, tracked** — the furniture *around*
   the content: section labels, counts, badges, dates, corner indices, filters,
   sort controls, meta lines, and every measured value (EXIF rows, sizes,
   dimensions). If it is a fact the software knows about itself, it is in this
@@ -134,6 +183,69 @@ labels stopped separating the furniture from the content and dissolved into it.
 **Never `text-transform` data.** Uppercase is for fixed UI words only, never for
 a name, path, filename, identifier or a user's own search query —
 `Pride_MUC_26` is not `PRIDE_MUC_26`. Casing data is restyling data.
+
+**The token name carries the voice.** `--fs-chrome-*` is the mono voice,
+`--fs-text-*` is the sans voice, and each `--fs-chrome-N` has exactly one
+`--tr-chrome-N` that goes with it. Reaching for the wrong one is then visible in
+the source, not only on screen. Tracking **falls as size rises** — that is a
+formula, not a preference: the reason to track is optical, and small caps need
+air that large caps do not.
+
+### 5. Measure is rationed like colour
+
+Every size, space, duration and blur comes off a named scale. A raw `px` in an
+app sheet is the same mistake as a raw hex.
+
+| Scale | Tokens | For |
+|---|---|---|
+| Space | `--s-0` … `--s-10` | 2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96. `--s-0` is a *bezel*, not a space; `--s-9` / `--s-10` are page rhythm |
+| Chrome type | `--fs-chrome-xs/sm/md/lg` | 9.5, 10.5, 12, 14 |
+| Content type | `--fs-text-sm/md/lg/xl`, `--fs-title` | 12, 13, 15, 18, clamp |
+| Tracking | `--tr-chrome-*`, `--tr-text`, `--tr-title`, `--tr-head`, `--tr-num`, `--tr-display` | paired to the size |
+| Motion | `--dur-1/2/3`, `--ease`, `--ease-out` | .15s state, .25s movement, .35s settle |
+| Depth | `--blur-1/2/3` | the rule-3 ladder |
+| Elevation | `--shadow-1/2`, `--glow-acc`, `--ring-acc` | things that genuinely float |
+| Shape | `--radius`, `--hair`, `--page-pad`, `--bp-narrow` | one border width, one gutter, one breakpoint |
+
+Before this block existed the sheet carried 23 distinct paddings, 13 gaps, 13
+font sizes and 14 tracking values, every one hand-typed. So "the same as the
+gallery" was something you had to *remember* rather than something you could
+*reference*, and a third app could only drift. Ten sizes between 9px and 15px is
+not a hierarchy anyone perceives — 10px and 10.5px are noise that reads as
+inconsistency.
+
+The check is a grep, the same way rule 1's is a count:
+
+```bash
+grep -oE '(padding|gap|margin|font-size|letter-spacing):[^;]*[0-9]+px' app.css
+```
+
+Nothing back means the app is speaking the language. `nebula.css` itself returns
+nothing.
+
+### 6. The environment can overrule the look
+
+Blur, translucency, motion and hover are **capabilities, not guarantees**. Each
+has a declared fallback, and every one of them is reached by **redefining
+tokens** — never by overriding component rules. That is the only reason a
+component can be written once and still be correct on a four-year-old phone, in
+Windows high-contrast mode, and for a visitor who has asked the OS for less.
+
+| Gate | What it redefines |
+|---|---|
+| `.fx-lite` | JS-detected weak hardware / data saver. The six surfaces, opaque; the blur ladder off |
+| `prefers-reduced-transparency` | The same, but it lands **before first paint** — a script-set class never can |
+| `prefers-contrast: more` | `--line`, `--line-strong`, `--text-ghost`, `--text-dim` |
+| `forced-colors: active` | Hands the palette to the OS and gives every surface a real `CanvasText` border |
+| `prefers-reduced-motion` | Durations to nothing, `scroll-behavior` to auto |
+| `hover: none` | Keeps the movement, drops every repainting hover |
+
+`forced-colors` matters more here than in most systems: the entire depth model
+is translucency plus hairlines, and the OS compositor discards both. A page that
+says nothing about it renders as unseparated text on one flat ground.
+
+**Never signal state with hue alone.** A status dot carries a word next to it; a
+field error carries a glyph as well as the red.
 
 ---
 
@@ -169,9 +281,14 @@ For every element, in order:
    mono voice, uppercase, tracked.
 4. **Is it something a person reads?** → Space Grotesk, sentence case,
    `--text` / `--text-dim` / `--text-ghost`.
-5. **Does it sit on the page?** → `--glass`. **On an image?** → `--scrim`. Never
-   an opaque fill.
+5. **Does it sit on the page?** → `--glass` (`--glass-hi` if it is read).
+   **On an image?** → `--scrim`. **Is it the app bar?** → `--pane`. **A menu or
+   dialog?** → `--overlay`. Never an opaque fill, and never a bevel.
 6. **Does it have corners?** → they are square.
+7. **Did you type a number?** → it comes off a scale in rule 5, or it does not
+   go in.
+8. **Does it depend on blur, translucency, motion or hover?** → say what it does
+   without them, in tokens.
 
 ### Step 3 — the component vocabulary
 
@@ -185,7 +302,10 @@ Use the names; a new app is then already wearing the language.
 | `.eyebrow` | A labelled rule over a block — never a filled bar |
 | `.btn` (`--primary`, `--ghost`, `--danger`, `--sm`, `--icon`) | Buttons. Exactly one `--primary` per row: the one that commits |
 | `.seg` / `.seg__opt` | The segmented control — tabs, language, mode, view: **one idiom for "pick one of these"** |
-| `.tag` / `.tag-bar` | Filter chips; active is an accent fill under black text |
+| `.tag` / `.tag-bar` | Filter chips. A **control**: ship it as `<button type="button">` with `aria-pressed`, never a `<span>` |
+| `.tag--static` | A tag that is a *label*, not a control — a read-only qualifier. Not a button: a focus stop that does nothing is worse than none |
+| `.u-glass` / `.u-scrim` | Rule 3 as one reusable move, for an element the vocabulary does not cover |
+| `.chrome-voice` | Rule 4's mono voice as one class, for the same reason |
 | `.field` / `.field__label` / `.field__help` | A form control; the left border is the state channel (accent = set, grey = unset, amber = staged) |
 | `.menu` / `.menu__option` | A dropdown; the active row is marked on its leading edge |
 | `.card` / `.card-grid` / `.card__img` / `.card__idx` / `.card__cap` | A content tile, with the `--chrome` corner brackets on hover/focus |
@@ -227,15 +347,21 @@ the language.
 6. **Hierarchy is typographic.** A section heading is a heading, not a bordered,
    filled strip. Before adding a band, count how many the page already stacks —
    the complaint that killed a previous look was *"das sind so viele Bänder"*.
-7. **If a mark states no fact, delete it.** Dashed "stamp" chips, decorative
+7. **Every control is reachable from a keyboard, and says what it is.** A chip
+   that cannot be focused is a filter half the visitors cannot use. The class
+   is what the sheet paints; `aria-pressed` / `aria-selected` is what a screen
+   reader reads — a toggle carries **both**, kept in step by the same handler.
+   One focus ring for the whole system, and never remove one without giving one
+   back.
+8. **If a mark states no fact, delete it.** Dashed "stamp" chips, decorative
    index numerals and untranslated slug ornaments were all removed for carrying
    no information.
-8. **One config vocabulary.** If the app is themable, the knobs are `accent`,
+9. **One config vocabulary.** If the app is themable, the knobs are `accent`,
    `wallpaper`, `wallpaper_tint`, `wallpaper_dim` and the display face — the
    same names, resolved through the same album → site → built-in tiers. The
    backdrop ships in two cuts, wide and square, served through one `<picture>`
    — that pair is what `wallpaper` / `wallpaper_mobile` is.
-9. **The marks.** The house mark is `logo-new.svg` (tracked as
+10. **The marks.** The house mark is `logo-new.svg` (tracked as
    `configurator/app/static/logo/lucya_logo.svg`); `app/static/logo/gallery-mark.svg`
    is the unbranded default for an app that has configured no logo of its own,
    and an app should fall back to it rather than borrow the vendor wordmark.
@@ -256,13 +382,25 @@ showcase runs a byte-identical port in JS (`nebulaAccent()` in `showcase.js`,
 verified against the Python for eight inputs). If you add a third
 implementation, verify it the same way.
 
+**The reference surface is `--surface`, not `--bg`.** This is the one real bug
+the derivation had: it measured against `#000000` and stopped the moment it
+cleared it — but the accent is almost never *on* `#000`. It is a link inside a
+`.panel`, an active `.menu__option`, the glyph in front of an `.eyebrow`, every
+one of them on `--surface` or a step above. `#5865F2` clears 4.56:1 on `#000`
+and only **4.19:1** on `--surface`, so the whole 4.5 margin was spent before the
+colour was used. Measuring against the surface it actually sits on lifts the
+built-in one step, `#5865F2` → `#616EF3`, and that one step is the difference
+between a promise and a rounding error.
+
 ```python
+SURFACE = (0x0e, 0x0e, 0x10)   # --surface: the ground accent TEXT sits on
+
 def accent_shades(rgb):
-    # --acc: small text on black AND a fill under black label text. Both
+    # --acc: small text on a PANEL and a fill under --on-acc label text. Both
     # readings want luminance, so a too-dark colour is LIFTED (and said so).
     h, l, s = colorsys.rgb_to_hls(*[v / 255 for v in rgb])
     acc_l = l
-    while acc_l < 0.97 and contrast(hls_rgb(h, acc_l, s), BLACK) < 4.5:
+    while acc_l < 0.97 and contrast(hls_rgb(h, acc_l, s), SURFACE) < 4.5:
         acc_l += 0.02
     # --acc-deep: the one face carrying WHITE text, so it goes the other way.
     # Saturation is capped here alone: at full chroma a mid-lightness hue turns
@@ -283,10 +421,20 @@ def accent_shades(rgb):
       has been painted with state colour — go back to step 2.
 - [ ] `grep -n 'border-radius' new.css` — every hit is `var(--radius)` or a
       genuinely round thing.
-- [ ] No opaque fill on a floating surface. Every pane is `--glass` / `--scrim`
-      plus a blur.
-- [ ] Phone check: blur off, hovers gated, no variable font, no `local()`.
+- [ ] `grep -oE '(padding|gap|margin|font-size|letter-spacing):[^;]*[0-9]+px' new.css`
+      — nothing back. (Rule 5.)
+- [ ] No opaque fill on a floating surface, and **no bevel**: no
+      `inset 0 1px 0 rgba(255,255,255,…)`, no gloss gradient down a pane.
+- [ ] **Tab through the whole screen.** Every control is reachable, the ring is
+      visible on each, and every toggle carries `aria-pressed` /
+      `aria-selected` alongside its class.
+- [ ] **Turn the environment against it**: `.fx-lite`, reduced transparency,
+      reduced motion, more contrast, forced colours, and a 375px viewport. Each
+      should be a token change, not a broken screen.
+- [ ] Phone check: blur off, hovers gated, no variable font, no `local()`,
+      touch targets at 44px.
 - [ ] No `text-transform` on anything carrying data.
+- [ ] No state signalled by hue alone — a dot has a word, an error has a glyph.
 - [ ] Read the screen with the CSS off. If the meta line does not still state
       real facts, it was a decoration bar.
 - [ ] If the app has a sibling app, make the change in **both** stylesheets —
@@ -303,32 +451,56 @@ interface.
 ```
 This app wears NEBULA, the lucya.systems design language.
 Read nebula/NEBULA.md and use nebula/nebula.css as the base sheet.
+Do not fork the token block; your sheet loads after it and adds only
+what is genuinely new.
 
-Four rules:
-1. Black ground, grey furniture, ONE accent (--acc, #5865F2). The accent
-   marks STATE only: links, focus, active/selected/open, featured, live.
-   Furniture is --chrome (hovers, brackets, HUD strokes) or --label (the
-   static mono furniture: labels, counts, badges, measured values).
+Six rules:
+1. Black ground, grey furniture, ONE accent (--acc). The accent marks
+   STATE only: links, focus, active/selected/open, featured, live.
+   Furniture is --chrome (hovers, brackets, HUD strokes) or --label
+   (static mono furniture: labels, counts, badges, measured values).
    Before colouring something purple, ask whether it carries state.
+   The accent never sits on its own tint: on an accent fill the label
+   is --on-acc or --text. Reading copy bottoms out at --text-dim;
+   --text-ghost is a ghost, not a text colour.
 2. Square corners, always. --radius: 0. Only round things opt out.
-3. Depth from blur, not darkness. Panes are --glass / --scrim + their
-   blurs over a drained backdrop. A pane that does not read gets more
-   blur, never a darker fill.
-4. Mono, uppercase, .16-.24em tracked = the chrome AROUND the content.
-   Space Grotesk, sentence case = everything a person reads. The display
-   face is the wordmark's voice and never a heading's.
+3. Depth from blur, not darkness. Six surfaces: --glass/-hi (panes),
+   --scrim/-hi (chips on a picture), --pane (the app bar), --overlay
+   (menus). Each with a step off --blur-1..3. A pane that does not read
+   gets more blur or the -hi step, never a darker fill. A pane is a
+   fill, a blur and a hairline: NO bevel, NO gloss gradient — that is
+   Aero, and it argues with rule 2.
+4. Mono, uppercase, tracked = the chrome AROUND the content. Space
+   Grotesk, sentence case = everything a person reads. The display face
+   is the wordmark's voice and never a heading's. Use --fs-chrome-* vs
+   --fs-text-*: the token name carries the voice.
+5. Measure is rationed like colour. Every size, space, duration and
+   blur comes off a named scale (--s-*, --fs-*, --tr-*, --dur-*,
+   --blur-*). A raw px is the same mistake as a raw hex. Check with:
+   grep -oE '(padding|gap|margin|font-size):[^;]*[0-9]+px' app.css
+6. The environment can overrule the look. Blur, translucency, motion
+   and hover are capabilities. Reach every fallback by REDEFINING
+   TOKENS, never by overriding rules: .fx-lite,
+   prefers-reduced-transparency, prefers-contrast, forced-colors,
+   prefers-reduced-motion, (hover: none).
 
 Also: no local() in @font-face and no variable fonts (static per-weight
-woff2); gate blur/video/animation behind html.fx-lite; gate repainting
-hovers behind @media (hover: hover); assume a strict CSP so no inline
-style attributes; never text-transform data (names, paths, queries).
+woff2); assume a strict CSP so no inline style attributes; never
+text-transform data (names, paths, queries); every control is a real
+focusable element carrying aria-pressed/aria-selected next to its
+class; never signal state with hue alone.
 ```
 
 ---
 
 ## Ownership
 
-The colours, the wordmark and the logo belong to whoever runs the app. The four
+The colours, the wordmark and the logo belong to whoever runs the app. The six
 rules do not — an app with a different accent and a different mark is still
 Nebula, and an app with square corners and a black ground that spends purple on
 its labels is not.
+
+Nor is one that hand-types its spacing. Rules 5 and 6 are the ones that make
+this a *language* rather than a look: a look can be copied by eye, and will
+drift the first time someone eyeballs a padding. A scale and a set of declared
+fallbacks can be inherited.

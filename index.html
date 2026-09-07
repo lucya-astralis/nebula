@@ -122,6 +122,24 @@
         Anything a person actually reads is Space Grotesk in sentence case.
       </span>
     </li>
+    <li class="rule">
+      <span class="rule__n">Rule 05</span>
+      <span class="rule__t">Measure is rationed like colour</span>
+      <span class="rule__d">
+        Every size, space, duration and blur comes off a named scale. A raw
+        <code>px</code> in an app sheet is the same mistake as a raw hex —
+        and the check for it is a <b>grep</b>, not a memory.
+      </span>
+    </li>
+    <li class="rule">
+      <span class="rule__n">Rule 06</span>
+      <span class="rule__t">The environment can overrule the look</span>
+      <span class="rule__d">
+        Blur, translucency, motion and hover are capabilities, not
+        guarantees. Each has a declared fallback, and every one is reached
+        by <b>redefining tokens</b> — never by overriding rules.
+      </span>
+    </li>
   </ol>
 </header>
 
@@ -136,9 +154,10 @@
     <a href="#shape"><i class="fa fa-expand"></i> 02 · Shape</a>
     <a href="#depth"><i class="fa fa-layer-group"></i> 03 · Depth</a>
     <a href="#voice"><i class="fa fa-align-left"></i> 04 · Voice</a>
-    <a href="#parts"><i class="fa fa-folder-tree"></i> 05 · Parts</a>
-    <a href="#wrong"><i class="fa fa-circle-info"></i> 06 · Wrong</a>
-    <a href="#build"><i class="fa fa-route"></i> 07 · Build one</a>
+    <a href="#measure"><i class="fa fa-scale-balanced"></i> 05 · Measure</a>
+    <a href="#parts"><i class="fa fa-folder-tree"></i> 06 · Parts</a>
+    <a href="#wrong"><i class="fa fa-circle-info"></i> 07 · Wrong</a>
+    <a href="#build"><i class="fa fa-route"></i> 08 · Build one</a>
   </aside>
 
   <div class="chapters" id="chapters">
@@ -270,9 +289,9 @@
                 <div class="panel">
                   <h2><i class="fa fa-tags"></i> Tags</h2>
                   <div class="tag-bar">
-                    <span class="tag is-active">Night</span>
-                    <span class="tag">Street</span>
-                    <span class="tag">Snow</span>
+                    <button class="tag" type="button" aria-pressed="true">Night</button>
+                    <button class="tag" type="button" aria-pressed="false">Street</button>
+                    <button class="tag" type="button" aria-pressed="false">Snow</button>
                   </div>
                 </div>
               </div>
@@ -520,13 +539,23 @@
       <div class="section__slug"><span class="name">Depth</span></div>
     </div>
     <p class="chapter__lead">
-      Four tokens are the whole surface scale. <code>--glass</code> /
+      Six tokens are the whole surface scale. <code>--glass</code> /
       <code>--glass-hi</code> for panes over the page; <code>--scrim</code> /
       <code>--scrim-hi</code> for chips laid <b>on</b> an image, where the
-      backdrop is whatever the picture happens to be there. Each is paired with
-      a blur. A legibility change is one edit, not sixty — and the backdrop
-      those panes float over is four more token values, which is exactly how
-      this page is dressed in the nova artwork without touching a rule.
+      backdrop is whatever the picture happens to be there; <code>--pane</code>
+      for the app bar and <code>--overlay</code> for menus, which are the two
+      surfaces that must read over <b>page content</b> rather than over the
+      wallpaper. Each is paired with a step off the blur ladder
+      (<code>--blur-1</code> to <code>--blur-3</code>), so &ldquo;give it more
+      blur&rdquo; is an actual move and not just advice.
+    </p>
+    <p class="chapter__lead">
+      A pane here is a fill, a blur and a hairline. It has <b>no bevel and no
+      gloss</b> — no lit top edge, no wash falling down its face. Those are the
+      two marks that make translucency read as Aero, a moulded sheet with a
+      thickness to it, and they argue with rule 02: a bevel is a soft edge
+      drawn on a hard one. What this language means by glass is a flat plane
+      with the depth <b>behind</b> it, out of focus.
     </p>
 
     <div class="lab">
@@ -584,14 +613,14 @@
     </div>
 
     <div class="spec">
-      <div class="spec__label"><span>Specimen</span><span>The four surfaces</span><span class="n">03</span></div>
+      <div class="spec__label"><span>Specimen</span><span>The surface scale</span><span class="n">03</span></div>
       <div class="spec__stage">
         <div class="stack">
           <div class="panel">
             <h2><i class="fa fa-layer-group"></i> Panes over the page</h2>
             <div class="row">
-              <span class="tag">--glass</span>
-              <span class="tag">--glass-hi</span>
+              <span class="tag tag--static">--glass</span>
+              <span class="tag tag--static">--glass-hi</span>
               <button class="btn" type="button">Also glass</button>
               <span class="seg"><span class="seg__opt is-on">And this</span></span>
             </div>
@@ -615,19 +644,31 @@
     <p class="chapter__lead">
       Phones and weak hardware switch <code>backdrop-filter</code> off for the
       GPU cost, and then opacity is the only thing left doing the work. That is
-      one rule, in one place: <code>.fx-lite</code> <b>redefines the same four
-      tokens</b> more opaque and sets the blurs to <code>none</code>. Nothing
-      else in the sheet knows about it. Try it in the <b>Full / Lite</b> switch
-      up in the bar.
+      one rule, in one place: <code>.fx-lite</code> <b>redefines the same six
+      tokens</b> more opaque and sets the blur ladder to <code>none</code>.
+      Nothing else in the sheet knows about it. Try it in the
+      <b>Full / Lite</b> switch up in the bar.
+    </p>
+    <p class="chapter__lead">
+      Note which two go <b>fully</b> opaque. What is behind a card is the
+      wallpaper; what is behind the app bar is the page, scrolling. Without a
+      blur to average it, translucency over live content is not glass, it is a
+      smear &mdash; at <code>.96</code> the title of this page still ghosted
+      through the bar, because 4&nbsp;% of white over near-black is visible.
     </p>
     <pre class="code">.fx-lite{
-  <u>--glass</u>:      rgba(22,22,25,.80);   <i>/* was .42 + blur(18px) */</i>
-  <u>--glass-hi</u>:   rgba(36,36,40,.90);
-  <u>--scrim</u>:      rgba(0,0,0,.76);
-  <u>--scrim-hi</u>:   rgba(6,6,7,.88);
-  <u>--glass-blur</u>: none;
-  <u>--scrim-blur</u>: none;
-}</pre>
+  <u>--glass</u>:      rgba(22,22,27,.86);   <i>/* was .36 + blur(20px) */</i>
+  <u>--glass-hi</u>:   rgba(36,36,44,.94);
+  <u>--scrim</u>:      rgba(0,0,0,.78);
+  <u>--scrim-hi</u>:   rgba(6,6,10,.88);
+  <u>--pane</u>:       #04040a;              <i>/* page scrolls behind it */</i>
+  <u>--overlay</u>:    #0a0a0e;              <i>/* ditto */</i>
+  <u>--blur-1</u>: none; <u>--blur-2</u>: none; <u>--blur-3</u>: none;
+}
+
+<i>/* The same again for a visitor who asked the OS rather than
+   the page. This one lands before first paint. */</i>
+@media (prefers-reduced-transparency: reduce){ <i>/* ... */</i> }</pre>
   </section>
 
   <!-- ============================================================
@@ -706,7 +747,98 @@
   </section>
 
   <!-- ============================================================
-       05 — PARTS
+       05 — MEASURE
+       ============================================================ -->
+  <section class="chapter" id="measure" data-title="measure scale spacing space type size rhythm tokens rule 5">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">Measure</span></div>
+    </div>
+    <p class="chapter__lead">
+      Colour was rationed from the first day. Measure was not — and that is why
+      this chapter exists. Before the scales below, <code>nebula.css</code>
+      carried <b>23 distinct paddings, 13 gaps, 13 font sizes and 14 tracking
+      values</b>, every one hand-typed. None of them was wrong. All of them were
+      unreferenceable: &ldquo;the same as the gallery&rdquo; was something you
+      had to remember rather than something you could point at, so a third app
+      could only drift.
+    </p>
+    <p class="chapter__lead">
+      Ten sizes between 9px and 15px is not a hierarchy anyone perceives. 10px
+      and 10.5px are <b>noise that reads as inconsistency</b> — the reader
+      cannot tell you what is wrong, only that something is.
+    </p>
+
+    <div class="spec">
+      <div class="spec__label"><span>Specimen</span><span>The space rhythm</span><span class="n">01</span></div>
+      <div class="spec__stage spec__stage--block">
+        <ul class="ruler" id="ruler"></ul>
+      </div>
+      <p class="spec__note">
+        Eight steps, roughly 1.5&times; apart, so two adjacent values are always
+        visibly different. If a layout wants something between two steps, the
+        layout is wrong, not the scale. <b><code>--s-0</code> is not a
+        space</b> — it is a bezel, the inset of a segmented track, and anything
+        a person would call &ldquo;distance between two things&rdquo; starts at
+        <code>--s-1</code>.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>Specimen</span><span>Two voices, four steps each</span><span class="n">02</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="scale-rows">
+          <div class="scale-row"><span class="scale-row__tok">--fs-chrome-xs</span><span class="scale-row__s" data-fs="chrome-xs">Section label 0148</span></div>
+          <div class="scale-row"><span class="scale-row__tok">--fs-chrome-sm</span><span class="scale-row__s" data-fs="chrome-sm">Section label 0148</span></div>
+          <div class="scale-row"><span class="scale-row__tok">--fs-chrome-md</span><span class="scale-row__s" data-fs="chrome-md">Section label 0148</span></div>
+          <div class="scale-row"><span class="scale-row__tok">--fs-chrome-lg</span><span class="scale-row__s" data-fs="chrome-lg">Section label 0148</span></div>
+          <div class="scale-row"><span class="scale-row__tok">--fs-text-sm</span><span class="scale-row__t" data-fs="text-sm">Four days in Berlin, mostly after dark.</span></div>
+          <div class="scale-row"><span class="scale-row__tok">--fs-text-md</span><span class="scale-row__t" data-fs="text-md">Four days in Berlin, mostly after dark.</span></div>
+          <div class="scale-row"><span class="scale-row__tok">--fs-text-lg</span><span class="scale-row__t" data-fs="text-lg">Four days in Berlin, mostly after dark.</span></div>
+          <div class="scale-row"><span class="scale-row__tok">--fs-text-xl</span><span class="scale-row__t" data-fs="text-xl">Four days in Berlin, mostly after dark.</span></div>
+        </div>
+      </div>
+      <p class="spec__note">
+        <b>The token name carries the voice.</b> <code>--fs-chrome-*</code> is
+        mono, uppercase and tracked; <code>--fs-text-*</code> is Space Grotesk
+        in sentence case. Reaching for the wrong one is then visible in the
+        source, not only on screen. And each <code>--fs-chrome-N</code> has
+        exactly one <code>--tr-chrome-N</code> beside it, because
+        <b>tracking falls as size rises</b> — that is a formula, not a
+        preference.
+      </p>
+    </div>
+
+    <div class="lab">
+      <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 05</span></div>
+      <div class="lab__row">
+        <div class="seg" role="group" aria-label="Rule 05">
+          <button class="seg__opt is-on" type="button" data-heresy="measure" data-on="false">On the scale</button>
+          <button class="seg__opt" type="button" data-heresy="measure" data-on="true">Off by a pixel</button>
+        </div>
+      </div>
+      <p class="lab__note">
+        Nothing in the broken state is wrong by more than two or three pixels,
+        and <b>that is the entire demonstration</b>. Flip it and look at the
+        page above, not at this panel: the labels stop lining up with each
+        other, the gaps stop rhyming, and the screen acquires a vagueness you
+        cannot point at. A scale is not about any single value being right. It
+        is about the same value being <b>reachable twice</b>.
+      </p>
+    </div>
+
+    <p class="chapter__lead">
+      Which is why the check is a <code>grep</code> rather than a memory — the
+      same way rule 01's is a count:
+    </p>
+    <pre class="code">grep -oE '(padding|gap|margin|font-size|letter-spacing):[^;]*[0-9]+px' app.css</pre>
+    <p class="chapter__lead">
+      Nothing back means the app is speaking the language.
+      <code>nebula.css</code> itself returns nothing.
+    </p>
+  </section>
+
+  <!-- ============================================================
+       06 — PARTS
        ============================================================ -->
   <section class="chapter" id="parts" data-title="parts components buttons segmented tags menu fields panel hud">
     <div class="section__head">
@@ -770,11 +902,11 @@
       <div class="spec__stage spec__stage--block">
         <div class="row row--split">
           <div class="tag-bar" id="demo-tags">
-            <button class="tag is-active" type="button" data-tag="all">All</button>
-            <button class="tag" type="button" data-tag="night">Night</button>
-            <button class="tag" type="button" data-tag="street">Street</button>
-            <button class="tag" type="button" data-tag="snow">Snow</button>
-            <button class="tag" type="button" data-tag="portrait">Portrait</button>
+            <button class="tag is-active" type="button" aria-pressed="true" data-tag="all">All</button>
+            <button class="tag" type="button" aria-pressed="false" data-tag="night">Night</button>
+            <button class="tag" type="button" aria-pressed="false" data-tag="street">Street</button>
+            <button class="tag" type="button" aria-pressed="false" data-tag="snow">Snow</button>
+            <button class="tag" type="button" aria-pressed="false" data-tag="portrait">Portrait</button>
           </div>
           <div class="dropdown">
             <button class="btn" type="button" id="demo-sort-btn" aria-expanded="false" aria-haspopup="true">
@@ -920,7 +1052,7 @@
   </section>
 
   <!-- ============================================================
-       06 — WRONG
+       07 — WRONG
        ============================================================ -->
   <section class="chapter" id="wrong" data-title="wrong antipatterns mistakes bands stamps">
     <div class="section__head">
@@ -999,7 +1131,7 @@
   </section>
 
   <!-- ============================================================
-       07 — BUILD ONE  (the instructions for Claude)
+       08 — BUILD ONE  (the instructions for Claude)
        ============================================================ -->
   <section class="chapter" id="build" data-title="build claude instructions how to make a nebula app">
     <div class="section__head">
@@ -1132,24 +1264,44 @@
       <pre class="code" id="code-brief">This app wears NEBULA, the lucya.systems design language.
 Read nebula/NEBULA.md and use nebula/nebula.css as the base sheet.
 
-Four rules:
-1. Black ground, grey furniture, ONE accent (--acc, #5865F2). The accent
-   marks STATE only: links, focus, active/selected/open, featured, live.
-   Furniture is --chrome (hovers, brackets, HUD strokes) or --label (the
-   static mono furniture: labels, counts, badges, measured values).
+Do not fork the token block; your sheet loads after it and adds only
+what is genuinely new.
+
+Six rules:
+1. Black ground, grey furniture, ONE accent (--acc). The accent marks
+   STATE only: links, focus, active/selected/open, featured, live.
+   Furniture is --chrome (hovers, brackets, HUD strokes) or --label
+   (static mono furniture: labels, counts, badges, measured values).
    Before colouring something purple, ask whether it carries state.
+   The accent never sits on its own tint: on an accent fill the label
+   is --on-acc or --text. Reading copy bottoms out at --text-dim;
+   --text-ghost is a ghost, not a text colour.
 2. Square corners, always. --radius: 0. Only round things opt out.
-3. Depth from blur, not darkness. Panes are --glass / --scrim + their
-   blurs over a drained backdrop. A pane that does not read gets more
-   blur, never a darker fill.
-4. Mono, uppercase, .16-.24em tracked = the chrome AROUND the content.
-   Space Grotesk, sentence case = everything a person reads. The display
-   face is the wordmark's voice and never a heading's.
+3. Depth from blur, not darkness. Six surfaces: --glass/-hi (panes),
+   --scrim/-hi (chips on a picture), --pane (the app bar), --overlay
+   (menus). Each with a step off --blur-1..3. A pane that does not read
+   gets more blur or the -hi step, never a darker fill. A pane is a
+   fill, a blur and a hairline: NO bevel, NO gloss gradient - that is
+   Aero, and it argues with rule 2.
+4. Mono, uppercase, tracked = the chrome AROUND the content. Space
+   Grotesk, sentence case = everything a person reads. The display face
+   is the wordmark's voice and never a heading's. Use --fs-chrome-* vs
+   --fs-text-*: the token name carries the voice.
+5. Measure is rationed like colour. Every size, space, duration and
+   blur comes off a named scale (--s-*, --fs-*, --tr-*, --dur-*,
+   --blur-*). A raw px is the same mistake as a raw hex. Check with:
+   grep -oE '(padding|gap|margin|font-size):[^;]*[0-9]+px' app.css
+6. The environment can overrule the look. Blur, translucency, motion
+   and hover are capabilities. Reach every fallback by REDEFINING
+   TOKENS, never by overriding rules: .fx-lite,
+   prefers-reduced-transparency, prefers-contrast, forced-colors,
+   prefers-reduced-motion, (hover: none).
 
 Also: no local() in @font-face and no variable fonts (static per-weight
-woff2); gate blur/video/animation behind html.fx-lite; gate repainting
-hovers behind @media (hover: hover); assume a strict CSP so no inline
-style attributes; never text-transform data (names, paths, queries).</pre>
+woff2); assume a strict CSP so no inline style attributes; never
+text-transform data (names, paths, queries); every control is a real
+focusable element carrying aria-pressed/aria-selected next to its
+class; never signal state with hue alone.</pre>
     </div>
   </section>
 
@@ -1179,7 +1331,7 @@ style attributes; never text-transform data (names, paths, queries).</pre>
     </span>
     <span class="foot__meta">
       Nebula — the design language of <b>lucya.systems</b>. The colours, the
-      wordmark and the logo belong to whoever runs the app; the four rules do not.
+      wordmark and the logo belong to whoever runs the app; the six rules do not.
     </span>
   </div>
 </footer>
