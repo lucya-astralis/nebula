@@ -232,6 +232,12 @@
   --fs-chrome-lg: 14px;    /* a measured value with its own line */
   --fs-chrome-xl: 20px;    /* a headline number: a stat tile, a count */
 
+  /* Icons are not type, but they are sized like it: one step under the cap
+     height of whatever label they lead. `.fa` reads this, and so does any
+     BOX built to hold an icon — that is what keeps a glyph and an <img>
+     emblem the same size in the same slot. */
+  --fs-ico:       .92em;
+
   --fs-text-sm:   12px;    /* help text, footer, key/value */
   --fs-text-md:   13px;    /* inputs, panel body */
   --fs-text-lg:   15px;    /* base body size, leads */
