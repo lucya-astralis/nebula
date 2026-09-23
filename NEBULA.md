@@ -77,6 +77,13 @@ gallery's trip timeline (`--trip*`) is the one that exists. Nothing outside such
 a module may use its colours, and nothing inside it may use `--acc` /
 `--chrome` / `--label`.
 
+**`hidden` wins.** `[hidden]{ display:none !important; }` is in the base, and
+it is the one `!important` in the sheet. Every component here sets its own
+display — `.btn` is inline-flex, `.field` is flex, `.seg` is inline-flex — and
+each of them beats a bare attribute selector on specificity, which leaves an
+element the markup calls hidden sitting on screen with its controls still in
+the tab order. The attribute already means this; the sheet only makes it true.
+
 ### 2. Square corners, always
 
 `--radius: 0`. Only genuinely round things — a status dot, a circular button —
@@ -223,9 +230,10 @@ app sheet is the same mistake as a raw hex.
 | Content type | `--fs-text-sm/md/lg/xl`, `--fs-title` | 12, 13, 15, 18, clamp |
 | Tracking | `--tr-chrome-*`, `--tr-text`, `--tr-title`, `--tr-head`, `--tr-num`, `--tr-display` | paired to the size |
 | Motion | `--dur-1/2/3`, `--ease`, `--ease-out` | .15s state, .25s movement, .35s settle |
+| Set pieces | `--mark-split`, `--boot-fade` | the two durations that are not transitions: the mark's hover split, and the fade a page leaves on |
 | Depth | `--blur-1/2/3` | the rule-3 ladder |
 | Elevation | `--shadow-1/2`, `--glow-acc`, `--ring-acc` | things that genuinely float |
-| Shape | `--radius`, `--hair`, `--page-pad`, `--bp-narrow` | one border width, one gutter, one breakpoint |
+| Shape | `--radius`, `--hair`, `--page-pad`, `--bp-narrow`, `--tap`, `--door-w` | one border width, one gutter, one breakpoint, one touch target, one sign-in card |
 
 Before this block existed the sheet carried 23 distinct paddings, 13 gaps, 13
 font sizes and 14 tracking values, every one hand-typed. So "the same as the
@@ -240,8 +248,11 @@ The check is a grep, the same way rule 1's is a count:
 grep -oE '(padding|gap|margin|font-size|letter-spacing):[^;]*[0-9]+px' app.css
 ```
 
-Nothing back means the app is speaking the language. `nebula.css` itself returns
-nothing.
+Nothing back means the app is speaking the language. `nebula.css` itself
+returns three lines, and each of them is a stated exception: the two
+`calc(…px * var(--display-scale))` sizes, because a display face brings its
+own idea of how much of the em it inks, and the `16px` on the door's field,
+which is a threshold iOS Safari enforces (see below).
 
 **The one exception, and it is not a size.** `font-size: 16px` on a text input
 is the threshold under which iOS Safari zooms the page on focus, leaving the
@@ -286,7 +297,9 @@ screen every visitor sees first and that covers nothing, and it is written down
 because every part of it was decided once and should never be decided again.
 The reference is the console's door: `aperture/console/templates/login.html`,
 `static/login.js`, and the `THE DOOR` block in `static/style.css`. A new app's
-door behaves exactly like it.
+door behaves exactly like it — and does not redraw it: `nebula.css` carries
+`.login-body`, `.login__card` and the rest, so what an app writes is the
+markup, the script, and nothing else.
 
 ### What it is
 
@@ -402,6 +415,52 @@ screen people see most often and want to leave soonest.
 
 ---
 
+## The controls the sheet now owns
+
+Three of these were invented twice before they were written down, which is the
+sign that they belong here rather than in an app.
+
+### A switch is not a segmented control
+
+`.seg` answers *pick one of these*. `.switch` answers *is this on* — and it is
+the other half of every settings screen. On is a **state**, so on is the
+accent, as a fill with `--on-acc` on the knob. It is a real
+`<button role="switch" aria-checked>`, and the word beside it (`.switch__word`)
+says On or Off, because hue alone never says anything (rule 6).
+
+A setting whose two states are not *on* and *off* — three modes, two views — is
+a `.seg`, not a switch with a clever label.
+
+### A meter states a number
+
+Rule 1 licences the accent for progress fills; `.meter` is the fill. The value
+arrives as a custom property (`--p`), set through the CSSOM, because a strict
+CSP drops an inline `style` attribute silently (step 4.5). The figure goes
+**next to** the bar and `aria-valuenow` goes **on** it: a bar with no number is
+a mood, and a screen reader reads the attribute, never a width.
+
+### A toast reports; it does not mark a state
+
+So its leading edge is `--chrome`, not the accent — the question "does this
+carry state?" has the answer *no*. The variants (`--ok`, `--amb`, `--error`)
+are statuses, the same licence `.field__error` has, and each carries a glyph as
+well as its colour.
+
+Two things a toast is not allowed to be: the only place an outcome is shown —
+a message that vanishes has not told anyone who was reading something else —
+and an error that needs a decision. That is a `.dlg`.
+
+### The mark is markup, not an image
+
+`.mark` is eight `<path>`s in a `viewBox`, twice more when it carries the
+ghosts. An `<img>` is a closed document and no stylesheet of ours can reach
+inside it, which is the whole reason: the bar and the door split the wing into
+its two colour flanks on hover, and the boot screen draws it piece by piece.
+The two ghost hexes are **not** palette colours and never appear on a surface,
+a label or a control — only on a copy of the mark itself.
+
+---
+
 ## Building a new app
 
 ### Step 1 — take the sheet, don't reinvent it
@@ -466,6 +525,18 @@ Use the names; a new app is then already wearing the language.
 | `.stack` / `.panel` / `.kv` | Hairline-separated panels and a key/value readout (`.num` for measured values) |
 | `.hud` / `.hud__corner` / `.hud__reticle` / `.hud__bar` | The viewfinder idiom — only where the screen **is** an instrument |
 | `.dot` / `.status` | Status marks |
+| `.mark` (`--nav`, `--door`, `--foot`) | The house wing as inline SVG, with the chromatic split on hover. Never an `<img>`: nothing outside a closed document can draw it |
+| `.avatar` (`--sm`, `--lg`, `--btn`) | Who this is, in a square. Carries no accent unless it is a control that is open |
+| `.switch` / `.switch-wrap` / `.switch__word` | One setting, on or off — the other half of `.seg`. On is an accent FILL, and the word beside it says which |
+| `.meter` / `.meter__fill` | How much of something there is. The fill is the one progress the accent is for; the value rides `--p` through the CSSOM |
+| `.set` / `.set__ico` / `.set__text` / `.set__aside` | The setting row: icon, name and a line of prose, then the controls. Lives in a `.stack` |
+| `.tbl` / `.tbl-wrap` | Rows of facts in the two voices; a `.num` column goes mono and tabular |
+| `.dlg` / `.dlg__head` / `.dlg__body` / `.dlg__foot` | A `<dialog>` on `--overlay`. A question, not a screen |
+| `.toast` / `.toasts` | That happened. Its edge is `--chrome`, because reporting is not a state; `--ok` / `--amb` / `--error` are statuses |
+| `.rail` / `.rail__nav` | The sections of one app, standing still. The current one is marked on its leading edge, and on its bottom edge once the rail is a strip |
+| `.login-body` / `.login__card` / … | The door — see its own chapter above |
+| `.u-nocase` | Rule 4's tool: data inside furniture that is cased |
+| `.u-offscreen` | In the tree and in a password manager's reach, out of the eye's way |
 | `.foot` | The colophon |
 
 ### Step 4 — the rules that are not about looks
@@ -663,7 +734,15 @@ reason line (never echo the query string, no next=), one field with an
 in-field reveal, Caps Lock status, a role="alert" refusal with a glyph,
 one primary button. No entrance animation, no shake, no spinner; a 429
 counts down from Retry-After; success fades the card (--boot-fade, scale
-.97) and then location.replace()s. Details: NEBULA.md, "The door".
+.97) and then location.replace()s. The sheet carries its CSS
+(.login-body/.login__*), so an app writes the markup and the script.
+Details: NEBULA.md, "The door".
+
+The sheet also owns: .mark (the wing as inline SVG, splits on hover —
+never an <img>), .avatar, .switch (on/off; .seg is pick-one-of-these),
+.meter (--p through the CSSOM, and a figure beside the bar), .set (the
+settings row), .tbl, .dlg, .toast (edge is --chrome: reporting is not a
+state), .rail, .u-nocase, .u-offscreen. Do not rebuild any of them.
 ```
 
 ---

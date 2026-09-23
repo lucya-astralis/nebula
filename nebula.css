@@ -254,6 +254,7 @@
   --tr-chrome-md: .14em;
   --tr-chrome-lg: .10em;
   --tr-chrome-xl: .04em;    /* the formula continues: bigger, tighter */
+  --tr-otp:       .32em;    /* a one-time code, read back digit by digit */
   --tr-text:      .01em;
   --tr-title:     .03em;
   --tr-head:     -.005em;   /* a sans heading tightens, it never tracks */
@@ -266,6 +267,13 @@
   --icon-sm:  10px;
   --icon-md:  12px;
   --fs-code:  .88em;   /* code is relative: it sits inside running text */
+
+  /* Two durations that are not transitions: a mark's hover split, and the
+     fade a page leaves on. They sit here because the door and the mark are
+     part of the language now, and a component may not hand-type a duration
+     any more than a padding. */
+  --mark-split: .5s;
+  --boot-fade:  .45s;
 
   /* ---- motion ----------------------------------------------------
      Three durations. Anything slower than --dur-3 is an animation
@@ -370,9 +378,14 @@
   --ring-acc: 0 0 0 1px rgba(var(--acc-rgb),.22);
 
   /* ---- shape and layout ------------------------------------------ */
+  /* The smallest target that is reliably hit with a thumb. It used to live
+     inside the narrow media query, where nothing above 760px could reach it
+     — and a submit button on a door is 44px on a desktop too. */
+  --tap:        44px;
   --radius:     0;         /* square, everywhere */
   --hair:       1px;       /* the one border width in the system */
-  --nav-h:      60px;
+  --nav-h:      60px;  --door-w:     420px;     /* the sign-in card: one readable column */
+
   /* The gutter every band holds to. A clamp, not a constant: 20px is
      right at 1440 and wasteful at 380, where it is the difference
      between a card grid of one column and of two. */
@@ -492,10 +505,19 @@
   }
   .nav, .menu, .card, .panel, .stack, .field, .btn, .seg, .tag,
   .hud, .nav__search{ border:var(--hair) solid CanvasText; }
+  .switch, .dlg, .toast, .avatar, .set__ico, .meter, .login__card,
+  .login__why, .rail__nav, .tbl td, .tbl th{ border:var(--hair) solid CanvasText; }
+  /* the split is two fixed hexes blended to screen, and neither survives a
+     palette the OS owns — a half-blended copy is worse than none */
+  .mark__ghost{ display:none; }
   .card::before, .card::after, .hud__corner{ forced-color-adjust:none; }
   .btn--primary, .tag.is-active, .seg__opt.is-on, .menu__option.is-active{
     forced-color-adjust:none;
     background:Highlight; color:HighlightText; border-color:Highlight;
+  }
+  .switch[aria-checked="true"], .meter__fill{ forced-color-adjust:none; background:Highlight; }
+  .rail__nav .menu__option[aria-current="page"]{
+    forced-color-adjust:none; background:Highlight; color:HighlightText;
   }
 }
 
@@ -523,6 +545,15 @@ body{
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
+
+/* `hidden` is a statement about the DOM and it has to WIN. Every component
+   below sets its own display — .btn is inline-flex, .field is flex, .seg is
+   inline-flex — and each of them beats the attribute on specificity alone,
+   which leaves an element the markup calls hidden on screen, with its
+   controls still in the tab order and its fields still in the form. This is
+   the one place the sheet uses !important, and it is what the attribute
+   already means. */
+[hidden]{ display:none !important; }
 
 a{ color:inherit; text-decoration:none; }
 a:hover{ color:var(--acc); }
@@ -1460,6 +1491,574 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .foot__links a:hover{ color:var(--acc); border-bottom-color:var(--acc); }
 .foot__meta b{ color:var(--text-dim); font-weight:400; }
 
+
+/* ==================================================================
+   THE MARK
+   ------------------------------------------------------------------
+   The house wing, as INLINE SVG. An <img> is a closed document: nothing
+   outside it can reach a path, which means no stylesheet of ours can
+   fill it, draw it, or split it into colour. Every app that shows the
+   mark in its bar and on its door was copying this block by hand.
+
+   One drawing, three instances, and the difference between them is a
+   HEIGHT and whether they carry the ghosts:
+
+     .mark--nav    the app bar, splits on hover
+     .mark--door   the sign-in card, the same
+     .mark--foot   the colophon: a stamp, not a control, and still
+
+   The resting state of every one of them is the SOLID mark. A hollow
+   outline is a state a script asks for, never the default — a sheet
+   that starts the logo invisible is one failed script away from a
+   header with a hole in it.
+
+   The markup is eight <path>s in a viewBox, twice more when it carries
+   ghosts; whoever brings the mark brings that file.
+   ================================================================== */
+.mark{
+  display:block; position:relative;
+  /* the artboard's own ratio, so a variant only ever sets a height */
+  aspect-ratio:964 / 543;
+  flex:0 0 auto;
+}
+.mark__svg{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  /* the ghosts sit a couple of units off the mark and must not be cut */
+  overflow:visible;
+}
+.piece{ fill:#ffffff; stroke:none; }
+
+/* ---- the chromatic split ----------------------------------------
+   Two whole copies of the wing, offset and blended to screen. The two
+   hexes are NOT palette colours and are not allowed to become any:
+   they are the accent's two flanks, one toward blue and one toward
+   violet, which is what a split signal does to an edge. They appear
+   only on a COPY of the mark — never on a surface, a label or a
+   control. */
+.mark__ghost{
+  position:absolute; inset:0;
+  pointer-events:none;
+  opacity:0;
+  mix-blend-mode:screen;
+  will-change:translate, opacity;
+}
+.mark__ghost .piece--ghost{ stroke-width:1; }
+.mark__ghost--r .piece--ghost{ fill:#7aa6ff; stroke:#7aa6ff; }
+.mark__ghost--b .piece--ghost{ fill:#b478ff; stroke:#b478ff; }
+
+.mark--nav { height:28px; }
+.mark--door{ height:28px; }
+.mark--foot{ height:18px; opacity:.85; }
+.mark--nav, .mark--door{
+  filter:drop-shadow(0 0 12px rgba(var(--acc-rgb),.35));
+  transition:filter var(--dur-2) var(--ease);
+}
+
+/* The hover: the signal splits and comes back. Behind (hover: hover) on
+   the house rule — a hover that REPAINTS costs the first tap on a touch
+   screen. `translate`, never `transform`, so it can never overwrite a
+   transform something else put on the same element. */
+@media (hover: hover){
+  .mark--nav:hover, .mark--door:hover{
+    filter:drop-shadow(0 0 16px rgba(var(--acc-rgb),.55));
+  }
+  .mark--nav:hover .mark__ghost--r,
+  .mark--door:hover .mark__ghost--r{ animation:markSplitR var(--mark-split) steps(4, end); }
+  .mark--nav:hover .mark__ghost--b,
+  .mark--door:hover .mark__ghost--b{ animation:markSplitB var(--mark-split) steps(4, end); }
+  .mark--nav:hover .mark__svg,
+  .mark--door:hover .mark__svg{ animation:markJitter var(--mark-split) steps(4, end); }
+}
+
+/* steps(), not a curve: a signal that slides apart smoothly is a slide.
+   The split has to arrive in frames to read as a glitch. */
+@keyframes markSplitR{
+  0%  { opacity:0;   translate:0 0; }
+  20% { opacity:.85; translate:-4px 1px; }
+  55% { opacity:.7;  translate:-2px -1px; }
+  80% { opacity:.5;  translate:-1px 0; }
+  100%{ opacity:0;   translate:0 0; }
+}
+@keyframes markSplitB{
+  0%  { opacity:0;   translate:0 0; }
+  20% { opacity:.85; translate:4px -1px; }
+  55% { opacity:.7;  translate:2px 1px; }
+  80% { opacity:.5;  translate:1px 0; }
+  100%{ opacity:0;   translate:0 0; }
+}
+@keyframes markJitter{
+  0%, 100%{ translate:0 0; }
+  20%     { translate:1px 0; }
+  55%     { translate:-1px 0; }
+  80%     { translate:.5px 0; }
+}
+/* Someone who asked for less motion still gets the mark, and gets it
+   whole — just none of the three above. */
+@media (prefers-reduced-motion: reduce){
+  .mark__ghost{ animation:none !important; opacity:0 !important; }
+  .mark__svg{ animation:none !important; }
+}
+.fx-lite .mark__ghost{ animation:none !important; opacity:0 !important; }
+
+/* ==================================================================
+   AVATAR  —  who this is, in a square
+   ------------------------------------------------------------------
+   Initials, or a picture, in the same box. It carries NO accent: an
+   avatar is not a state, it is an identity (rule 1), so the frame is
+   furniture and the letters are in the sans voice — they are a NAME,
+   which is data, and data is not cased or tracked (rule 4).
+   ================================================================== */
+.avatar{
+  display:inline-grid; place-items:center;
+  width:var(--s-8); height:var(--s-8);
+  flex:0 0 auto;
+  border:var(--hair) solid var(--line-strong);
+  background-color:rgba(var(--label-rgb),.08);
+  border-radius:var(--radius);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:var(--fs-text-lg); font-weight:600; letter-spacing:var(--tr-head);
+  padding:0;
+  overflow:hidden;
+}
+.avatar img{ width:100%; height:100%; object-fit:cover; }
+.avatar--sm{ width:var(--s-7); height:var(--s-7); font-size:var(--fs-text-sm); }
+.avatar--lg{ width:var(--s-9); height:var(--s-9); font-size:var(--fs-text-xl); }
+/* An avatar that opens something is a control, and says so when it is open. */
+.avatar--btn{ cursor:pointer; transition:border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease); }
+.avatar--btn[aria-expanded="true"]{ border-color:var(--acc); background-color:rgba(var(--acc-rgb),.16); }
+@media (hover: hover){
+  .avatar--btn:hover{ border-color:var(--chrome); background-color:rgba(var(--chrome-rgb),.10); }
+}
+
+/* ==================================================================
+   SWITCH  —  one setting, on or off
+   ------------------------------------------------------------------
+   .seg answers "pick one of these". This answers "is this on", which
+   is the other half of every settings screen and had no idiom.
+
+   On is a STATE, so on is the accent — as a fill, with --on-acc on
+   the knob, which is what --acc is derived to survive. And never hue
+   alone (rule 6): the word beside it says On or Off, and the control
+   itself is a real <button role="switch" aria-checked>, so a screen
+   reader reads the same thing the word does.
+   ================================================================== */
+.switch-wrap{ display:inline-flex; align-items:center; gap:var(--s-3); }
+.switch__word{
+  min-width:3ch; text-align:right;
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  color:var(--text-dim);
+}
+.switch{
+  appearance:none;
+  position:relative;
+  width:calc(var(--s-7) + var(--s-3));
+  height:calc(var(--s-5) + var(--s-1));
+  padding:0;
+  border:var(--hair) solid var(--line-strong);
+  border-radius:var(--radius);
+  background-color:var(--surface);
+  cursor:pointer;
+  transition:background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+/* The TARGET is --tap; the control is not. Growing the switch itself on a
+   phone gives a 44px-tall track with a 12px knob rattling around inside it,
+   so the box stays the size it looks and the reach is a transparent margin
+   around it. */
+.switch::before{
+  content:"";
+  position:absolute; inset:calc(var(--s-4) * -1);
+}
+.switch::after{
+  content:"";
+  position:absolute; top:50%; left:var(--s-1);
+  width:var(--s-4); height:var(--s-4);
+  translate:0 -50%;
+  background-color:var(--text-dim);
+  /* `left`, not a transform: the knob is centred with translate already,
+     and two of them on one element is how a control ends up off screen */
+  transition:left var(--dur-2) var(--ease-out), background-color var(--dur-1) var(--ease);
+}
+.switch[aria-checked="true"]{ background-color:var(--acc); border-color:var(--acc); }
+.switch[aria-checked="true"]::after{ left:calc(100% - var(--s-4) - var(--s-1)); background-color:var(--on-acc); }
+.switch:disabled{ opacity:.45; cursor:not-allowed; }
+.switch-wrap:has(.switch[aria-checked="true"]) .switch__word{ color:var(--text); }
+@media (hover: hover){
+  .switch:hover{ border-color:var(--chrome); }
+  .switch[aria-checked="true"]:hover{ border-color:var(--acc-soft); }
+}
+
+/* ==================================================================
+   METER  —  how much of something there is
+   ------------------------------------------------------------------
+   Rule 1 licenses the accent for "progress fills" and the sheet had
+   no fill to put it on. A track in --line-strong, a fill in --acc,
+   and the value itself comes from a custom property so a strict CSP
+   can set it: no inline style attribute, ever (step 4.5).
+
+     <span class="meter" role="meter" aria-valuenow="64" …>
+       <span class="meter__fill"></span></span>
+     el.style.setProperty('--p', 64)   // CSSOM, allowed
+
+   The number beside it is not optional: a bar with no figure is a
+   mood, and a screen reader reads aria-valuenow, not a width.
+   ================================================================== */
+.meter{
+  display:block; position:relative;
+  height:var(--s-1);
+  background-color:var(--line-strong);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.meter__fill{
+  display:block; height:100%;
+  width:calc(var(--p, 0) * 1%);
+  background-color:var(--acc);
+  transition:width var(--dur-3) var(--ease-out);
+}
+.meter--amb .meter__fill{ background-color:var(--amb); }
+.meter--red .meter__fill{ background-color:var(--red); }
+
+/* ==================================================================
+   SETTING ROW  —  a thing, where it stands, and what to do about it
+   ------------------------------------------------------------------
+   The row every settings screen is made of, inside a .stack so the
+   rows are hairline-separated rather than a pile of boxes:
+
+     icon | name + one line of prose | status and controls
+
+   The name is read, so it is sans; the icon box is furniture; the
+   aside holds at most one --primary. On a narrow screen the aside
+   drops to its own line rather than squeezing the prose to nothing.
+   ================================================================== */
+.set{
+  display:grid;
+  grid-template-columns:auto minmax(0, 1fr) auto;
+  gap:var(--s-4) var(--s-5);
+  align-items:center;
+  transition:background-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.set--top{ align-items:start; }
+.set__ico{
+  display:grid; place-items:center;
+  width:var(--s-7); height:var(--s-7);
+  border:var(--hair) solid var(--line);
+  color:var(--label);
+  font-size:var(--fs-chrome-lg);
+}
+.set__ico--amb{ color:var(--amb); border-color:rgba(var(--amb-rgb),.4); }
+.set__ico--red{ color:var(--red); border-color:rgba(var(--red-rgb),.4); }
+.set__ico img{ width:70%; height:auto; }
+.set__text{ display:flex; flex-direction:column; gap:var(--s-1); min-width:0; }
+.set__t{
+  display:flex; align-items:center; flex-wrap:wrap; gap:var(--s-3);
+  font-size:var(--fs-text-lg); font-weight:600; letter-spacing:var(--tr-head);
+  color:var(--text); line-height:1.3;
+}
+.set__d{ font-size:var(--fs-text-sm); color:var(--text-dim); line-height:1.5; }
+.set__aside{ display:flex; align-items:center; justify-content:flex-end; gap:var(--s-4); flex-wrap:wrap; }
+/* A row something has just pointed at — a search hit, a deep link. That IS
+   a state, and it is a brief one: the caller takes the class off again. */
+.set.is-found{ box-shadow:inset 2px 0 0 var(--acc); background-color:rgba(var(--acc-rgb),.06); }
+
+/* ==================================================================
+   TABLE  —  rows of facts
+   ------------------------------------------------------------------
+   The two voices, one component: the head is mono furniture, the
+   cells are what a person reads, and a measured column takes .num and
+   goes mono with tabular figures so the digits line up down the page.
+   Hairlines between rows, none around the table; wrap it in something
+   scrollable, because a table is the one thing that cannot reflow.
+   ================================================================== */
+.tbl-wrap{ overflow-x:auto; }
+.tbl{ width:100%; border-collapse:collapse; font-size:var(--fs-text-md); }
+.tbl th{
+  text-align:left;
+  padding:var(--s-3) var(--s-5);
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); font-weight:400; letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--label);
+  border-bottom:var(--hair) solid var(--line);
+  white-space:nowrap;
+}
+.tbl td{
+  padding:var(--s-4) var(--s-5);
+  border-bottom:var(--hair) solid var(--line);
+  vertical-align:middle;
+  color:var(--text-dim);
+}
+.tbl td:first-child{ color:var(--text); }
+.tbl tr:last-child td{ border-bottom:0; }
+.tbl td.num{
+  font-family:var(--mono); font-size:var(--fs-chrome-md);
+  letter-spacing:var(--tr-num); color:var(--label);
+  white-space:nowrap;
+}
+.tbl .r{ text-align:right; }
+
+/* ==================================================================
+   DIALOG  —  a question that has to be answered here
+   ------------------------------------------------------------------
+   A <dialog>, so the browser owns the top layer, the focus trap and
+   Escape. On --overlay like a menu: it must read over whatever the
+   page happens to have under it.
+
+   It is not a place to put a screen. If it needs a heading and a
+   scrollbar and three sections, it is a page.
+   ================================================================== */
+.dlg{
+  width:min(calc(100% - 2 * var(--page-pad)), var(--door-w));
+  max-width:none;
+  padding:0;
+  color:var(--text);
+  background-color:var(--overlay);
+  backdrop-filter:var(--overlay-blur);
+  -webkit-backdrop-filter:var(--overlay-blur);
+  border:var(--hair) solid var(--line-strong);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-2);
+}
+.dlg::backdrop{
+  background-color:rgba(0,0,0,.6);
+  backdrop-filter:var(--blur-1);
+  -webkit-backdrop-filter:var(--blur-1);
+}
+.dlg[open]{ animation:dlg-in var(--dur-2) var(--ease-out); }
+@keyframes dlg-in{ from{ opacity:0; translate:0 var(--s-3); } }
+.fx-lite .dlg[open]{ animation:none; }
+@media (prefers-reduced-motion: reduce){ .dlg[open]{ animation:none; } }
+
+.dlg__head{
+  position:relative;
+  display:flex; flex-direction:column; gap:var(--s-1);
+  padding:var(--s-5) var(--s-5) var(--s-4);
+  border-bottom:var(--hair) solid var(--line);
+}
+.dlg__eyebrow{
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--label);
+}
+.dlg__t{ margin:0; font-size:var(--fs-text-xl); font-weight:600; letter-spacing:var(--tr-head); overflow-wrap:anywhere; }
+.dlg__x{ position:absolute; top:var(--s-3); right:var(--s-3); }
+.dlg__body{ padding:var(--s-5); }
+.dlg__fields{ display:flex; flex-direction:column; gap:var(--s-4); }
+.dlg__p{ margin:0; color:var(--text-dim); font-size:var(--fs-text-md); }
+.dlg__foot{
+  display:flex; justify-content:flex-end; gap:var(--s-3); flex-wrap:wrap;
+  padding:var(--s-4) var(--s-5);
+  border-top:var(--hair) solid var(--line);
+}
+
+/* ==================================================================
+   TOAST  —  that happened
+   ------------------------------------------------------------------
+   A line that says what was just done, and goes away. It reports; it
+   does not mark a state, so its edge is --chrome and NOT the accent
+   (rule 1). The variants are statuses, the same licence a field error
+   has, and each carries a glyph as well as its colour (rule 6).
+
+   It lives in a region the page announces (role="status",
+   aria-live="polite"), and it is never the only place an outcome is
+   shown: a message that vanishes has not told anyone who was reading
+   something else.
+   ================================================================== */
+.toasts{
+  position:fixed; z-index:200;
+  right:var(--page-pad); top:calc(var(--nav-h) + var(--s-4));
+  display:flex; flex-direction:column; align-items:flex-end; gap:var(--s-3);
+  pointer-events:none;
+}
+.toast{
+  display:flex; align-items:center; gap:var(--s-3);
+  max-width:min(calc(100vw - 2 * var(--page-pad)), var(--door-w));
+  padding:var(--s-3) var(--s-4);
+  background-color:var(--overlay);
+  backdrop-filter:var(--overlay-blur);
+  -webkit-backdrop-filter:var(--overlay-blur);
+  border:var(--hair) solid var(--line-strong);
+  border-left:2px solid var(--chrome);
+  box-shadow:var(--shadow-2);
+  font-size:var(--fs-text-md);
+  animation:toast-in var(--dur-2) var(--ease-out);
+  transition:opacity var(--dur-2) var(--ease), translate var(--dur-2) var(--ease);
+}
+.toast.is-out{ opacity:0; translate:0 calc(var(--s-3) * -1); }
+@keyframes toast-in{ from{ opacity:0; translate:0 calc(var(--s-3) * -1); } }
+.fx-lite .toast{ animation:none; }
+@media (prefers-reduced-motion: reduce){ .toast{ animation:none; } }
+.toast--ok   { border-left-color:var(--ok); }
+.toast--amb  { border-left-color:var(--amb); }
+.toast--error{ border-left-color:var(--red); }
+.toast--error .fa{ color:var(--red); }
+
+/* ==================================================================
+   RAIL  —  the sections of one app, standing still
+   ------------------------------------------------------------------
+   The app bar says which APP you are in; this says which part of it,
+   and unlike a menu it does not go away. The current section is a
+   state, so it is the accent, marked on the LEADING EDGE — the same
+   mark .menu__option already uses, because it is the same idea.
+   `aria-current="page"` is what a screen reader reads; the class is
+   only what the sheet paints.
+
+   Below --bp-narrow it becomes a strip that scrolls sideways and the
+   marker moves to the bottom edge, because a leading edge in a row
+   points at nothing.
+   ================================================================== */
+.rail{ display:flex; flex-direction:column; gap:var(--s-4); min-width:0; }
+.rail__nav{ display:flex; flex-direction:column; padding:var(--s-1) 0; }
+.rail__nav .menu__option{ font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); }
+.rail__nav .menu__option[aria-current="page"]{
+  color:var(--acc);
+  background-color:rgba(var(--acc-rgb),.06);
+  border-left-color:var(--acc);
+  font-weight:600;
+}
+@media (hover: none){
+  .rail__nav .menu__option:hover:not([aria-current="page"]){
+    color:var(--text-dim); background:none; border-left-color:transparent;
+  }
+}
+
+/* ==================================================================
+   THE DOOR  —  the sign-in window
+   ------------------------------------------------------------------
+   The chapter in NEBULA.md says how it BEHAVES; this is what it looks
+   like, so the next app does not redraw it. One card on the app's own
+   backdrop, because signing in is a door in the same building and not
+   a lobby someone else built. Everything here is an object that
+   already exists — .site-bg, .btn--primary, the input reset, the
+   .brand-text lockup — so it costs the language almost nothing new.
+
+   It is --glass, not --overlay: it does not float over anything, it
+   IS the page. And it has no entrance: this screen covers no wait,
+   and the field under it is meant to be typed into on the first frame.
+   ================================================================== */
+.login-body{
+  min-height:100dvh;
+  display:grid; place-items:center;
+  padding:var(--s-5);
+}
+.login{ width:100%; max-width:var(--door-w); }
+.login__card{
+  display:flex; flex-direction:column; gap:var(--s-3);
+  background-color:var(--glass);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  border:var(--hair) solid var(--line);
+  border-radius:var(--radius);
+  padding:var(--s-6) var(--s-5) var(--s-5);
+  /* The exit, declared on the RESTING card so it runs the same way every
+     time: on success the card leaves under its own power and the
+     navigation waits for it, which turns a document swap into a hand-off
+     instead of a white flash. */
+  transition:opacity var(--boot-fade) var(--ease), scale var(--boot-fade) var(--ease-out);
+}
+.login__card.is-out{ opacity:0; scale:.97; pointer-events:none; }
+@media (prefers-reduced-motion: reduce){
+  /* keep the fade, drop the movement */
+  .login__card.is-out{ scale:1; }
+}
+.login__mark{ display:flex; align-items:center; gap:var(--s-3); margin-bottom:var(--s-4); }
+/* the lockup stacks here too: .nav__brand is the only other place that
+   holds one, and the door is not the app bar */
+.login__mark .brand-text{ display:flex; flex-direction:column; line-height:1.05; min-width:0; }
+.login__mark .brand-name{
+  font-family:var(--display-font);
+  font-size:calc(17px * var(--display-scale));
+  letter-spacing:var(--tr-display); text-transform:uppercase; color:var(--text);
+}
+.login__mark .brand-sub{
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:color-mix(in srgb, var(--acc-soft) 30%, var(--acc));
+}
+/* the version is a measured value, and it is data: not cased with the
+   label it sits in */
+.login__mark .brand-sub b{ font-weight:400; letter-spacing:var(--tr-num); color:var(--label); text-transform:none; }
+
+/* a heading in the READING voice — never the display face (rule 4) */
+.login__title{ margin:0; font-family:var(--sans); font-size:var(--fs-text-lg); font-weight:700; }
+.login__note{ margin:0 0 var(--s-3); color:var(--text-dim); font-size:var(--fs-text-sm); }
+
+/* Why you are looking at this page, when the app knows. The accent carries
+   it as a fill and a rule; the words stay --text, because the accent never
+   sits on its own tint (rule 1). NOT role="alert" — it answers a question,
+   it does not interrupt. */
+.login__why{
+  margin:0 0 var(--s-3);
+  padding:var(--s-3) var(--s-4);
+  border-left:2px solid var(--acc);
+  background-color:rgba(var(--acc-rgb),.08);
+  color:var(--text);
+  font-size:var(--fs-text-sm);
+}
+.login__label{
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  color:var(--label);
+}
+.login__field{ position:relative; }
+.login__field input{
+  /* 16px is the threshold under which iOS Safari zooms the page on focus,
+     leaving the layout scrolled sideways with no way back. A BEHAVIOUR, not
+     a type size: it does not come off the scale (rule 5's one exception). */
+  font-size:16px;
+  padding-block:var(--s-3);
+}
+/* a one-time code is read back digit by digit */
+.login__code{ font-family:var(--mono); letter-spacing:var(--tr-otp); text-align:center; }
+
+/* The reveal, inside the field. In the tab order on purpose: a reveal you
+   can only reach with a mouse is no use to the person most likely to need
+   it. The field keeps room for it. */
+.login__reveal{
+  position:absolute; top:50%; right:var(--s-3);
+  translate:0 -50%;
+  display:inline-flex; align-items:center; gap:var(--s-2);
+  background:none; border:0;
+  padding:var(--s-1) var(--s-2);
+  cursor:pointer;
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--text-ghost);
+  transition:color var(--dur-1) var(--ease);
+}
+@media (hover: hover){ .login__reveal:hover{ color:var(--chrome); } }
+.login__reveal:focus-visible{ color:var(--acc); }
+
+/* Amber, not red: Caps Lock is not a refusal, it is the reason the refusal
+   is about to happen. */
+.login__caps{
+  margin:0;
+  color:var(--amb);
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+}
+/* The one red message on the door. The glyph is what still says "refused"
+   without the red, and both appear by `hidden` toggling — a line that
+   animates in is a line you read late. */
+.login__error{
+  display:flex; align-items:baseline; gap:var(--s-2);
+  margin:0;
+  color:var(--red);
+  font-size:var(--fs-text-sm);
+}
+.login__error > .fa{ flex:none; }
+.login__submit{ margin-top:var(--s-3); min-height:var(--tap); }
+.login__foot{
+  margin:var(--s-4) 0 0;
+  padding-top:var(--s-4);
+  border-top:var(--hair) solid var(--line);
+  color:var(--text-ghost);
+  font-size:var(--fs-text-sm);
+  line-height:1.9;
+}
+.login__foot code{ font-family:var(--mono); color:var(--text-dim); }
+
 /* ==================================================================
    THE NARROW SCREEN
    ------------------------------------------------------------------
@@ -1489,6 +2088,22 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   .btn--sm{ min-height:36px; }
   .menu__option{ min-height:var(--tap); }
   .menu{ min-width:0; width:100%; }
+
+  /* The rail becomes a strip that scrolls sideways, and the marker moves
+     to the bottom edge: a leading edge in a row points at nothing. */
+  .rail__nav{ flex-direction:row; overflow-x:auto; padding:0; scrollbar-width:none; }
+  .rail__nav::-webkit-scrollbar{ display:none; }
+  .rail__nav .menu__option{ width:auto; flex:0 0 auto; border-left:0; border-bottom:2px solid transparent; }
+  .rail__nav .menu__option[aria-current="page"]{ border-bottom-color:var(--acc); }
+
+  /* the controls drop to their own line rather than squeezing the prose */
+  .set{ grid-template-columns:auto minmax(0, 1fr); }
+  .set__aside{ grid-column:1 / -1; justify-content:flex-start; }
+  .set__ico{ align-self:start; }
+
+  .toasts{ left:var(--page-pad); align-items:stretch; }
+  /* a static tag is a label, not a target: it does not take --tap */
+  .tag--static{ min-height:0; padding:var(--s-1) var(--s-3); }
 
   .kv{ grid-template-columns:1fr; gap:var(--s-0) var(--s-4); }
   .kv dt{ color:var(--text-dim); }
@@ -1521,4 +2136,35 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
   html{ scroll-behavior:auto; }
+}
+
+/* ==================================================================
+   UTILITIES, LAST
+   ------------------------------------------------------------------
+   These override components, and a class beats another class only by
+   coming later — so they come last, after every component and every
+   gate. A utility declared next to the base loses to the .tag it was
+   meant to correct, silently, and that is exactly the bug these two
+   were added to fix.
+   ================================================================== */
+
+/* Rule 4 says never text-transform DATA — a name, a path, an address, a
+   host, an identifier. The catch is that data often lands inside furniture
+   that IS cased: a .menu__head, a .tag, a .section__doc. This is the tool
+   for that, and it is the whole of it. */
+.u-nocase{ text-transform:none; }
+
+/* Out of the way of the eye, still in the layout and still a field a
+   password manager can see — display:none is what makes managers ignore it,
+   and what makes a screen reader skip a label that is doing real work. */
+.u-offscreen{
+  position:absolute;
+  /* not a size off the scale: a 1px box is how an element stays in the
+     accessibility tree and in a password manager's reach while taking no
+     room. It is absolute, so it needs no negative margin to stay out of
+     the layout either. */
+  width:1px; height:1px;
+  padding:0; border:0;
+  overflow:hidden; white-space:nowrap;
+  clip-path:inset(50%);
 }
