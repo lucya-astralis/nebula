@@ -156,8 +156,9 @@
     <a href="#voice"><i class="fa fa-align-left"></i> 04 · Voice</a>
     <a href="#measure"><i class="fa fa-scale-balanced"></i> 05 · Measure</a>
     <a href="#parts"><i class="fa fa-folder-tree"></i> 06 · Parts</a>
-    <a href="#wrong"><i class="fa fa-circle-info"></i> 07 · Wrong</a>
-    <a href="#build"><i class="fa fa-route"></i> 08 · Build one</a>
+    <a href="#door"><i class="fa fa-shield-halved"></i> 07 · The door</a>
+    <a href="#wrong"><i class="fa fa-circle-info"></i> 08 · Wrong</a>
+    <a href="#build"><i class="fa fa-route"></i> 09 · Build one</a>
   </aside>
 
   <div class="chapters" id="chapters">
@@ -840,7 +841,7 @@
   <!-- ============================================================
        06 — PARTS
        ============================================================ -->
-  <section class="chapter" id="parts" data-title="parts components buttons segmented tags menu fields panel hud">
+  <section class="chapter" id="parts" data-title="parts components buttons segmented tags menu fields panel hud mark avatar switch meter setting row table dialog toast rail utilities">
     <div class="section__head">
       <div class="section__slug"><span class="name">Parts</span></div>
     </div>
@@ -1049,10 +1050,480 @@
         <button class="btn" type="button" id="hud-fire"><i class="fa fa-camera"></i> Fire the reticle</button>
       </div>
     </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.mark</span><span>The house mark — hover it</span><span class="n">10</span></div>
+      <div class="spec__stage">
+        <span class="mark mark--nav" aria-hidden="true">
+            <svg class="mark__svg" viewBox="0 0 964 543" focusable="false">
+              <path class="piece" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
+        <path class="piece" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
+        <path class="piece" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
+        <path class="piece" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
+        <path class="piece" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
+        <path class="piece" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
+        <path class="piece" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
+        <path class="piece" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
+            </svg>
+            <div class="mark__ghost mark__ghost--r">
+              <svg class="mark__svg" viewBox="0 0 964 543" focusable="false">
+              <path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
+        <path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
+        <path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
+        <path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
+        <path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
+        <path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
+        <path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
+        <path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
+              </svg>
+            </div>
+            <div class="mark__ghost mark__ghost--b">
+              <svg class="mark__svg" viewBox="0 0 964 543" focusable="false">
+              <path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
+        <path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
+        <path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
+        <path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
+        <path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
+        <path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
+        <path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
+        <path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
+              </svg>
+            </div>
+            </span>
+        <span class="mark mark--foot" aria-hidden="true">
+            <svg class="mark__svg" viewBox="0 0 964 543" focusable="false">
+              <path class="piece" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
+        <path class="piece" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
+        <path class="piece" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
+        <path class="piece" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
+        <path class="piece" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
+        <path class="piece" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
+        <path class="piece" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
+        <path class="piece" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
+            </svg>
+            </span>
+      </div>
+      <p class="spec__note">
+        Inline SVG, never an <code>&lt;img&gt;</code>: an image is a closed
+        document, and nothing outside it can reach a path — no fill, no draw,
+        no split. Hover the first one and the two colour flanks pull apart in
+        <code>steps(4, end)</code> and snap back. The second is
+        <code>--foot</code>: a stamp, not a control, so it carries no ghosts
+        and does not move. Those two hexes are <b>not</b> palette colours and
+        appear on nothing but a copy of the mark itself.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.avatar</span><span>Who this is, in a square</span><span class="n">11</span></div>
+      <div class="spec__stage">
+        <span class="avatar avatar--lg">AW</span>
+        <span class="avatar">AW</span>
+        <span class="avatar avatar--sm">AW</span>
+        <button class="avatar avatar--sm avatar--btn" type="button" aria-expanded="false" aria-label="Demo account menu">AW</button>
+      </div>
+      <p class="spec__note">
+        No accent: an avatar is an <b>identity</b>, not a state (rule 01). The
+        letters are a name — data — so they are sans and uncased, and the frame
+        is furniture. The last one is <code>--btn</code>: it opens something,
+        so it is a real button and says so when it is open.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.switch</span><span>One setting, on or off</span><span class="n">12</span></div>
+      <div class="spec__stage">
+        <span class="switch-wrap">
+          <span class="switch__word" aria-hidden="true">On</span>
+          <button class="switch" type="button" role="switch" aria-checked="true" aria-label="Demo setting one" data-demo-switch></button>
+        </span>
+        <span class="switch-wrap">
+          <span class="switch__word" aria-hidden="true">Off</span>
+          <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Demo setting two" data-demo-switch></button>
+        </span>
+        <span class="switch-wrap">
+          <span class="switch__word" aria-hidden="true">Off</span>
+          <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Demo setting three" disabled></button>
+        </span>
+      </div>
+      <p class="spec__note">
+        <code>.seg</code> answers <em>pick one of these</em>; this answers
+        <em>is this on</em>, and every settings screen needs both. On is a
+        state, so on is the accent as a <b>fill</b>. The word beside it is not
+        decoration: hue alone never says anything (rule 06), and the control is
+        a real <code>&lt;button role="switch" aria-checked&gt;</code> so a
+        screen reader hears what the word says. Its touch target is a
+        transparent margin — growing the track instead gives you a 44px box
+        with a 12px knob rattling inside it.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.meter</span><span>How much of something there is</span><span class="n">13</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="demo-meter">
+          <span class="meter" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="64" id="demo-meter"><span class="meter__fill" id="demo-meter-fill"></span></span>
+          <span class="demo-meter__n num" id="demo-meter-n">64 %</span>
+        </div>
+        <div class="row note--gap">
+          <button class="btn btn--sm" type="button" data-demo-meter="-15">Less</button>
+          <button class="btn btn--sm" type="button" data-demo-meter="15">More</button>
+        </div>
+        <div class="demo-meter">
+          <span class="meter meter--amb" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="91" data-p="91"><span class="meter__fill"></span></span>
+          <span class="demo-meter__n num">91 %</span>
+        </div>
+        <div class="demo-meter">
+          <span class="meter meter--red" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="99" data-p="99"><span class="meter__fill"></span></span>
+          <span class="demo-meter__n num">99 %</span>
+        </div>
+      </div>
+      <p class="spec__note">
+        Rule 01 licenses the accent for progress fills; this is the fill. The
+        value rides a custom property (<code>--p</code>) set through the CSSOM,
+        because a strict CSP drops an inline <code>style</code> attribute
+        <b>silently</b>. The figure beside the bar is part of the component: a
+        bar with no number is a mood, and a screen reader reads
+        <code>aria-valuenow</code>, never a width. Amber and red are for a
+        quantity that has become a problem — they are statuses, not a theme.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.set</span><span>The settings row</span><span class="n">14</span></div>
+      <div class="spec__stage spec__stage--block spec__stage--flush">
+        <div class="stack">
+          <div class="panel set">
+            <span class="set__ico"><i class="fa fa-shield-halved"></i></span>
+            <div class="set__text">
+              <span class="set__t">Two-factor authentication</span>
+              <span class="set__d">Every sign-in on a new device asks for a second factor.</span>
+            </div>
+            <div class="set__aside">
+              <span class="switch-wrap">
+                <span class="switch__word" aria-hidden="true">On</span>
+                <button class="switch" type="button" role="switch" aria-checked="true" aria-label="Demo two-factor" data-demo-switch></button>
+              </span>
+            </div>
+          </div>
+          <div class="panel set">
+            <span class="set__ico set__ico--amb"><i class="fa fa-circle-info"></i></span>
+            <div class="set__text">
+              <span class="set__t">Recovery</span>
+              <span class="set__d">A key to print, or a person you trust.</span>
+            </div>
+            <div class="set__aside">
+              <span class="status"><span class="dot dot--amb"></span>Not set up</span>
+              <button class="btn" type="button">Set up</button>
+            </div>
+          </div>
+          <div class="panel set set--top">
+            <span class="set__ico set__ico--red"><i class="fa fa-xmark"></i></span>
+            <div class="set__text">
+              <span class="set__t">Delete this album <span class="tag tag--static">irreversible</span></span>
+              <span class="set__d">Every photo, caption and link goes with it after 30 days.</span>
+            </div>
+            <div class="set__aside"><button class="btn btn--danger" type="button">Delete …</button></div>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        Icon, name, one line of prose, then the controls — inside a
+        <code>.stack</code>, so the rows are separated by hairlines instead of
+        being a pile of boxes. The name is read, so it is sans; the icon box is
+        furniture. Below <code>--bp-narrow</code> the controls drop to their own
+        line rather than squeezing the prose to nothing.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.tbl</span><span>Rows of facts</span><span class="n">15</span></div>
+      <div class="spec__stage spec__stage--block spec__stage--flush">
+        <div class="tbl-wrap u-glass">
+          <table class="tbl">
+            <thead><tr><th scope="col">Album</th><th scope="col">Where</th><th scope="col" class="r">Photos</th><th scope="col">Indexed</th></tr></thead>
+            <tbody>
+              <tr><td>Pride_MUC_26</td><td>München, DE</td><td class="num r">412</td><td class="num">2026-07-12</td></tr>
+              <tr><td>Kyoto_Spring</td><td>Kyoto, JP</td><td class="num r">1 284</td><td class="num">2026-04-03</td></tr>
+              <tr><td>Hafenrunde</td><td>Hamburg, DE</td><td class="num r">86</td><td class="num">2026-02-28</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="spec__note">
+        The two voices in one component: the head is mono furniture, the cells
+        are what a person reads, and a measured column takes <code>.num</code>
+        so the digits line up down the page. The album names are <b>data</b> —
+        <code>Pride_MUC_26</code> is not <code>PRIDE_MUC_26</code> — which is
+        why nothing here cases a cell. Wrap it in something scrollable: a table
+        is the one thing that cannot reflow.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.dlg</span><span>A question that has to be answered here</span><span class="n">16</span></div>
+      <div class="spec__stage">
+        <button class="btn" type="button" id="demo-dlg-open">Open the dialog</button>
+      </div>
+      <p class="spec__note">
+        A real <code>&lt;dialog&gt;</code>, so the browser owns the top layer,
+        the focus trap and Escape — three things nobody reimplements correctly.
+        On <code>--overlay</code> like a menu, because it has to read over
+        whatever the page happens to have underneath. It is not a place to put
+        a screen: if it needs a heading, a scrollbar and three sections, it is
+        a page.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.toast</span><span>That happened</span><span class="n">17</span></div>
+      <div class="spec__stage">
+        <button class="btn" type="button" data-demo-toast="">Report</button>
+        <button class="btn" type="button" data-demo-toast="ok">Done</button>
+        <button class="btn" type="button" data-demo-toast="amb">Careful</button>
+        <button class="btn" type="button" data-demo-toast="error">Refused</button>
+      </div>
+      <p class="spec__note">
+        Its edge is <code>--chrome</code>, <b>not</b> the accent: a toast
+        reports that something happened, and reporting is not a state (rule
+        01 — two apps had this wrong before it was written down). The variants
+        are statuses, the same licence <code>.field__error</code> has, and each
+        carries a glyph as well as its colour. Two things it must never be: the
+        only place an outcome is shown — a message that vanishes has not told
+        anyone who was reading something else — or an error that needs a
+        decision. That is a <code>.dlg</code>.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.rail</span><span>The sections of one app, standing still</span><span class="n">18</span></div>
+      <div class="spec__stage spec__stage--block">
+        <nav class="rail" aria-label="Demo sections">
+          <div class="rail__nav u-glass">
+            <a class="menu__option" href="#parts" aria-current="page"><i class="fa fa-house fa-fw"></i> Overview</a>
+            <a class="menu__option" href="#parts"><i class="fa fa-images fa-fw"></i> Albums</a>
+            <a class="menu__option" href="#parts"><i class="fa fa-shield-halved fa-fw"></i> Security</a>
+            <a class="menu__option" href="#parts"><i class="fa fa-database fa-fw"></i> Storage</a>
+          </div>
+        </nav>
+      </div>
+      <p class="spec__note">
+        The app bar says which <b>app</b> you are in; the rail says which part
+        of it, and unlike a menu it does not go away. The current section is a
+        state, so it is the accent, marked on the leading edge — the same mark
+        <code>.menu__option</code> already uses, because it is the same idea.
+        <code>aria-current="page"</code> is what a screen reader reads; the
+        class is only what the sheet paints. Narrow the window past
+        <code>--bp-narrow</code> and it becomes a strip that scrolls sideways,
+        with the marker on the bottom edge: a leading edge in a row points at
+        nothing.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>.u-nocase · .u-offscreen · [hidden]</span><span>The three that are not components</span><span class="n">19</span></div>
+      <div class="spec__stage">
+        <span class="menu__head">Sort by</span>
+        <span class="menu__head u-nocase">alex.winter@lucya.systems</span>
+        <span class="tag tag--static">Primary</span>
+        <span class="tag tag--static u-nocase">cloud.winter.home</span>
+      </div>
+      <p class="spec__note">
+        <code>.u-nocase</code> is rule 04's missing tool. The rule — never
+        <code>text-transform</code> data — is easy to keep until data lands
+        <b>inside</b> furniture that is cased: a <code>.menu__head</code>, a
+        <code>.tag</code>, a <code>.section__doc</code>. Compare the two pairs
+        above. <code>.u-offscreen</code> is its opposite number for the
+        accessibility tree: in the layout and in a password manager's reach,
+        out of the eye's way, because <code>display:none</code> is what makes
+        both of them ignore it. Both live at the <b>end</b> of the sheet — a
+        utility declared before the component it corrects loses to it silently.
+        And <code>[hidden]</code> wins over every component's own display,
+        which is the one <code>!important</code> in the language.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       07 — THE DOOR
+       ============================================================ -->
+  <section class="chapter" id="door" data-title="door login sign in password reveal caps lock lockout reason">
+    <div class="section__head">
+      <div class="section__slug"><span class="name">The door</span></div>
+    </div>
+    <p class="chapter__lead">
+      The one screen every visitor sees and that covers nothing. It is not a
+      seventh rule — it is the six applied to a page that has to be decided
+      once and never again. <code>nebula.css</code> carries its looks; what an
+      app writes is the markup and the script.
+    </p>
+
+    <div class="spec">
+      <div class="spec__label"><span>.login__card</span><span>The card, as it stands on the page</span><span class="n">01</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="login">
+          <form class="login__card" id="demo-door" novalidate>
+            <span class="login__mark">
+              <span class="mark mark--door" aria-hidden="true">
+            <svg class="mark__svg" viewBox="0 0 964 543" focusable="false">
+              <path class="piece" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
+        <path class="piece" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
+        <path class="piece" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
+        <path class="piece" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
+        <path class="piece" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
+        <path class="piece" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
+        <path class="piece" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
+        <path class="piece" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
+            </svg>
+            <div class="mark__ghost mark__ghost--r">
+              <svg class="mark__svg" viewBox="0 0 964 543" focusable="false">
+              <path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
+        <path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
+        <path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
+        <path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
+        <path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
+        <path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
+        <path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
+        <path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
+              </svg>
+            </div>
+            <div class="mark__ghost mark__ghost--b">
+              <svg class="mark__svg" viewBox="0 0 964 543" focusable="false">
+              <path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/>
+        <path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/>
+        <path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/>
+        <path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/>
+        <path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/>
+        <path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/>
+        <path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/>
+        <path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/>
+              </svg>
+            </div>
+            </span>
+              <span class="brand-text">
+                <span class="brand-name">lucya.systems</span>
+                <span class="brand-sub">console <b>1.4.0</b></span>
+              </span>
+            </span>
+
+            <h1 class="login__title">Sign in</h1>
+            <p class="login__why">That session had been idle for 30 minutes, so it ended.</p>
+            <p class="login__note">
+              The console edits the files this gallery is configured by. It is
+              the only part of it that writes.
+            </p>
+
+            <input class="u-offscreen" type="text" name="username" value="operator"
+                   autocomplete="username" readonly tabindex="-1" aria-hidden="true">
+
+            <label class="login__label" for="demo-pw">Operator password</label>
+            <div class="login__field">
+              <input type="password" id="demo-pw" name="password" autocomplete="current-password"
+                     aria-describedby="demo-caps demo-error">
+              <button type="button" class="login__reveal" id="demo-reveal"
+                      aria-pressed="false" aria-controls="demo-pw"><i class="fa fa-eye"></i><span class="login__reveal-label">Show</span></button>
+            </div>
+
+            <p class="login__caps" id="demo-caps" role="status" hidden>Caps Lock is on.</p>
+            <p class="login__error" id="demo-error" role="alert" hidden><i class="fa fa-circle-exclamation"></i><span class="login__error-text"></span></p>
+
+            <button type="submit" class="btn btn--primary login__submit" id="demo-submit">
+              <i class="fa fa-arrow-right"></i><span class="login__submit-label">Sign in</span>
+            </button>
+
+            <p class="login__foot">
+              Lost the password? Set a new one on the host:
+              <code>python -m aperture.cli passwd</code>
+            </p>
+          </form>
+        </div>
+      </div>
+      <p class="spec__note">
+        One <code>--glass</code> card on the app's <b>own</b> backdrop, because
+        signing in is a door in the same building and not a lobby someone else
+        built. It is glass, not <code>--overlay</code>: it does not float over
+        anything, it <em>is</em> the page. Every part of it already existed —
+        <code>.site-bg</code>, <code>.btn--primary</code>, the input reset, the
+        <code>.brand-text</code> lockup — so the door cost the language almost
+        nothing new. The version sits on the card because behind a password the
+        footer is not reachable, and it is the first thing to check when
+        something behaves unlike its notes.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>states</span><span>Every one it has — try them</span><span class="n">02</span></div>
+      <div class="spec__stage">
+        <button class="btn" type="button" data-door-state="refused">Wrong password</button>
+        <button class="btn" type="button" data-door-state="caps">Caps Lock</button>
+        <button class="btn" type="button" data-door-state="locked">Too many tries</button>
+        <button class="btn" type="button" data-door-state="offline">No answer</button>
+        <button class="btn" type="button" data-door-state="success">Success</button>
+        <button class="btn btn--ghost" type="button" data-door-state="reset">Reset</button>
+      </div>
+      <p class="spec__note">
+        <b>Refused</b> puts the server's own sentence in the
+        <code>role="alert"</code> line and selects the field, so the next
+        attempt is simply typing again — no shake, no red border flash: the
+        words and the glyph carry it. <b>Caps Lock</b> is amber, not red,
+        because it is the reason a refusal is about to happen, and it is a
+        <code>role="status"</code> that must not interrupt. <b>Locked</b> counts
+        down from <code>Retry-After</code> and re-enables itself — a lockout
+        printed once and then left standing reads as broken. <b>No answer</b> is
+        worded as what it is; a network failure is not a wrong password.
+        <b>Success</b> fades the card over <code>--boot-fade</code> and drops it
+        to <code>scale: .97</code>, and only then navigates, so a document swap
+        becomes a hand-off instead of a white flash.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>?reason=</span><span>Why you are here — an allowlist, never an echo</span><span class="n">03</span></div>
+      <div class="spec__stage">
+        <button class="btn btn--sm" type="button" data-door-reason="timeout">timeout</button>
+        <button class="btn btn--sm" type="button" data-door-reason="signout">signout</button>
+        <button class="btn btn--sm" type="button" data-door-reason="expired">expired</button>
+        <button class="btn btn--sm" type="button" data-door-reason="password">password</button>
+        <button class="btn btn--sm btn--danger" type="button" data-door-reason="&lt;script&gt;alert(1)&lt;/script&gt;">&lt;script&gt;…</button>
+      </div>
+      <p class="spec__note">
+        The query string is attacker-controlled and this page is
+        <b>unauthenticated</b>, so nothing from it is ever echoed: the parameter
+        only picks a key from a fixed table, and an unknown key says nothing at
+        all — press the last button. Each text names the cause <em>and</em> what
+        happens now, because landing on a sign-in page with no explanation reads
+        as the tool having thrown you out. And there is no <code>next=</code>:
+        an app with one URL gains nothing from it and gets an open-redirect sink.
+        What is lost across the door is which screen you were on, and that is
+        remembered on the app's side.
+      </p>
+    </div>
+
+    <div class="spec">
+      <div class="spec__label"><span>never</span><span>What the door does not do</span><span class="n">04</span></div>
+      <div class="spec__stage spec__stage--block">
+        <ul class="dont">
+          <li>An entrance animation — this screen covers no wait, and the field has <code>autofocus</code>.</li>
+          <li>A shake, a pulsing button, a typing effect, a progress bar.</li>
+          <li>A spinner for a sub-second request: the submit button disables, the label stays put.</li>
+          <li>A success tick before the navigation.</li>
+          <li>A "remember me" — how long a session lives is the server's decision.</li>
+          <li>Social buttons, an illustration, marketing. <em>If a mark states no fact, delete it.</em></li>
+          <li>A modal on the app: nothing of the tool renders before there is a session to render it for.</li>
+        </ul>
+      </div>
+      <p class="spec__note">
+        Every one of those is a delay or a decoration on the screen people see
+        most often and want to leave soonest. The full list of what it
+        <em>does</em> — the parts, the states, the three movements it is allowed
+        — is the <b>The door</b> chapter in <code>NEBULA.md</code>.
+      </p>
+    </div>
   </section>
 
   <!-- ============================================================
-       07 — WRONG
+       08 — WRONG
        ============================================================ -->
   <section class="chapter" id="wrong" data-title="wrong antipatterns mistakes bands stamps">
     <div class="section__head">
@@ -1131,7 +1602,7 @@
   </section>
 
   <!-- ============================================================
-       08 — BUILD ONE  (the instructions for Claude)
+       09 — BUILD ONE  (the instructions for Claude)
        ============================================================ -->
   <section class="chapter" id="build" data-title="build claude instructions how to make a nebula app">
     <div class="section__head">
@@ -1341,6 +1812,26 @@ class; never signal state with hue alone.</pre>
   <span class="heresy-flag__what" id="heresy-what">—</span>
   <button class="btn btn--sm" type="button" id="heresy-restore">Restore</button>
 </div>
+
+<dialog class="dlg" id="demo-dlg" aria-labelledby="demo-dlg-t">
+  <header class="dlg__head">
+    <span class="dlg__eyebrow">Album</span>
+    <h2 class="dlg__t" id="demo-dlg-t">Delete Pride_MUC_26?</h2>
+    <button class="btn btn--ghost btn--icon dlg__x" type="button" data-demo-dlg-close aria-label="Close"><i class="fa fa-xmark"></i></button>
+  </header>
+  <div class="dlg__body">
+    <p class="dlg__p">
+      412 photos, their captions and every share link go with it. The files on
+      disk stay where they are.
+    </p>
+  </div>
+  <footer class="dlg__foot">
+    <button class="btn btn--ghost" type="button" data-demo-dlg-close>Keep it</button>
+    <button class="btn btn--danger btn--primary" type="button" data-demo-dlg-close data-demo-toast="error">Delete</button>
+  </footer>
+</dialog>
+
+<div class="toasts" id="demo-toasts" role="status" aria-live="polite"></div>
 
 </body>
 </html>

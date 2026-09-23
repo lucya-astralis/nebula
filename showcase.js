@@ -669,6 +669,215 @@
     });
   });
 
+
+  /* ================================================================
+     6 — THE NEW VOCABULARY, LIVE
+     ----------------------------------------------------------------
+     The specimens in Parts, and the door chapter. Everything here only
+     drives state the sheet already paints: a class, an attribute, or a
+     custom property through the CSSOM — never an inline style, because
+     the apps this language dresses run under a strict CSP.
+     ================================================================ */
+
+  /* ---- the switch: the word and aria-checked move together ---- */
+  $$('[data-demo-switch]').forEach(function (sw) {
+    sw.addEventListener('click', function () {
+      var on = sw.getAttribute('aria-checked') !== 'true';
+      sw.setAttribute('aria-checked', String(on));
+      var word = sw.parentNode.querySelector('.switch__word');
+      if (word) word.textContent = on ? 'On' : 'Off';
+    });
+  });
+
+  /* ---- the meter: --p, and the figure beside it ---- */
+  $$('.meter[data-p] .meter__fill').forEach(function (fill) {
+    fill.style.setProperty('--p', fill.parentNode.dataset.p);
+  });
+  (function () {
+    var track = $('#demo-meter'), fill = $('#demo-meter-fill'), label = $('#demo-meter-n');
+    if (!track) return;
+    var value = 64;
+    var paint = function () {
+      fill.style.setProperty('--p', value);
+      track.setAttribute('aria-valuenow', value);
+      label.textContent = value + ' %';
+    };
+    paint();
+    $$('[data-demo-meter]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        value = Math.max(0, Math.min(100, value + parseInt(btn.dataset.demoMeter, 10)));
+        paint();
+      });
+    });
+  })();
+
+  /* ---- the dialog: the browser owns the top layer and Escape ---- */
+  (function () {
+    var dlg = $('#demo-dlg'), open = $('#demo-dlg-open');
+    if (!dlg || !open) return;
+    open.addEventListener('click', function () { dlg.showModal(); });
+    $$('[data-demo-dlg-close]', dlg).forEach(function (b) {
+      b.addEventListener('click', function () { dlg.close(); });
+    });
+    /* a click on the backdrop, which is the dialog element itself */
+    dlg.addEventListener('click', function (e) {
+      if (e.target !== dlg) return;
+      var r = dlg.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+    });
+  })();
+
+  /* ---- toasts ---- */
+  var toastRegion = $('#demo-toasts');
+  var TOAST_WORDS = {
+    '':    ['fa-circle-info', 'Album reindexed — 412 photos.'],
+    ok:    ['fa-check', 'Configuration saved.'],
+    amb:   ['fa-circle-info', 'Two photos had no EXIF date.'],
+    error: ['fa-circle-exclamation', 'The album could not be written.']
+  };
+  function demoToast(kind) {
+    if (!toastRegion) return;
+    var spec = TOAST_WORDS[kind] || TOAST_WORDS[''];
+    var t = document.createElement('div');
+    t.className = 'toast' + (kind ? ' toast--' + kind : '');
+    var i = document.createElement('i');
+    i.className = 'fa ' + spec[0];
+    i.setAttribute('aria-hidden', 'true');
+    var words = document.createElement('span');
+    words.textContent = spec[1];
+    t.appendChild(i);
+    t.appendChild(words);
+    toastRegion.appendChild(t);
+    setTimeout(function () {
+      t.classList.add('is-out');
+      setTimeout(function () { t.remove(); }, 400);
+    }, 3200);
+  }
+  $$('[data-demo-toast]').forEach(function (btn) {
+    btn.addEventListener('click', function () { demoToast(btn.dataset.demoToast); });
+  });
+
+  /* ================================================================
+     THE DOOR
+     ----------------------------------------------------------------
+     The card in that chapter is the real one, so the states are the
+     real ones too: this is what an app's door runs, minus the fetch in
+     the middle.
+     ================================================================ */
+  (function () {
+    var form = $('#demo-door');
+    if (!form) return;
+    var field = $('#demo-pw'), caps = $('#demo-caps');
+    var error = $('#demo-error'), errorText = $('.login__error-text', error);
+    var submit = $('#demo-submit'), submitLabel = $('.login__submit-label', submit);
+    var reveal = $('#demo-reveal'), why = $('.login__why', form);
+    var card = form, ticking = null;
+
+    /* Caps Lock is read on keydown AND keyup, which is what makes the hint
+       appear on the keystroke that turns it on rather than on the next one */
+    function checkCaps(e) {
+      if (typeof e.getModifierState !== 'function') return;
+      caps.hidden = !e.getModifierState('CapsLock');
+    }
+    field.addEventListener('keydown', checkCaps);
+    field.addEventListener('keyup', checkCaps);
+    field.addEventListener('blur', function () { caps.hidden = true; });
+
+    /* the reveal puts focus back with the caret where it was */
+    var revealLabel = $('.login__reveal-label', reveal), revealIcon = $('.fa', reveal);
+    reveal.addEventListener('click', function () {
+      var shown = field.type === 'text';
+      var at = field.selectionStart;
+      field.type = shown ? 'password' : 'text';
+      revealLabel.textContent = shown ? 'Show' : 'Hide';
+      revealIcon.classList.toggle('fa-eye', shown);
+      revealIcon.classList.toggle('fa-eye-slash', !shown);
+      reveal.setAttribute('aria-pressed', String(!shown));
+      field.focus();
+      try { field.setSelectionRange(at, at); } catch (e) { /* not every type allows it */ }
+    });
+
+    function fail(message) {
+      errorText.textContent = message;
+      error.hidden = false;
+      field.select();
+      field.focus();
+    }
+    function reset() {
+      clearInterval(ticking);
+      ticking = null;
+      error.hidden = true;
+      caps.hidden = true;
+      submit.disabled = false;
+      field.disabled = false;
+      submitLabel.textContent = 'Sign in';
+      card.classList.remove('is-out');
+      field.value = '';
+    }
+    /* a lockout printed once and then left standing is indistinguishable from
+       a broken form; this one runs down and lets go */
+    function lockFor(seconds) {
+      clearInterval(ticking);
+      var left = seconds;
+      submit.disabled = true;
+      field.disabled = true;
+      var paint = function () {
+        submitLabel.textContent = 'Locked — ' + left + 's';
+        errorText.textContent = 'Too many attempts. The door is shut for a moment.';
+        error.hidden = false;
+      };
+      paint();
+      ticking = setInterval(function () {
+        left -= 1;
+        if (left > 0) { paint(); return; }
+        reset();
+        field.focus();
+      }, 1000);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      fail('That password is not right.');
+    });
+
+    var STATES = {
+      refused: function () { fail('That password is not right.'); },
+      caps:    function () { caps.hidden = false; field.focus(); },
+      locked:  function () { lockFor(8); },
+      offline: function () { fail('The console did not answer. Is it still running?'); },
+      success: function () {
+        error.hidden = true;
+        card.classList.add('is-out');
+        /* the real door navigates on transitionend; here it comes back */
+        setTimeout(reset, 1400);
+      },
+      reset: reset
+    };
+    $$('[data-door-state]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var run = STATES[btn.dataset.doorState];
+        if (run) run();
+      });
+    });
+
+    /* The reason line, as the allowlist it is: the button hands over a KEY,
+       and anything that is not one of the four says nothing at all. There is
+       no branch in which the parameter itself reaches the page. */
+    var REASONS = {
+      timeout:  'That session had been idle for 30 minutes, so it ended.',
+      signout:  'Signed out. The console is closed until you sign in again.',
+      expired:  'That session reached its twelve-hour limit and ended.',
+      password: 'The console password was changed, which ends every session. Sign in with the new one.'
+    };
+    $$('[data-door-reason]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var text = REASONS[btn.dataset.doorReason] || '';
+        why.textContent = text;
+        why.hidden = !text;
+      });
+    });
+  })();
+
   /* ---- boot ---- */
   applyAccent(DEFAULT_ACCENT, true);
   paintSwatches();

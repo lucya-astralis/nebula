@@ -712,3 +712,30 @@ html.heresy-voice  .heresy-flag{ display:flex; }
   .ruler li{ grid-template-columns:70px 44px minmax(0,1fr); gap:var(--s-3); }
   .scale-row{ grid-template-columns:1fr; gap:var(--s-2); }
 }
+
+/* ---- the meter specimen: a bar always travels with its figure ---- */
+.demo-meter{
+  display:flex; align-items:center; gap:var(--s-4);
+  margin-bottom:var(--s-3);
+}
+.demo-meter .meter{ flex:1; }
+.demo-meter__n{
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-num);
+  color:var(--label);
+  min-width:5ch; text-align:right;
+}
+
+/* ---- the door's "never" list: plain prose, one rule per line ---- */
+.dont{
+  list-style:none; margin:0; padding:0;
+  display:flex; flex-direction:column; gap:var(--s-3);
+  font-size:var(--fs-text-md); color:var(--text-dim);
+}
+.dont li{ display:flex; gap:var(--s-3); align-items:baseline; }
+.dont li::before{
+  content:" d7";
+  color:var(--red);
+  font-family:var(--mono);
+  flex:none;
+}
