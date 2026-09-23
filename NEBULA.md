@@ -279,6 +279,129 @@ field error carries a glyph as well as the red.
 
 ---
 
+## The door — how a sign-in window behaves
+
+A sign-in window is not a seventh rule. It is the six rules applied to the one
+screen every visitor sees first and that covers nothing, and it is written down
+because every part of it was decided once and should never be decided again.
+The reference is the console's door: `aperture/console/templates/login.html`,
+`static/login.js`, and the `THE DOOR` block in `static/style.css`. A new app's
+door behaves exactly like it.
+
+### What it is
+
+- **Its own document, not a modal.** Nothing of the app renders before there is
+  a session to render it for: no tree, no counts, no paths, no names. An overlay
+  on the app has already loaded the thing it is guarding. HTML routes that meet
+  a missing session answer `303 → /login`; API routes answer `401` JSON, never
+  the form — a `fetch()` that receives a login page renders a stylesheet into a
+  table.
+- **The same room.** The door wears the app's own backdrop (`.site-bg`, the same
+  `<picture>` with the wide and square cut) under the same wallpaper tokens.
+  Signing in is walking through a door in the same building, not a lobby
+  someone else built.
+- **One card, centred.** `100dvh` grid, `place-items: center`, the card capped
+  at a readable width (420px), `--page-pad`-class gutter around it so it never
+  touches a phone's edge. The card is `--glass` + `--glass-blur` + one `--hair`
+  of `--line` and `--radius` — a pane like every other (rule 3), **not**
+  `--overlay`: it does not float over anything, it *is* the page.
+- **Progressive enhancement.** A real `<form method="post">` with a real
+  `<button type="submit">`. Without the script the browser still posts it. The
+  script only makes it better: post JSON, keep the page, put the answer next to
+  the field. A wrong password never costs a navigation.
+
+### What is on it, top to bottom
+
+| Part | Voice / token | Why |
+|---|---|---|
+| The mark + wordmark lockup, with the **version** | `.brand-text`, `.brand-sub` | Behind a password the footer is unreachable, and the version is the first thing to check when the tool behaves unlike its notes |
+| Title — "Sign in" | sans, `--fs-text-lg`, 700 | A heading in the reading voice, never the display face (rule 4) |
+| **Why you are here**, when the app knows | `.login__why`: `--acc` left rule over a faint accent fill, text in `--text` | The accent never sits on its own tint (rule 1). Not `role="alert"` — it answers a question, it does not interrupt |
+| One line on what this door guards | `--text-dim`, `--fs-text-sm` | Reading copy bottoms out at `--text-dim` |
+| Field label | mono, uppercase, tracked, `--label` | Furniture (rule 4). A real `<label for>` |
+| The field, with the reveal inside it | input reset, 16px | The 16px is the iOS zoom threshold (rule 5's exception) |
+| Caps Lock status | amber, mono | Amber, not red: it is the reason a refusal is *about* to happen |
+| The refusal | `--red` + a glyph, `role="alert"` | The one red message on the door. Never hue alone (rule 6) |
+| One `.btn--primary` — the one that commits | glyph + word | Exactly one primary per row |
+| The way back if the password is lost | `--text-ghost` over a hairline, the command in mono | A door without a "lost the key" note is a wall |
+
+Nothing else. No "remember me" (the session lifetime is the server's decision,
+not a checkbox's), no social buttons, no decorative illustration, no marketing.
+*If a mark states no fact, delete it.*
+
+### The reason line is an allowlist
+
+The query string is attacker-controlled and the door is **unauthenticated**, so
+nothing from it is ever echoed. `?reason=` only picks a key from a fixed table
+(`timeout`, `signout`, `expired`, `password`); an unknown key says nothing at
+all. Each text names the cause and what happens now — *"That session had been
+idle for 30 minutes, so it ended."* — because landing on a sign-in page without
+an explanation reads as the tool having thrown you out.
+
+**No `next=` parameter.** An app with one URL gains nothing from it and gets an
+open-redirect sink. What is lost across the door is *which screen you were on*,
+and that is remembered on the app's side (a one-shot note in `sessionStorage`,
+written just before the app sends you to the door, read once on the way back).
+
+### Behaviour, state by state
+
+| State | What the door does |
+|---|---|
+| **First frame** | The card is simply there. **No entrance animation**, and the field has `autofocus`: this screen covers no wait, and the field is meant to be typed into on the first frame. An entrance on a door is a delay with a costume on |
+| **Typing** | Nothing moves. Caps Lock is read on `keydown` *and* `keyup` (so the hint appears on the keystroke that turns it on) and hidden on `blur`. It is `role="status"`, wired into the field's `aria-describedby` |
+| **Reveal** | A real `<button type="button">` in the tab order — `aria-pressed`, `aria-controls`, eye / eye-slash glyph + the word Show/Hide as separate nodes. Focus returns to the field **with the caret where it was**. Its hover repaints, so it sits behind `(hover: hover)` |
+| **Enter** | Handled outright (`requestSubmit()`), not left to implicit submission, which some webviews and automation drop. Skip it while `isComposing` (IME input) |
+| **In flight** | The submit button is `disabled`; the label does not change and nothing spins. A spinner for a sub-second request is a flicker |
+| **Refused** | The server's own sentence goes into the `role="alert"` line, the field is **selected and focused** so the next attempt is simply typing again. **No shake**, no red border flash: the words and the glyph carry it |
+| **Locked out** | Throttled server-side (a few free tries, then exponential backoff to a cap) and answered `429` + `Retry-After`. The door **counts down**: field and button disabled, button label `Locked — 12s`, ticking once a second, and on zero everything re-enables and the field takes focus. A lockout shown once and then left standing reads as *broken*. Read the header first, the number in the body second (a proxy may eat the header), a fixed fallback last |
+| **No answer** | *"The app did not answer. Is it still running?"* — a network failure is not a wrong password and must never be worded like one |
+| **Success** | The card **leaves under its own power**, then the page is replaced — see Motion. `location.replace()`, never `assign()`: the door has no place in the history that Back walks through |
+
+### Motion
+
+The door has exactly **three** movements, and all of them come off tokens:
+
+1. **The mark's hover split** — the same one the app bar's mark does: the two
+   colour copies pull apart and snap back in `steps(4, end)` over
+   `--mark-split`, animated with `translate` (never `transform`, Step 4.4),
+   behind `(hover: hover)`, and off under reduced motion with the mark left
+   whole. **The door does not play the boot build.** The full build belongs to
+   the boot screen, which covers a real wait; the door covers none.
+2. **The Caps Lock / error lines appear** — by `hidden` toggling. No slide, no
+   fade: a line that animates in is a line you read late.
+3. **The exit** — on success the card goes to `opacity: 0` over `--boot-fade`
+   with `--ease`, and `scale: .97` with `--ease-out`, `pointer-events: none`;
+   the navigation fires when that transition has finished. Its purpose is to
+   turn a document swap into a hand-off: the boot screen on the other side
+   picks the mark up, and there is no white flash in between. The transition
+   is declared on the **resting** `.login__card`, so it runs the same way
+   every time.
+
+Under `prefers-reduced-motion` the exit keeps the fade and drops the scale; if
+the script sees reduced motion it navigates immediately. Under `.fx-lite` /
+reduced transparency the card's surface goes opaque through the token
+redefinitions like every other `--glass` (rule 6) — the door has no fallback of
+its own, because it has no surface of its own.
+
+What the door never does: an entrance, a shake, a pulsing button, a typing
+effect, a progress bar, a background that reacts to the field, a success tick
+before the navigation. Every one of those is a delay or a decoration on the
+screen people see most often and want to leave soonest.
+
+### Password managers and phones
+
+- `autocomplete="current-password"` on the field, and — when the app has one
+  nameless account — an **offscreen** (not `display:none`, which managers
+  ignore) `readonly`, `tabindex="-1"`, `aria-hidden` field with
+  `autocomplete="username"` carrying a fixed account name. Without it most
+  managers will not offer to save the credential at all.
+- `required` on the field and `novalidate` on the form: the script words the
+  refusal, not the browser's own bubble.
+- `viewport-fit=cover`, `100dvh`, 16px on the input, a 44px submit target. The
+  card scrolls with the page on a short phone; it is never fixed-height.
+
+---
+
 ## Building a new app
 
 ### Step 1 — take the sheet, don't reinvent it
@@ -474,6 +597,11 @@ def accent_shades(rgb):
 - [ ] No state signalled by hue alone — a dot has a word, an error has a glyph.
 - [ ] Read the screen with the CSS off. If the meta line does not still state
       real facts, it was a decoration bar.
+- [ ] **If the app has a door**, walk it: wrong password (field selected, alert
+      read out, no shake), Caps Lock on, reveal and back (caret kept), four
+      wrong tries (countdown runs and re-enables), server stopped (no-answer
+      wording), then success (card leaves, Back does not return to the door).
+      Tamper with `?reason=` — nothing from it may appear on the page.
 - [ ] If the app has a sibling app, make the change in **both** stylesheets —
       they deploy separately and can never share a mount, so the language only
       stays one language by hand.
@@ -528,6 +656,14 @@ woff2); assume a strict CSP so no inline style attributes; never
 text-transform data (names, paths, queries); every control is a real
 focusable element carrying aria-pressed/aria-selected next to its
 class; never signal state with hue alone.
+
+A sign-in window ("the door") is its own document, never a modal: one
+--glass card on the app's own backdrop, mark + version, an allowlisted
+reason line (never echo the query string, no next=), one field with an
+in-field reveal, Caps Lock status, a role="alert" refusal with a glyph,
+one primary button. No entrance animation, no shake, no spinner; a 429
+counts down from Retry-After; success fades the card (--boot-fade, scale
+.97) and then location.replace()s. Details: NEBULA.md, "The door".
 ```
 
 ---
