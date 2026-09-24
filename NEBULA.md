@@ -146,6 +146,18 @@ a bevel are contradictory claims about the same object. What this language means
 by glass is a **flat plane with the depth behind it**, out of focus. All of the
 depth is in the blur; none of it is in the surface.
 
+**A divider is a hairline, not a gap over a lighter fill — unless every cell
+is opaque.** The trick of laying rows or cells on a `--line` background with a
+one-hair gap draws each rule once and is tempting. It holds only while every
+cell paints an opaque fill (`--surface`, `--bg-2`): then the `--line` shows in
+the gaps and nowhere else. Over glass, or over a row with no fill at all, the
+9% white shows *through* every cell, and the whole block turns into a lighter
+box floating on the page — depth from a lighter fill, by accident.
+`.stack` did exactly this: a `.set` row has no fill and `.panel` is
+`--glass-hi`. It is one pane now (`--glass`, the blur, one hairline round it)
+with `border-top` between its rows. *"diese hellen boxen passen gar nicht
+rein"* (user, 2026-09-24).
+
 **`--pane` and `--overlay` go fully opaque when the blur is gone**, and the two
 glass steps do not. What is behind a card is the wallpaper; what is behind the
 app bar is the page, scrolling. Translucency without a blur to average it is not

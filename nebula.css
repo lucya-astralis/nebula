@@ -1322,17 +1322,25 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 
 /* ==================================================================
    PANEL AND KEY/VALUE  —  a read-out of facts
-   The stack is hairline-separated (gap on a --line background), not
-   a set of floating boxes with their own borders.
+   The stack is ONE pane -- a fill, a blur and a hairline (rule 3) --
+   and its rows are separated by hairlines of their own, not a set of
+   floating boxes with their own borders.
+
+   It used to draw those hairlines as a one-hair gap over a --line
+   background. That only works when every row is opaque. A .set row has
+   no fill at all and .panel is --glass-hi, so the 9% white behind them
+   came through every row and the whole stack read as a lighter box:
+   depth from a lighter fill, the one thing rule 3 rules out.
    ================================================================== */
 .stack{
-  display:flex; flex-direction:column; gap:var(--hair);
-  background:var(--line);
+  display:flex; flex-direction:column;
+  background-color:var(--glass);
   border:var(--hair) solid var(--line);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
   width:100%;
 }
+.stack > * + *{ border-top:var(--hair) solid var(--line); }
 .panel{
   background-color:var(--glass-hi);
   padding:var(--s-5);
