@@ -385,18 +385,18 @@
      on the icon that names what a heading or row is about, and on the
      marks of a chart that counts that kind. Never text, a surface, a
      border or a control. Validated as a set on #000, every pair, CVD. */
-  --glyph-teal:   #27A6B2;   /* albums, folders, photos, the site */
-  --glyph-rose:   #B04C80;   /* tags */
-  --glyph-orange: #C87F3D;   /* time: dates, history, activity */
-  --glyph-violet: #8E6FE0;   /* the machine and the camera */
+  --glyph-sage:   #47AA84;   /* albums, folders, photos, the site */
+  --glyph-rose:   #BC4A7C;   /* tags */
+  --glyph-sky:    #2F9CEA;   /* time: dates, history, activity */
+  --glyph-violet: #6B4CAE;   /* the machine and the camera */
   /* CHART RAMPS -- each glyph hue in four steps, light to dark, for a
      chart whose parts are RANKED (a ring's slices, largest first). One
      family per chart, never a hue per slice; past four, one grey other.
      Each validated on #000 as ordinal: one hue, monotone L, clear gaps. */
-  --ramp-teal-1:   #8ADAE3; --ramp-teal-2:   #40B7C3; --ramp-teal-3:   #00929E; --ramp-teal-4:   #006D79;
-  --ramp-rose-1:   #FFAED4; --ramp-rose-2:   #E67CB1; --ramp-rose-3:   #BD588C; --ramp-rose-4:   #953368;
-  --ramp-orange-1: #F7BD8E; --ramp-orange-2: #DC9150; --ramp-orange-3: #B46D28; --ramp-orange-4: #8D4900;
-  --ramp-violet-1: #CEBBFF; --ramp-violet-2: #AB8DFF; --ramp-violet-3: #8768D8; --ramp-violet-4: #6543B0;
+  --ramp-sage-1:   #9BDBBE; --ramp-sage-2:   #59BA93; --ramp-sage-3:   #2E9570; --ramp-sage-4:   #00704E;
+  --ramp-rose-1:   #FFADCD; --ramp-rose-2:   #EE77A8; --ramp-rose-3:   #C55283; --ramp-rose-4:   #9C2C61;
+  --ramp-sky-1:    #8FD2FF; --ramp-sky-2:    #43ACFB; --ramp-sky-3:    #0586D3; --ramp-sky-4:    #0061AB;
+  --ramp-violet-1: #CFBDFF; --ramp-violet-2: #AC8FF8; --ramp-violet-3: #886ACF; --ramp-violet-4: #6646A8;
   --ramp-other:    #4A4A55;
   --tap:        44px;
   --radius:     0;         /* square, everywhere */

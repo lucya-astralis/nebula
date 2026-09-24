@@ -85,27 +85,31 @@ more hues, and they carry **identity**, never state:
 
 | Token | Kind |
 |---|---|
-| `--glyph-teal` `#27A6B2` | albums, folders, photos, the site |
-| `--glyph-rose` `#B04C80` | tags |
-| `--glyph-orange` `#C87F3D` | time — dates, history, activity |
-| `--glyph-violet` `#8E6FE0` | the machine and the camera |
+| `--glyph-sage` `#47AA84` | albums, folders, photos, the site |
+| `--glyph-rose` `#BC4A7C` | tags |
+| `--glyph-sky` `#2F9CEA` | time — dates, history, activity |
+| `--glyph-violet` `#6B4CAE` | the machine and the camera |
 
 They go on **the glyph** that says what a heading, a row or a place is about,
 and on **the marks of a chart** that counts that kind of thing (photos over
-time in orange, albums in teal) — never on text, a surface, a border or a
+time in sky, albums in sage) — never on text, a surface, a border or a
 control, and never to say *on*, *selected* or *wrong*: that is still `--acc`
 and the three statuses. The assignment is keyed on the glyph itself in one CSS
 table, so an icon wears the same hue on every screen it appears on. The four
 were validated as a set against the black ground, every pair, under protan,
-deutan and tritan simulation — a teal and a pink at the same lightness vanish
-into each other for a deutan eye, which is why the rose sits darker than the
-teal. A fifth kind waits for a fifth validated hue; it does not borrow one.
+deutan and tritan simulation — a green and a pink at the same lightness
+vanish into each other for a deutan eye, which is why the rose sits darker
+than the sage. The first set had an orange and a turquoise teal; both were
+taken out (*"kein orange oder zu türkis"*): no warm hue that reads as a
+warning next to `--amb`, and a sage low enough in chroma that it is neither
+turquoise nor the `--ok` green. A fifth kind waits for a fifth validated hue;
+it does not borrow one.
 
 **A chart gets one family, not a rainbow.** A ring or a stacked bar has
 several parts, and the tempting move is a hue per part — *"kein kunterbunt"*
 (user, 2026-09-24). Each glyph hue therefore comes as a **ramp**,
 `--ramp-<hue>-1` to `-4`, light to dark: a chart takes the family of the kind
-of thing it counts (cameras violet, formats teal, tags rose) and gives its
+of thing it counts (cameras violet, formats sage, tags rose) and gives its
 largest part the lightest step, so the ranking reads in the colour. Past four
 parts the rest is one neutral `--ramp-other`, never a fifth step. A share and
 its remainder (tagged / untagged) is one step against `--ramp-other`. The
@@ -792,7 +796,7 @@ counts down from Retry-After; success fades the card (--boot-fade, scale
 Details: NEBULA.md, "The door".
 
 Colour: --acc is STATE only; --ok/--amb/--red are statuses; the four
---glyph-* hues (teal albums, rose tags, orange time, violet machine/camera)
+--glyph-* hues (sage albums, rose tags, sky time, violet machine/camera)
 are IDENTITY, on glyphs and on the marks of a chart about that kind only.
 
 The sheet also owns: .mark (the wing as inline SVG, splits on hover —
