@@ -110,7 +110,22 @@ step, so the ranking reads in the colour. Past four parts the rest is one
 neutral `--ramp-other`, never a fifth step. A share and its remainder
 (tagged / untagged) is one step against `--ramp-other`. The legend beside the
 chart names every part with its figure, so no slice is told by colour alone.
-Columns fall like the title: `--mist-1` at the top to `--mist-4` at the base.
+Columns fall like the title: `--mist-1` at the top to `--mist-4` at the base,
+and a bar the same way, deep at its root to light at its end.
+
+**Three palettes, one switch.** *"man soll auswählen können"* (user,
+2026-09-24): the tint is a choice, made once per site on
+`<html data-palette>`, and every variant is a pure token redefinition
+(rule 6) — nothing else in the sheet knows which one is on.
+
+| `data-palette` | What it redefines |
+|---|---|
+| `mist` (default) | nothing: the `:root` values above |
+| `silver` | `--mist` `#BDBDC5` and its ramp `#E7E7F0` `#BDBDC5` `#94949D` `#6E6E76` — the title silver itself, no lean |
+| `stardust` | each `--glyph-<kind>` and `--ramp-<kind>-*` directly: album `#BDAFD9` (lilac), tag `#D0A2B6` (rosé), time `#98BCDC` (blue), machine `#BCBDC7` (neutral) — four silvers, each with a faint cast |
+
+All three stay near the title silver's lightness and far below the
+accent's chroma, so none of them can be mistaken for state.
 
 **When a ring and when bars.** A ring answers *what share* for a whole of two
 to five parts. More parts, or a question of *how many* rather than *what
