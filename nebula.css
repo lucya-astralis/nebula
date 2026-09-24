@@ -381,6 +381,14 @@
   /* The smallest target that is reliably hit with a thumb. It used to live
      inside the narrow media query, where nothing above 760px could reach it
      — and a submit button on a door is 44px on a desktop too. */
+  /* GLYPH HUES -- which KIND of thing, never state (NEBULA.md, rule 1):
+     on the icon that names what a heading or row is about, and on the
+     marks of a chart that counts that kind. Never text, a surface, a
+     border or a control. Validated as a set on #000, every pair, CVD. */
+  --glyph-teal:   #27A6B2;   /* albums, folders, photos, the site */
+  --glyph-rose:   #B04C80;   /* tags */
+  --glyph-orange: #C87F3D;   /* time: dates, history, activity */
+  --glyph-violet: #8E6FE0;   /* the machine and the camera */
   --tap:        44px;
   --radius:     0;         /* square, everywhere */
   --hair:       1px;       /* the one border width in the system */

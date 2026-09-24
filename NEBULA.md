@@ -77,6 +77,30 @@ gallery's trip timeline (`--trip*`) is the one that exists. Nothing outside such
 a module may use its colours, and nothing inside it may use `--acc` /
 `--chrome` / `--label`.
 
+**Glyph hues: which kind of thing, not which state.** Grey icons everywhere
+made a screen of cards read as one flat surface — *"etwas mehr farbe rein, wir
+haben icons nicht umsonst"*, and then, when every icon went accent, *"nicht
+alles akzent. es gibt noch mehr farben"* (user, 2026-09-24). So there are four
+more hues, and they carry **identity**, never state:
+
+| Token | Kind |
+|---|---|
+| `--glyph-teal` `#27A6B2` | albums, folders, photos, the site |
+| `--glyph-rose` `#B04C80` | tags |
+| `--glyph-orange` `#C87F3D` | time — dates, history, activity |
+| `--glyph-violet` `#8E6FE0` | the machine and the camera |
+
+They go on **the glyph** that says what a heading, a row or a place is about,
+and on **the marks of a chart** that counts that kind of thing (photos over
+time in orange, albums in teal) — never on text, a surface, a border or a
+control, and never to say *on*, *selected* or *wrong*: that is still `--acc`
+and the three statuses. The assignment is keyed on the glyph itself in one CSS
+table, so an icon wears the same hue on every screen it appears on. The four
+were validated as a set against the black ground, every pair, under protan,
+deutan and tritan simulation — a teal and a pink at the same lightness vanish
+into each other for a deutan eye, which is why the rose sits darker than the
+teal. A fifth kind waits for a fifth validated hue; it does not borrow one.
+
 **`hidden` wins.** `[hidden]{ display:none !important; }` is in the base, and
 it is the one `!important` in the sheet. Every component here sets its own
 display — `.btn` is inline-flex, `.field` is flex, `.seg` is inline-flex — and
@@ -749,6 +773,10 @@ counts down from Retry-After; success fades the card (--boot-fade, scale
 .97) and then location.replace()s. The sheet carries its CSS
 (.login-body/.login__*), so an app writes the markup and the script.
 Details: NEBULA.md, "The door".
+
+Colour: --acc is STATE only; --ok/--amb/--red are statuses; the four
+--glyph-* hues (teal albums, rose tags, orange time, violet machine/camera)
+are IDENTITY, on glyphs and on the marks of a chart about that kind only.
 
 The sheet also owns: .mark (the wing as inline SVG, splits on hover —
 never an <img>), .avatar, .switch (on/off; .seg is pick-one-of-these),
