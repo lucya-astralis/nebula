@@ -101,6 +101,23 @@ deutan and tritan simulation — a teal and a pink at the same lightness vanish
 into each other for a deutan eye, which is why the rose sits darker than the
 teal. A fifth kind waits for a fifth validated hue; it does not borrow one.
 
+**A chart gets one family, not a rainbow.** A ring or a stacked bar has
+several parts, and the tempting move is a hue per part — *"kein kunterbunt"*
+(user, 2026-09-24). Each glyph hue therefore comes as a **ramp**,
+`--ramp-<hue>-1` to `-4`, light to dark: a chart takes the family of the kind
+of thing it counts (cameras violet, formats teal, tags rose) and gives its
+largest part the lightest step, so the ranking reads in the colour. Past four
+parts the rest is one neutral `--ramp-other`, never a fifth step. A share and
+its remainder (tagged / untagged) is one step against `--ramp-other`. The
+legend beside the chart names every part with its figure, so no slice is told
+by colour alone. Each ramp was validated on `#000` as ordinal — one hue,
+monotone lightness, a visible gap between steps, the dark end clear of the
+ground.
+
+**When a ring and when bars.** A ring answers *what share* for a whole of two
+to five parts. More parts, or a question of *how many* rather than *what
+share*, is ranked bars; a question of *when* is columns over time.
+
 **`hidden` wins.** `[hidden]{ display:none !important; }` is in the base, and
 it is the one `!important` in the sheet. Every component here sets its own
 display — `.btn` is inline-flex, `.field` is flex, `.seg` is inline-flex — and

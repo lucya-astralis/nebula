@@ -389,6 +389,15 @@
   --glyph-rose:   #B04C80;   /* tags */
   --glyph-orange: #C87F3D;   /* time: dates, history, activity */
   --glyph-violet: #8E6FE0;   /* the machine and the camera */
+  /* CHART RAMPS -- each glyph hue in four steps, light to dark, for a
+     chart whose parts are RANKED (a ring's slices, largest first). One
+     family per chart, never a hue per slice; past four, one grey other.
+     Each validated on #000 as ordinal: one hue, monotone L, clear gaps. */
+  --ramp-teal-1:   #8ADAE3; --ramp-teal-2:   #40B7C3; --ramp-teal-3:   #00929E; --ramp-teal-4:   #006D79;
+  --ramp-rose-1:   #FFAED4; --ramp-rose-2:   #E67CB1; --ramp-rose-3:   #BD588C; --ramp-rose-4:   #953368;
+  --ramp-orange-1: #F7BD8E; --ramp-orange-2: #DC9150; --ramp-orange-3: #B46D28; --ramp-orange-4: #8D4900;
+  --ramp-violet-1: #CEBBFF; --ramp-violet-2: #AB8DFF; --ramp-violet-3: #8768D8; --ramp-violet-4: #6543B0;
+  --ramp-other:    #4A4A55;
   --tap:        44px;
   --radius:     0;         /* square, everywhere */
   --hair:       1px;       /* the one border width in the system */
