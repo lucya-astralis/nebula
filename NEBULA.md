@@ -77,54 +77,40 @@ gallery's trip timeline (`--trip*`) is the one that exists. Nothing outside such
 a module may use its colours, and nothing inside it may use `--acc` /
 `--chrome` / `--label`.
 
-**Glyph hues: which kind of thing, not which state.** Grey icons everywhere
-made a screen of cards read as one flat surface — *"etwas mehr farbe rein, wir
-haben icons nicht umsonst"*, and then, when every icon went accent, *"nicht
-alles akzent. es gibt noch mehr farben"* (user, 2026-09-24). So there are four
-more hues, and they carry **identity**, never state:
+**Mist: which kind of thing, not which state.** Grey icons everywhere made a
+screen of cards read as one flat surface — *"etwas mehr farbe rein, wir haben
+icons nicht umsonst"*, and then *"nicht alles akzent"* (user, 2026-09-24). Four
+separate hues were tried (teal/rose/orange/violet, then lilacs, then saturated
+orchid/magenta/sky/violet) and every set fought the language — *"das beißt
+sich komplett mit nebula"*. The answer came from Nebula itself: *"der silber
+farbverlauf in überschriften find ich ganz gut"*. So identity gets **one tint,
+not a palette**:
 
-| Token | Kind |
-|---|---|
-| `--glyph-album` `#C867C6` orchid | albums, folders, photos, the site |
-| `--glyph-tag` `#C31773` magenta | tags |
-| `--glyph-time` `#009BF0` sky | time — dates, history, activity |
-| `--glyph-machine` `#8443D3` violet | the machine and the camera |
+| Token | Value | What |
+|---|---|---|
+| `--mist` | `#B4BCDF` | the title silver (`--title-a` → `--title-b`) leaning a little toward `--acc` |
+| `--mist-1` … `-4` | `#D8DDF3` `#ADB6D8` `#858FBE` `#5F6AA3` | the same, light to dark, for ranked chart parts |
 
-They go on **the glyph** that says what a heading, a row or a place is about,
-and on **the marks of a chart** that counts that kind of thing (photos over
-time in sky, albums in orchid) — never on text, a surface, a border or a
+It goes on **the glyph** that says what a heading, a row or a place is about,
+and on **the marks of a chart** — never on text, a surface, a border or a
 control, and never to say *on*, *selected* or *wrong*: that is still `--acc`
-and the three statuses. The assignment is keyed on the glyph itself in one CSS
-table, so an icon wears the same hue on every screen it appears on. The four
-were validated as a set against the black ground, every pair, under protan,
-deutan and tritan simulation. They sit in the family of the lilac the
-language is named after — orchid, magenta, sky, violet around the
-blue-violet accent — *"mehr in die richtung des original lilas"* and then
-*"nicht so blaß"* (user, 2026-09-24), after a first set with an orange and a
-turquoise was turned down (*"kein orange oder zu türkis"*). They are
-saturated on purpose: chroma 0.17–0.21, where the first lilac set sat near
-the 0.10 floor and read as washed out. Hues that close are hard to tell
-apart, so the set was FOUND rather than picked: a search over OKLCH for the
-four that clear the all-pairs checks on `#000`, with lightness doing the
-separating the hues cannot — and each held at a normal-vision ΔE of 10 or
-more from `--acc`, whose hue the search leaves out entirely: the accent is
-state, and an icon must never look selected. The tokens are named for
-what they mean (`--glyph-album`, not `--glyph-mauve`), so the next change of
-colour is a value, not a rename. A fifth kind waits for a fifth validated
-hue; it does not borrow one.
+and the three statuses. Mist sits between the silver of the chrome and the
+accent, so a coloured icon reads as part of the ground's family and the
+accent stays the only thing that *pops*. The kind tokens (`--glyph-album`,
+`--glyph-tag`, `--glyph-time`, `--glyph-machine`) stay, keyed on the glyph in
+one CSS table, and all point at `--mist`: meaning is carried by the glyph's
+shape, and the tokens are the place to split a kind off if a validated reason
+ever comes.
 
 **A chart gets one family, not a rainbow.** A ring or a stacked bar has
 several parts, and the tempting move is a hue per part — *"kein kunterbunt"*
-(user, 2026-09-24). Each glyph hue therefore comes as a **ramp**,
-`--ramp-<kind>-1` to `-4`, light to dark: a chart takes the family of the kind
-of thing it counts (cameras violet, formats orchid, tags magenta) and gives its
-largest part the lightest step, so the ranking reads in the colour. Past four
-parts the rest is one neutral `--ramp-other`, never a fifth step. A share and
-its remainder (tagged / untagged) is one step against `--ramp-other`. The
-legend beside the chart names every part with its figure, so no slice is told
-by colour alone. Each ramp was validated on `#000` as ordinal — one hue,
-monotone lightness, a visible gap between steps, the dark end clear of the
-ground.
+(user, 2026-09-24). A chart takes the mist ramp (`--ramp-<kind>-1` to `-4`,
+all aliases of `--mist-1` … `-4`) and gives its largest part the lightest
+step, so the ranking reads in the colour. Past four parts the rest is one
+neutral `--ramp-other`, never a fifth step. A share and its remainder
+(tagged / untagged) is one step against `--ramp-other`. The legend beside the
+chart names every part with its figure, so no slice is told by colour alone.
+Columns fall like the title: `--mist-1` at the top to `--mist-4` at the base.
 
 **When a ring and when bars.** A ring answers *what share* for a whole of two
 to five parts. More parts, or a question of *how many* rather than *what
@@ -803,9 +789,9 @@ counts down from Retry-After; success fades the card (--boot-fade, scale
 (.login-body/.login__*), so an app writes the markup and the script.
 Details: NEBULA.md, "The door".
 
-Colour: --acc is STATE only; --ok/--amb/--red are statuses; the four
---glyph-* hues (--glyph-album orchid, -tag magenta, -time sky, -machine violet)
-are IDENTITY, on glyphs and on the marks of a chart about that kind only.
+Colour: --acc is STATE only; --ok/--amb/--red are statuses; --mist
+(#B4BCDF, the title silver toward --acc) and its ramp --mist-1..4 are
+IDENTITY, on kind-glyphs and chart marks only; --glyph-* and --ramp-* alias it.
 
 The sheet also owns: .mark (the wing as inline SVG, splits on hover —
 never an <img>), .avatar, .switch (on/off; .seg is pick-one-of-these),
