@@ -85,27 +85,30 @@ more hues, and they carry **identity**, never state:
 
 | Token | Kind |
 |---|---|
-| `--glyph-album` `#9F6DAB` mauve | albums, folders, photos, the site |
-| `--glyph-tag` `#AE2C5E` plum | tags |
-| `--glyph-time` `#1F98ED` sky | time — dates, history, activity |
-| `--glyph-machine` `#295AB9` deep blue | the machine and the camera |
+| `--glyph-album` `#C867C6` orchid | albums, folders, photos, the site |
+| `--glyph-tag` `#C31773` magenta | tags |
+| `--glyph-time` `#009BF0` sky | time — dates, history, activity |
+| `--glyph-machine` `#8443D3` violet | the machine and the camera |
 
 They go on **the glyph** that says what a heading, a row or a place is about,
 and on **the marks of a chart** that counts that kind of thing (photos over
-time in sky, albums in mauve) — never on text, a surface, a border or a
+time in sky, albums in orchid) — never on text, a surface, a border or a
 control, and never to say *on*, *selected* or *wrong*: that is still `--acc`
 and the three statuses. The assignment is keyed on the glyph itself in one CSS
 table, so an icon wears the same hue on every screen it appears on. The four
 were validated as a set against the black ground, every pair, under protan,
 deutan and tritan simulation. They sit in the family of the lilac the
-language is named after — mauve, plum, sky, deep blue around the
-blue-violet accent — *"mehr in die richtung des original lilas"* (user,
-2026-09-24), after a first set with an orange and a turquoise was turned
-down (*"kein orange oder zu türkis"*). Hues that close are hard to tell
+language is named after — orchid, magenta, sky, violet around the
+blue-violet accent — *"mehr in die richtung des original lilas"* and then
+*"nicht so blaß"* (user, 2026-09-24), after a first set with an orange and a
+turquoise was turned down (*"kein orange oder zu türkis"*). They are
+saturated on purpose: chroma 0.17–0.21, where the first lilac set sat near
+the 0.10 floor and read as washed out. Hues that close are hard to tell
 apart, so the set was FOUND rather than picked: a search over OKLCH for the
 four that clear the all-pairs checks on `#000`, with lightness doing the
-separating the hues cannot. None of them is the accent's own hue: the accent
-is state, and an icon must never look selected. The tokens are named for
+separating the hues cannot — and each held at a normal-vision ΔE of 10 or
+more from `--acc`, whose hue the search leaves out entirely: the accent is
+state, and an icon must never look selected. The tokens are named for
 what they mean (`--glyph-album`, not `--glyph-mauve`), so the next change of
 colour is a value, not a rename. A fifth kind waits for a fifth validated
 hue; it does not borrow one.
@@ -114,7 +117,7 @@ hue; it does not borrow one.
 several parts, and the tempting move is a hue per part — *"kein kunterbunt"*
 (user, 2026-09-24). Each glyph hue therefore comes as a **ramp**,
 `--ramp-<kind>-1` to `-4`, light to dark: a chart takes the family of the kind
-of thing it counts (cameras deep blue, formats mauve, tags plum) and gives its
+of thing it counts (cameras violet, formats orchid, tags magenta) and gives its
 largest part the lightest step, so the ranking reads in the colour. Past four
 parts the rest is one neutral `--ramp-other`, never a fifth step. A share and
 its remainder (tagged / untagged) is one step against `--ramp-other`. The
@@ -801,7 +804,7 @@ counts down from Retry-After; success fades the card (--boot-fade, scale
 Details: NEBULA.md, "The door".
 
 Colour: --acc is STATE only; --ok/--amb/--red are statuses; the four
---glyph-* hues (--glyph-album mauve, -tag plum, -time sky, -machine deep blue)
+--glyph-* hues (--glyph-album orchid, -tag magenta, -time sky, -machine violet)
 are IDENTITY, on glyphs and on the marks of a chart about that kind only.
 
 The sheet also owns: .mark (the wing as inline SVG, splits on hover —
