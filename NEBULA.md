@@ -127,6 +127,24 @@ and a bar the same way, deep at its root to light at its end.
 All three stay near the title silver's lightness and far below the
 accent's chroma, so none of them can be mistaken for state.
 
+**The tints follow the accent.** The hex values above are what the three
+come to for the built-in accent — and only for it: *"wenn man die galerie
+akzent farbe ändert passen die 3 schemen nicht"* (user, 2026-09-25). So an
+app keeps them as positions RELATIVE to the accent, in OKLCH, and generates
+them next to its accent tokens:
+
+| | Lightness | Chroma | Hue |
+|---|---|---|---|
+| mist, glyph | 0.80 | 0.050 | the accent's |
+| mist-1 … -4 | 0.90 / 0.78 / 0.66 / 0.54 | 0.030 / 0.050 / 0.071 / 0.090 | the accent's |
+| stardust album / tag / time | 0.78 (tag 0.76), ramp as mist | 0.060 (step 1: 0.036) | accent +25.5° / +75.5° / −29.5° |
+| stardust machine | 0.80, ramp as mist | ≈0.014 | accent +10° |
+
+Chroma is scaled by the accent's own chroma against the built-in one (never
+up): a greyer accent gets greyer tints, a grey accent plain silver. Silver
+has no hue and is never derived. Lightness is the silver's ladder whatever
+the accent, which is what keeps every variant in the heading's family.
+
 **When a ring and when bars.** A ring answers *what share* for a whole of two
 to five parts. More parts, or a question of *how many* rather than *what
 share*, is ranked bars; a question of *when* is columns over time.
