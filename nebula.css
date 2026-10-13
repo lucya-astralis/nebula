@@ -216,6 +216,7 @@
      components. */
   --s-9:  64px;
   --s-10: 96px;
+  --s-11: 144px; /* editorial page rhythm */
 
   /* ---- type: two voices, four steps each -------------------------
      The names carry rule 4, so the token you reach for tells you
@@ -243,6 +244,19 @@
   --fs-text-lg:   15px;    /* base body size, leads */
   --fs-text-xl:   18px;    /* a panel heading that leads a screen */
   --fs-title:     clamp(22px, 2.7vw, 33px);
+  /* Opt-in landing-page scale; app headings keep their existing measure. */
+  --fs-text-editorial: clamp(32px, 4.5vw, 64px);
+  --fs-text-hero: clamp(48px, 7.5vw, 112px);
+  --tr-editorial: -.045em;
+  /* Brand geometry: fit the house wordmark across a viewport. */
+  --fs-brand-floor: calc(6.4vw * var(--display-scale));
+  --tr-brand-floor: .025em;
+  --fs-chrome-display: clamp(32px, 4.5vw, 64px);
+  --tr-chrome-display: .02em;
+  --mark-spread: 6px;
+  --mark-lift: 4px;
+  --mark-detail-opacity: .16;
+  --brand-floor-opacity: .18;
 
   /* ---- tracking, bound to size -----------------------------------
      One formula, not fourteen opinions: tracking FALLS as size
@@ -876,6 +890,19 @@ code{
   padding-bottom:.04em;
 }
 .section__slug .name::selection{ -webkit-text-fill-color:var(--text); }
+
+/* Editorial headings stay in the reading voice, even at poster scale. */
+.editorial-title{
+  margin:0;
+  font-family:var(--sans);
+  font-size:var(--fs-text-editorial);
+  font-weight:500;
+  letter-spacing:var(--tr-editorial);
+  line-height:1.04;
+  color:var(--text);
+  overflow-wrap:break-word;
+}
+.editorial-title--hero{ font-size:var(--fs-text-hero); }
 
 /* The eyebrow over a block of content — a labelled rule, never a
    filled bar. One --acc glyph in front of the label is the whole
@@ -1536,6 +1563,31 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .foot__links a:hover{ color:var(--acc); border-bottom-color:var(--acc); }
 .foot__meta b{ color:var(--text-dim); font-weight:400; }
 
+/* The optional landing-page colophon. The oversized wordmark repeats the
+   brand; it is decorative, aria-hidden, and never carries links or facts. */
+.foot--editorial{ overflow:hidden; }
+.foot__floor{
+  margin:0;
+  padding:var(--s-6) var(--page-pad) 0;
+  font-family:var(--display-font);
+  font-weight:400;
+  font-size:var(--fs-brand-floor);
+  letter-spacing:var(--tr-brand-floor);
+  line-height:1.1;
+  white-space:nowrap;
+  text-align:center;
+  color:var(--chrome);
+  opacity:var(--brand-floor-opacity);
+  user-select:none;
+  pointer-events:none;
+}
+@media (prefers-contrast: more){
+  :root{ --brand-floor-opacity: .4; }
+}
+@media (forced-colors: active){
+  .foot__floor{ color:CanvasText; opacity:1; }
+}
+
 
 /* ==================================================================
    THE MARK
@@ -1614,6 +1666,34 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   .mark--door:hover .mark__ghost--b{ animation:markSplitB var(--mark-split) steps(4, end); }
   .mark--nav:hover .mark__svg,
   .mark--door:hover .mark__svg{ animation:markJitter var(--mark-split) steps(4, end); }
+}
+
+/* A magnified contour quotes the real mark's paths, with no fill.
+   Its containing composition owns the crop and the magnification.
+   It is decorative, never a replacement for the complete house mark. */
+.mark-detail{ position:absolute; pointer-events:none; opacity:var(--mark-detail-opacity); }
+.mark-detail__svg{ display:block; width:100%; height:auto; overflow:visible; }
+.mark-detail .piece{ fill:none; stroke:var(--chrome); stroke-width:var(--hair); vector-effect:non-scaling-stroke; }
+@media (prefers-contrast:more), (forced-colors:active){
+  :root{ --mark-detail-opacity:0; }
+}
+
+/* The feature mark opens its wings when its real navigation link is
+   hovered or focused. Resting geometry stays exactly the house drawing. */
+.mark--feature .piece{ transition:translate var(--dur-3) var(--ease-out); }
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  html:not(.fx-lite) .mark-link:hover .mark--feature [data-piece="wing-l"],
+  html:not(.fx-lite) .mark-link:focus-visible .mark--feature [data-piece="wing-l"]{ translate:calc(var(--mark-spread) * -1) calc(var(--mark-lift) * -1); }
+  html:not(.fx-lite) .mark-link:hover .mark--feature [data-piece="wing-r"],
+  html:not(.fx-lite) .mark-link:focus-visible .mark--feature [data-piece="wing-r"]{ translate:var(--mark-spread) calc(var(--mark-lift) * -1); }
+}
+
+/* A closing brand signature can quote the same split, at its own scale. */
+.mark--signature{ width:min(38%, calc(var(--s-11) * 3)); height:auto; }
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  html:not(.fx-lite) .mark--signature:hover .mark__ghost--r{ animation:markSplitR var(--mark-split) steps(4, end); }
+  html:not(.fx-lite) .mark--signature:hover .mark__ghost--b{ animation:markSplitB var(--mark-split) steps(4, end); }
+  html:not(.fx-lite) .mark--signature:hover > .mark__svg{ animation:markJitter var(--mark-split) steps(4, end); }
 }
 
 /* steps(), not a curve: a signal that slides apart smoothly is a slide.

@@ -374,6 +374,51 @@ field error carries a glyph as well as the red.
 
 ---
 
+## Editorial pages — room for the brand
+
+A house page introduces a place; it can use more space and larger type than
+an app without changing the six rules. The reference is lucya.systems, drawing
+on the generous composition of femboyconsulting.com (2026-10-13).
+
+- `.editorial-title` uses Space Grotesk, sentence case, `--fs-text-editorial`
+  and `--tr-editorial`. `.editorial-title--hero` takes `--fs-text-hero`.
+  These are opt-in: existing app headings keep `--fs-title`.
+- `--s-11` extends page rhythm to 144px. Narrow layouts return to the smaller
+  space steps; readable text never shrinks to make a headline fit.
+- The house wing is the primary visual, not a small illustration next to a
+  headline. Keep its original eight paths and artboard ratio. Give it room;
+  on phones put it on its own row. Do not crop the actual mark or distort it.
+- `.mark-detail` enlarges the same eight SVG paths as a cropped contour: no
+  fill, a `--hair` stroke, `--mark-detail-opacity`, and `aria-hidden="true"`.
+  The page owns magnification and crop. Keep the complete mark visible beside
+  it; the contour is atmosphere. Higher contrast and forced colours omit it.
+- `.mark-link` is a real navigation link around `.mark--feature`: its wings
+  open slightly on hover and keyboard focus, using `--mark-spread` and
+  `--mark-lift`. The gesture is off on touch, under reduced motion and lite mode.
+- `--fs-chrome-display` with `--tr-chrome-display` gives headline-sized measured
+  values their own mono step; do not size counters from the content scale.
+- `.mark--signature` is a large, decorative closing mark. It may replay the
+  existing chromatic split on hover; reduced motion and lite mode keep it still.
+- `.foot--editorial` can close with `.foot__floor`, an oversized wordmark in
+  the display face. Its size and tracking use `--fs-brand-floor` and
+  `--tr-brand-floor`; `--brand-floor-opacity` is decorative emphasis only.
+  The default size fits **lucya.systems**; another name must set its own fit
+  token. Set `aria-hidden="true"` on the repeated wordmark; links, legal,
+  status and facts remain separate, readable text above it.
+- A large footer stays on the existing `--pane` surface and inherits its
+  environment fallbacks. It does not introduce a seventh surface, serif
+  headings, rounded cards or decorative accent fills.
+
+```html
+<h1 class="editorial-title editorial-title--hero">A rack. A world.</h1>
+<footer class="foot foot--editorial">
+  <div class="foot__inner"><!-- readable links and facts --></div>
+  <p class="foot__floor" aria-hidden="true">lucya.systems</p>
+</footer>
+```
+
+---
+
 ## The door — how a sign-in window behaves
 
 A sign-in window is not a seventh rule. It is the six rules applied to the one
@@ -621,7 +666,8 @@ Use the names; a new app is then already wearing the language.
 | `.login-body` / `.login__card` / … | The door — see its own chapter above |
 | `.u-nocase` | Rule 4's tool: data inside furniture that is cased |
 | `.u-offscreen` | In the tree and in a password manager's reach, out of the eye's way |
-| `.foot` | The colophon |
+| `.foot` / `.foot--editorial` / `.foot__floor` | The colophon; optional oversized brand signature |
+| `.editorial-title` (`--hero`) | Landing-page headings in the reading voice |
 
 ### Step 4 — the rules that are not about looks
 
