@@ -419,6 +419,33 @@ on the generous composition of femboyconsulting.com (2026-10-13).
 
 ---
 
+## Scroll entrance — an optional brand gesture
+
+The house page may open with the original eight-path SVG in white, centred on
+black. Scroll enlarges the complete mark around its artboard centre. In the last
+part of the scroll, the white mark and black curtain fade together to reveal
+the page. Keep the logo white until that final dissolve; do not fade it early.
+
+This is an exploration gesture, not a loading screen. `.splash` provides the
+SVG curtain, white mark, wordmark, scroll hint and a real skip button. The host
+page supplies the geometry and `--splash-travel` runway. The scene underneath
+is the page itself; no second teaser image is needed.
+
+- Start hidden. Enable only after SVG support, event handlers and geometry
+  exist. No JavaScript, an unsupported SVG mask, small/short screens, `.fx-lite`,
+  reduced motion/transparency or forced colours show the normal page.
+- Never lock body scrolling or hijack wheel/touch events. Update SVG geometry
+  once per animation frame; use an exponential scale to handle the zoom range.
+- The curtain is non-interactive except for its skip button. Underlying content
+  is `inert` only while covered; keyboard focus starts on the visible skip
+  button. Finish, skip, Escape or changing a preference releases that state.
+- Skip removes the runway and focuses the hero heading. Deep links bypass the
+  entrance; a return visit within the same session starts at the page.
+- Decorative SVG geometry is hidden from assistive technology. Preserve the
+  actual mark paths; no raster asset or substitute silhouette.
+
+---
+
 ## The door — how a sign-in window behaves
 
 A sign-in window is not a seventh rule. It is the six rules applied to the one
