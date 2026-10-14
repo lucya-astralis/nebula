@@ -268,6 +268,17 @@ token values — none of the rules:
 }
 ```
 
+The artwork is generated now, not hand-drawn: `tools/nova.py` in the brand
+repo (ls-branding) draws it at any size, in the wide and the square cut, and
+its rules (the 22° grammar, the compositions, the colours derived from the
+accent) are in that repo's `nova/NOVA.md`. Serve the files it writes; do not
+redraw it per app.
+
+Measured under these four values: the brightest point of nova falls to
+`#201c4b`, where `--text` reads at 14.1:1 and `--text-dim` at 6.2:1 — the
+text ramp holds even where a pane is missing. The accent does not (3.8:1),
+which changes nothing: a link sits on a pane, never on the bare wallpaper.
+
 The configurator and the showcase both do exactly this. It is a *supported
 setting* (`wallpaper_tint = off`), not a departure — and it is what overriding
 the language correctly looks like: token values, each with the reason written
