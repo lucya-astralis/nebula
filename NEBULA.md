@@ -693,8 +693,26 @@ Use the names; a new app is then already wearing the language.
 | `.login-body` / `.login__card` / … | The door — see its own chapter above |
 | `.u-nocase` | Rule 4's tool: data inside furniture that is cased |
 | `.u-offscreen` | In the tree and in a password manager's reach, out of the eye's way |
-| `.foot` / `.foot--editorial` / `.foot__floor` | The colophon; optional oversized brand signature |
+| `.foot` / `.foot__brand` / `.foot__links` / `.foot__meta` / `.foot--editorial` / `.foot__floor` | The colophon; optional oversized brand signature. On a desktop one row; on a phone sorted into rows, see below |
 | `.editorial-title` (`--hero`) | Landing-page headings in the reading voice |
+| `.foot__badges` / `.foot__op` | The 88x31 web buttons (exact size, pixelated, hairline outside the art, optionally a link) and the optional operator card. The footer's tiles |
+
+**The footer on a phone.** The desktop row is never just tipped on its side:
+one block per line reads as ragged fragments in the left margin. Below 760px
+the footer is sorted into rows, the way the gallery does it:
+
+```
+[ operator card ]   [88x31] [88x31] [88x31]
+———————————————————————————————————————————
+brand                                  meta
+                                      links
+```
+
+The tiles (operator card and buttons) make the first row, a hairline rule runs
+under them, brand and colophon share the next, and the links get a row of
+their own so a third link never wraps alone. Every cell is placed by hand, so a
+missing block shifts nothing; with no operator card the buttons take the whole
+first row. The buttons shrink evenly from 88px instead of stacking.
 
 ### Step 4 — the rules that are not about looks
 

@@ -1606,6 +1606,62 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   .splash{ display:none; }
 }
 
+/* The classic 88x31 web buttons. The art is fixed-size pixel work: shown at
+   exactly 88x31, never smoothed, with the hairline outside the picture. A
+   button may be wrapped in a link. (88, 31 and the pixel rendering are the
+   format itself, not sizes off the scale.) */
+.foot__badges{ display:flex; gap:var(--s-3); align-items:center; flex-wrap:wrap; }
+.foot__badges a{ display:block; }
+.foot__badges img{
+  display:block;
+  width:88px; height:31px;
+  box-sizing:content-box;
+  border:var(--hair) solid var(--line);
+  image-rendering:pixelated;
+}
+
+/* Phones: the desktop row is not tipped on its side. One block per line
+   reads as ragged fragments shoved into the left margin, so the footer is
+   sorted into rows instead, as the gallery does it:
+
+     [ operator card ]   [88x31] [88x31] [88x31]
+     ——————————————————————————————————————————
+     brand                               meta
+                                        links
+
+   The tiles (the optional operator card and the buttons) make one row, a
+   rule runs under them, the brand and the colophon share the next, and the
+   links get a full-width row of their own so a third one never wraps alone.
+   Every cell is placed by hand, so a missing block shifts nothing. Without
+   an operator card the buttons take the whole first row. The buttons shrink
+   evenly from 88px rather than stacking, and keep their ratio. */
+@media (max-width: 760px){
+  .foot__inner{
+    display:grid;
+    grid-template-columns:auto auto;
+    justify-content:space-between;
+    align-items:center;
+    gap:0 var(--s-4);
+    padding:var(--s-5) var(--page-pad);
+  }
+  .foot__inner:has(.foot__badges, .foot__op)::before{
+    content:"";
+    grid-area:2 / 1 / 3 / 3;
+    height:var(--hair);
+    background:var(--line);
+    margin:var(--s-5) 0 var(--s-4);
+  }
+  .foot__op    { grid-area:1 / 1; justify-self:start; min-width:0; }
+  .foot__badges{ grid-area:1 / 2; justify-self:stretch; justify-content:flex-end; flex-wrap:nowrap; min-width:0; }
+  .foot__inner:not(:has(.foot__op)) .foot__badges{ grid-column:1 / 3; justify-content:flex-start; }
+  .foot__badges > *{ flex:0 1 88px; min-width:0; }
+  .foot__badges img{ box-sizing:border-box; width:100%; height:auto; }
+  .foot__brand { grid-area:3 / 1; }
+  .foot__meta  { grid-area:3 / 2; justify-self:end; text-align:right; }
+  .foot__links { grid-area:4 / 1 / 5 / 3; justify-self:end; justify-content:flex-end; align-items:baseline; gap:var(--s-2) var(--s-4); padding-top:var(--s-4); }
+}
+
+
 /* ==================================================================
    THE MARK
    ------------------------------------------------------------------
@@ -2251,7 +2307,6 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   .kv dt{ color:var(--text-dim); }
   .kv dd{ margin-bottom:var(--s-3); }
 
-  .foot__inner{ flex-direction:column; align-items:flex-start; gap:var(--s-4); }
   .hud__corner{ width:18px; height:18px; }
   .hud__bar{ padding:var(--s-4); gap:var(--s-4); }
 }
