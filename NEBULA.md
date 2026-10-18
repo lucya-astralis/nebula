@@ -328,7 +328,7 @@ app sheet is the same mistake as a raw hex.
 | Set pieces | `--mark-split`, `--boot-fade` | the two durations that are not transitions: the mark's hover split, and the fade a page leaves on |
 | Depth | `--blur-1/2/3` | the rule-3 ladder |
 | Elevation | `--shadow-1/2`, `--glow-acc`, `--ring-acc` | things that genuinely float |
-| Shape | `--radius`, `--hair`, `--page-pad`, `--bp-narrow`, `--tap`, `--door-w` | one border width, one gutter, one breakpoint, one touch target, one sign-in card |
+| Shape | `--radius`, `--hair`, `--page-pad`, `--bp-narrow`, `--bp-phone`, `--tap`, `--door-w`, `--search-w`, `--search-h`, `--rail-row` | one border width, one gutter, two steps (760 narrow, 620 phone), one touch target, one sign-in card, the bar's search and the rail's row |
 
 Before this block existed the sheet carried 23 distinct paddings, 13 gaps, 13
 font sizes and 14 tracking values, every one hand-typed. So "the same as the
@@ -670,13 +670,19 @@ For every element, in order:
 8. **Does it depend on blur, translucency, motion or hover?** → say what it does
    without them, in tokens.
 
+**The reference build is the aperture console.** Where this document and
+the console's sheet disagree, the console is right and this document is
+corrected: the bar's search, the rail and the narrow steps were brought
+into line with it (2026-10-18), after the asset manager arca had been
+measured against a running console side by side.
+
 ### Step 3 — the component vocabulary
 
 Use the names; a new app is then already wearing the language.
 
 | Class | What it is |
 |---|---|
-| `.nav` / `.nav__inner` / `.nav__brand` / `.nav__search` | The app bar, with the accent hairline on its bottom edge |
+| `.nav` / `.nav__inner` / `.nav__brand` / `.nav__search` / `.nav__key` | The app bar, with the accent hairline on its bottom edge. The search stands beside the brand at the console's measure, in the reading voice, with the key that reaches it (`.nav__key`, "Ctrl K"); it stays in the bar on a phone |
 | `.section__doc` / `.section__doc-mark` | The meta line of real facts above a heading |
 | `.section__head` / `.section__slug .name` | The page heading, white-to-grey gradient |
 | `.eyebrow` | A labelled rule over a block — never a filled bar |
@@ -700,7 +706,7 @@ Use the names; a new app is then already wearing the language.
 | `.tbl` / `.tbl-wrap` | Rows of facts in the two voices; a `.num` column goes mono and tabular |
 | `.dlg` / `.dlg__head` / `.dlg__body` / `.dlg__foot` | A `<dialog>` on `--overlay`. A question, not a screen |
 | `.toast` / `.toasts` | That happened. Its edge is `--chrome`, because reporting is not a state; `--ok` / `--amb` / `--error` are statuses |
-| `.rail` / `.rail__nav` | The sections of one app, standing still. The current one is marked on its leading edge, and on its bottom edge once the rail is a strip |
+| `.rail` / `.rail__nav` | The sections of one app, standing still — the console's rail: each place a word in the reading voice with a mist glyph, the current one full text on a faint accent ground with an inset accent line on its leading edge, on its bottom edge once the rail is a strip (below 620px) |
 | `.login-body` / `.login__card` / … | The door — see its own chapter above |
 | `.u-nocase` | Rule 4's tool: data inside furniture that is cased |
 | `.u-offscreen` | In the tree and in a password manager's reach, out of the eye's way |
