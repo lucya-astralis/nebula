@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<base href="/errors/">
+<title>Error pages — Nebula</title>
+<meta name="description" content="Every error page in the Nebula set, each with its own scene.">
+<link rel="preload" href="../assets/fonts/SpaceGrotesk-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/JetBrainsMono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/logo/lucya_logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../nebula.css">
+<link rel="stylesheet" href="../fa-icons.css">
+<link rel="stylesheet" href="errors.css">
+<script src="errors.js" defer></script>
+</head>
+<body class="err" data-fx="stars">
+
+<div class="site-bg" aria-hidden="true">
+  <picture>
+    <source media="(max-width: 760px)" srcset="../assets/img/nova-square.svg">
+    <img src="../assets/img/nova-wide-16-9.svg" alt="" decoding="async">
+  </picture>
+</div>
+<canvas class="err__fx" aria-hidden="true"></canvas>
+
+<nav class="nav" aria-label="Site">
+  <div class="nav__inner">
+    <a class="nav__brand" href="/">
+      <span class="mark mark--nav" aria-hidden="true"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg><span class="mark__ghost mark__ghost--r"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg></span><span class="mark__ghost mark__ghost--b"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg></span></span>
+      <span class="brand-text">
+        <span class="brand-name">lucya</span>
+        <span class="brand-sub">Error pages</span>
+      </span>
+    </a>
+    <a class="btn btn--ghost btn--sm err__all" href="./" aria-current="page"><i class="fa fa-table-cells" aria-hidden="true"></i><span class="t">All codes</span></a>
+  </div>
+</nav>
+
+<main class="err-cat">
+  <header class="err-cat__head">
+    <p class="section__doc">
+      <span>Set <b>19</b> pages</span>
+      <span>Standard <b>13</b></span>
+      <span>Odd <b>6</b></span>
+    </p>
+    <h1 class="editorial-title editorial-title--hero">When it goes wrong.</h1>
+    <p class="err__lead">
+      An error page is the one screen with nothing else on it, so each of
+      these gets a scene — drawn from the tokens, so an app's accent repaints
+      it, and with a still frame for anyone who asked their system for less
+      motion. Open one; most of them answer the pointer.
+    </p>
+  </header>
+
+  <section aria-labelledby="std">
+    <h2 class="eyebrow" id="std"><i class="fa fa-layer-group" aria-hidden="true"></i> The standard set <span class="eyebrow__n">13</span></h2>
+    <ul class="card-grid">
+      <li class="card err-tile">
+        <a href="400.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">400</span>
+            <span class="err-tile__fx">Parser</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Bad request</span><span>4xx · Client</span></span>
+            <span class="card__name">That request didn&#x27;t parse.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="401.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">401</span>
+            <span class="err-tile__fx">Iris</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Unauthorized</span><span>4xx · Client</span></span>
+            <span class="card__name">This door opens when you sign in.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="403.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">403</span>
+            <span class="err-tile__fx">Force field</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Forbidden</span><span>4xx · Client</span></span>
+            <span class="card__name">You can see it from here. You can&#x27;t go in.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="404.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">404</span>
+            <span class="err-tile__fx">Radar</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Not found</span><span>4xx · Client</span></span>
+            <span class="card__name">Nothing at these coordinates.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="405.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">405</span>
+            <span class="err-tile__fx">Drum</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Method not allowed</span><span>4xx · Client</span></span>
+            <span class="card__name">Right address, wrong kind of request.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="408.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">408</span>
+            <span class="err-tile__fx">Dial</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Request timeout</span><span>4xx · Client</span></span>
+            <span class="card__name">The server stopped waiting.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="410.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">410</span>
+            <span class="err-tile__fx">Dust</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Gone</span><span>4xx · Client</span></span>
+            <span class="card__name">This was here. It&#x27;s gone for good.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="413.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">413</span>
+            <span class="err-tile__fx">Overflow</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Content too large</span><span>4xx · Client</span></span>
+            <span class="card__name">That&#x27;s more than this server takes in one go.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="429.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">429</span>
+            <span class="err-tile__fx">Rate gate</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Too many requests</span><span>4xx · Client</span></span>
+            <span class="card__name">Easy — that was a lot of requests.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="500.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">500</span>
+            <span class="err-tile__fx">Tesseract</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Internal server error</span><span>5xx · Server</span></span>
+            <span class="card__name">Something broke on our side.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="502.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">502</span>
+            <span class="err-tile__fx">Broken link</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Bad gateway</span><span>5xx · Server</span></span>
+            <span class="card__name">The server behind this one answered nonsense.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="503.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">503</span>
+            <span class="err-tile__fx">Eclipse</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Service unavailable</span><span>5xx · Server</span></span>
+            <span class="card__name">Down for maintenance. Back soon.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="504.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">504</span>
+            <span class="err-tile__fx">Sonar</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Gateway timeout</span><span>5xx · Server</span></span>
+            <span class="card__name">We called the server behind this one. No answer.</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="odd">
+    <h2 class="eyebrow" id="odd"><i class="fa fa-star" aria-hidden="true"></i> The odd ones <span class="eyebrow__n">6</span></h2>
+    <ul class="card-grid">
+      <li class="card err-tile">
+        <a href="418.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">418</span>
+            <span class="err-tile__fx">Teapot</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>I&#x27;m a teapot</span><span>4xx · RFC 2324</span></span>
+            <span class="card__name">I&#x27;m a teapot. I don&#x27;t do coffee.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="420.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">420</span>
+            <span class="err-tile__fx">Breath</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Enhance your calm</span><span>4xx · Unofficial</span></span>
+            <span class="card__name">Enhance your calm.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="450.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">450</span>
+            <span class="err-tile__fx">Mosaic</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Blocked by parental controls</span><span>4xx · Unofficial</span></span>
+            <span class="card__name">Blocked by parental controls.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="451.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">451</span>
+            <span class="err-tile__fx">Redaction</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Unavailable for legal reasons</span><span>4xx · RFC 7725</span></span>
+            <span class="card__name">Unavailable for legal reasons.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="701.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">701</span>
+            <span class="err-tile__fx">Droop</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Meh</span><span>7xx · Unofficial</span></span>
+            <span class="card__name">Meh.</span>
+          </span>
+        </a>
+      </li>
+      <li class="card err-tile">
+        <a href="999.html">
+          <span class="err-tile__face">
+            <span class="err-tile__n">999</span>
+            <span class="err-tile__fx">Event horizon</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__meta"><span>Request denied</span><span>9xx · Non-standard</span></span>
+            <span class="card__name">Past the last code there is.</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot__inner">
+    <span class="foot__brand"><span class="mark mark--foot" aria-hidden="true"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg></span><span class="foot__wordmark">lucya</span></span>
+    <span class="foot__meta">Nebula · error pages</span>
+  </div>
+</footer>
+
+</body>
+</html>

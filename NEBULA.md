@@ -582,6 +582,49 @@ screen people see most often and want to leave soonest.
 
 ---
 
+## Error pages — the door's sibling
+
+`errors/` is the set: thirteen standard codes (400, 401, 403, 404, 405, 408,
+410, 413, 429, 500, 502, 503, 504) and six odd ones (418, 420, 450, 451, 701,
+999), plus a catalogue at `errors/index.html`. Open the catalogue in the
+showcase server to see every scene.
+
+An error page is the door's sibling: its own document, the same room
+(`.site-bg`, the nova cut), the same bar. The difference is that a door covers
+no wait and an error page **is** the wait — the visitor has nothing else to
+look at, so it is the one screen that earns a scene. The six rules still hold
+inside it:
+
+| | |
+|---|---|
+| **One live thing** | Each scene spends the accent on exactly one thing: the radar's sweep, the request the gate admits, the breath guide, the needle. Furniture is `--chrome` / `--label`, identity (the teapot) is `--mist`, a refusal is `--red` — never `--acc`. |
+| **Drawn from tokens** | `errors.js` reads every colour off the tokens at start. An app that sets its own accent repaints all nineteen scenes without touching the script. |
+| **The numeral** | The display face's licensed appearance (rule 4), in the title silver, `aria-hidden`: the status is stated in words on the `.section__doc` line above it, and that line is real facts — code, reason phrase, class, the time it happened. |
+| **A still frame** | Every scene declares `still`, a moment in seconds. Under `.fx-lite` (weak hardware, data saver, reduced motion) or reduced transparency the scene is simulated to that moment off screen and painted **once**. Forced colours get no canvas at all — the words are the page. |
+| **Square, still** | Stars, packets, blocks, motes are squares. Only genuinely round things are round: a dial, a radar, a lens, an eclipse, steam. |
+| **Never echo** | Nothing from the URL appears on the page. The 404's sector is a hash of the path — the same address always lands in the same sector — and the path itself is never printed. |
+| **The pointer is optional** | Scenes answer it (the iris opens on the Sign in button's hover *and focus*, the field ripples, the lens moves), but nothing needs it, and the canvas never takes a click from a control. |
+
+**`<base href="/errors/">` on every page.** An error page is answered at
+the URL that failed (`/a/b/c/missing`), so a relative path in it resolves
+against the wrong directory and the page arrives unstyled. The base pins
+them. An app that serves the set from somewhere else changes `BASE` in
+`errors/build.py` and regenerates — the pages are generated from one table
+so the bar, the mark, the meta line and the colophon are written once.
+
+**Two pages take a value from the server**, as attributes on `<body>`:
+`data-retry-after` on the 429 (the `Retry-After` header, in seconds; the
+countdown, the meter and the disabled Try again all follow it — the door's
+lockout pattern) and `data-eta` on the 503 (a time to show instead of
+"soon"). Both are optional and both are written by the server, never read
+from the query string.
+
+What the set never does: autoplay sound, a scene that blocks the copy, a
+control that only the pointer can reach, a fake request id, a timer that
+pretends to know when the server is back.
+
+---
+
 ## The controls the sheet now owns
 
 Three of these were invented twice before they were written down, which is the
@@ -708,6 +751,7 @@ Use the names; a new app is then already wearing the language.
 | `.toast` / `.toasts` | That happened. Its edge is `--chrome`, because reporting is not a state; `--ok` / `--amb` / `--error` are statuses |
 | `.rail` / `.rail__nav` | The sections of one app, standing still — the console's rail: each place a word in the reading voice with a mist glyph, the current one full text on a faint accent ground with an inset accent line on its leading edge, on its bottom edge once the rail is a strip (below 620px) |
 | `.login-body` / `.login__card` / … | The door — see its own chapter above |
+| `errors/` (`errors.css`, `errors.js`) | The error set — see its own chapter above. An app copies the folder, sets `BASE`, regenerates |
 | `.u-nocase` | Rule 4's tool: data inside furniture that is cased |
 | `.u-offscreen` | In the tree and in a password manager's reach, out of the eye's way |
 | `.foot` / `.foot__brand` / `.foot__links` / `.foot__meta` / `.foot--editorial` / `.foot__floor` | The colophon; optional oversized brand signature. On a desktop one row; on a phone sorted into rows, see below |

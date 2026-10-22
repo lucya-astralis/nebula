@@ -1,0 +1,383 @@
+/* ==================================================================
+   NEBULA — ERROR PAGES
+   ------------------------------------------------------------------
+   The sheet for the error set in errors/. It loads AFTER nebula.css and
+   adds only what an error page needs that the language does not already
+   own: the stage the scene is drawn in, the numeral, and the few objects
+   one scene puts in the DOM instead of on the canvas.
+
+   An error page is the door's sibling. Its own document, the same room
+   (.site-bg, the nova cut), the same bar. The difference is that a door
+   covers no wait and an error page IS the wait: the visitor has nothing
+   else to look at. That is the licence for a scene. The six rules still
+   hold inside it:
+
+     - ONE live thing per scene wears the accent: the radar sweep, the
+       admitted request, the breath guide. Everything else is --chrome,
+       --label or --mist, and a refusal is --red, never --acc.
+     - The scene is drawn, never typed: every colour comes off a token at
+       runtime (errors.js reads them), so an app's accent repaints it.
+     - Every scene has a still frame. Reduced motion, .fx-lite and reduced
+       transparency get that frame and nothing moves; forced colours get
+       no canvas at all, only the words.
+   ================================================================== */
+
+/* The house artwork, served with the tint off: the four values NEBULA.md
+   gives for nova, and the bloom with them, because nova is the tint. */
+:root{
+  --wallpaper-filter: brightness(.95) contrast(1.04);
+  --wallpaper-shade-top: rgba(0,0,0,0.62);
+  --wallpaper-shade-bot: rgba(0,0,0,0.62);
+  --wallpaper-bloom: transparent;
+
+  /* The numeral. A display size, so it is a calc() against
+     --display-scale like every other display size in the sheet (rule 5's
+     stated exception): the face brings its own idea of the em. */
+  --err-code-size: calc(clamp(72px, 10.5vw, 188px) * var(--display-scale));
+  /* The stage's share of a wide screen, and its height on a narrow one. */
+  --err-stage-w: 52%;
+  --err-stage-h: 42svh;
+}
+
+.err{
+  min-height:100dvh;
+  display:flex; flex-direction:column;
+}
+
+/* The scene. One canvas behind everything, fixed, never a control. */
+.err__fx{
+  position:fixed; inset:0;
+  width:100%; height:100%;
+  z-index:0;
+  pointer-events:none;
+  display:block;
+}
+
+/* ---- the bar ------------------------------------------------------
+   .nav, unchanged. The sub-line says where you are, as on every app. */
+.err .nav{ position:relative; z-index:2; }
+.err .nav__brand .brand-sub b{ font-weight:400; letter-spacing:var(--tr-num); color:var(--label); }
+.err__all{ margin-left:auto; }
+
+/* ---- the page ----------------------------------------------------- */
+.err__main{
+  position:relative; z-index:1;
+  flex:1 0 auto;
+  width:100%; max-width:var(--page-max);
+  margin:0 auto;
+  padding:var(--s-8) var(--page-pad);
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) var(--err-stage-w);
+  align-items:center;
+  gap:var(--s-7);
+  /* the scene reads pointer movement over the whole page, so nothing
+     here may swallow it; the controls opt back in */
+  pointer-events:none;
+}
+.err__main a, .err__main button, .err__main .err__copy{ pointer-events:auto; }
+
+.err__copy{ display:flex; flex-direction:column; gap:var(--s-5); min-width:0; max-width:calc(var(--s-11) * 4.4); }
+.err__copy .section__doc{ margin:0; }
+
+/* The stage is EMPTY in the DOM. It is a box the script measures: the
+   scene's focal point is its centre, and its size is the scene's size.
+   Layout decides where the picture goes; the canvas follows. */
+.err__stage{
+  position:relative;
+  align-self:stretch;
+  min-height:calc(var(--s-11) * 3);
+}
+
+/* The numeral: the display face's one licensed appearance on a page
+   (rule 4 — "a 404 numeral"). The title silver, falling. It is
+   aria-hidden: the status is stated in words on the meta line, and a
+   screen reader reading "four hundred and four" adds nothing. */
+.err__code{
+  position:relative;
+  margin:0;
+  font-family:var(--display-font);
+  font-weight:400;
+  font-size:var(--err-code-size);
+  letter-spacing:var(--tr-brand-floor);
+  line-height:.92;
+  white-space:nowrap;
+  color:var(--title-a);
+  background:linear-gradient(175deg, var(--title-a) 22%, var(--title-b) 96%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  user-select:none;
+}
+/* A scene that draws the numeral itself keeps the DOM one for layout and
+   for the still frame, and only hides it while it is drawing. */
+.err--drawn .err__code{ opacity:0; }
+.err__code .d{ display:inline-block; }
+
+.err__lead{ margin:0; max-width:60ch; color:var(--text-dim); font-size:var(--fs-text-lg); line-height:1.6; }
+.err__lead code{ white-space:nowrap; }
+.err__acts{ display:flex; flex-wrap:wrap; gap:var(--s-3); padding-top:var(--s-2); }
+.err__acts .btn{ min-height:var(--tap); padding-inline:var(--s-5); }
+
+/* The readout a scene writes into, in the chrome voice. Numbers, so
+   tabular. Decorative motion of facts the meta line already states:
+   aria-hidden in the markup. */
+.err__hud{
+  position:absolute; left:0; bottom:0;
+  margin:0;
+  display:flex; flex-direction:column; gap:var(--s-1);
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--label);
+  font-variant-numeric:tabular-nums;
+  white-space:pre;
+}
+/* the values are data: never cased (rule 4) — "30.00 s", "f/16" */
+.err__hud b{ color:var(--text); font-weight:400; text-transform:none; }
+.err__hud .is-live{ color:var(--acc); }
+.err__hud .is-bad { color:var(--red); }
+.err__hud--top{ top:0; bottom:auto; }
+.err__hud--right{ left:auto; right:0; text-align:right; }
+
+/* ---- the colophon -------------------------------------------------- */
+.err .foot{ margin-top:0; }
+.err .foot__inner{ padding-block:var(--s-5); }
+.err .foot__wordmark{
+  font-family:var(--display-font);
+  font-size:calc(11px * var(--display-scale));
+  letter-spacing:var(--tr-display);
+  text-transform:uppercase;
+}
+.err .foot__meta{ font-family:var(--mono); font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase; }
+
+/* ==================================================================
+   SCENES THAT LIVE IN THE DOM
+   Most scenes are canvas. These few are text a person could read, or a
+   control, so they stay markup.
+   ================================================================== */
+
+/* 400 — a digit being parsed: the scramble glyph is mono, the resolved
+   one is the display face again */
+.err__code .d.is-noise{ font-family:var(--mono); font-weight:700; }
+
+/* 429 / 420 — a wait, stated: a meter and its figure (the meter's own
+   rule: a bar with no number is a mood) */
+.err__wait{ display:flex; flex-direction:column; gap:var(--s-2); max-width:calc(var(--s-11) * 2.4); }
+.err__wait-top{
+  display:flex; justify-content:space-between; gap:var(--s-4);
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--label);
+  font-variant-numeric:tabular-nums;
+}
+.err__wait-top b{ color:var(--text); font-weight:400; text-transform:none; }
+
+/* 451 — the notice. A pane, read: --glass-hi. The bars are --bg, the one
+   true black, because a redaction IS the absence of content. */
+.err__notice{
+  position:absolute; left:50%; top:50%;
+  translate:-50% -50%;
+  width:min(100%, calc(var(--s-11) * 3.2));
+  margin:0;
+  padding:var(--s-6) var(--s-6) var(--s-5);
+  background-color:var(--glass-hi);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  border:var(--hair) solid var(--line);
+  display:flex; flex-direction:column; gap:var(--s-4);
+}
+.err__notice-head{
+  display:flex; justify-content:space-between; gap:var(--s-4);
+  padding-bottom:var(--s-3);
+  border-bottom:var(--hair) solid var(--line);
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--label);
+}
+.err__notice-body{ margin:0; font-size:var(--fs-text-lg); line-height:1.9; color:var(--text-dim); }
+.err__notice-body .w{ position:relative; display:inline; }
+.err__notice-body .w::after{
+  content:"";
+  position:absolute; left:-.04em; right:-.04em; top:.1em; bottom:0;
+  background:var(--bg);
+  box-shadow:0 0 0 var(--hair) rgba(255,255,255,.04);
+  scale:0 1; transform-origin:left center;
+  transition:scale var(--dur-2) steps(3, end);
+}
+.err__notice-body .w.is-x::after{ scale:1 1; }
+.err__notice-foot{
+  display:flex; justify-content:space-between; gap:var(--s-4);
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--text-ghost);
+}
+
+/* 450 — the filter's own switch, on and not yours to turn off. The real
+   .switch, disabled; the word beside it says On (rule 6). */
+.err__lock{
+  /* centred on the picture, which stops short of the readout under it */
+  position:absolute; left:50%; top:calc(50% - var(--s-8) + var(--s-1));
+  translate:-50% -50%;
+  display:flex; flex-direction:column; align-items:center; gap:var(--s-4);
+  padding:var(--s-5) var(--s-6);
+  background-color:var(--glass-hi);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  border:var(--hair) solid var(--line);
+  text-align:center;
+}
+.err__lock .fa{ font-size:var(--fs-chrome-xl); color:var(--mist); }
+.err__lock-t{
+  margin:0;
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  color:var(--label);
+}
+.err__lock .switch:disabled{ opacity:1; cursor:not-allowed; }
+
+/* 701 — the digits fall asleep. The script writes --tilt and --sag per
+   digit through the CSSOM; the transition is what makes it a droop. */
+/* A digit that moves on its own is its own layer, and the parent's
+   clipped gradient does not follow it into one: each digit carries the
+   title silver itself. */
+.err--meh .err__code{ background:none; }
+.err--meh .err__code .d{
+  background:linear-gradient(175deg, var(--title-a) 22%, var(--title-b) 96%);
+  -webkit-background-clip:text; background-clip:text;
+  transform-origin:50% 100%;
+  rotate:calc(var(--tilt, 0) * 1deg);
+  translate:0 calc(var(--sag, 0) * 1px);
+  transition:rotate 1.8s var(--ease), translate 1.8s var(--ease);
+}
+.err--meh.is-awake .err__code .d{ transition-duration:var(--dur-2); transition-timing-function:var(--ease-out); }
+.err--meh .err__copy .editorial-title,
+.err--meh .err__lead{
+  transform-origin:0 0;
+  rotate:calc(var(--slump, 0) * 1deg);
+  transition:rotate 2.4s var(--ease);
+}
+.err--meh.is-awake .err__copy .editorial-title,
+.err--meh.is-awake .err__lead{ transition-duration:var(--dur-2); }
+
+/* 500 — the numeral tears. Two copies of it, in the two faces the
+   language already has for this (the soft accent and the mist), sliced
+   by clip-path in steps — a signal arrives in frames, it does not slide. */
+.err--tear .err__code::before,
+.err--tear .err__code::after{
+  content:attr(data-text);
+  position:absolute; inset:0;
+  -webkit-text-fill-color:currentColor;
+  background:none;
+  mix-blend-mode:screen;
+  opacity:0;
+  pointer-events:none;
+}
+.err--tear .err__code::before{ color:var(--acc-soft); }
+.err--tear .err__code::after { color:var(--mist); }
+.err--tear .err__code.is-tearing::before{ opacity:.8; animation:errTearA .42s steps(5, end); }
+.err--tear .err__code.is-tearing::after { opacity:.8; animation:errTearB .42s steps(5, end); }
+.err--tear .err__code.is-tearing{ animation:errTearBody .42s steps(5, end); }
+@keyframes errTearA{
+  0%  { clip-path:inset(12% 0 64% 0); translate:-6px 0; }
+  25% { clip-path:inset(58% 0 18% 0); translate:8px 0; }
+  50% { clip-path:inset(30% 0 46% 0); translate:-3px 0; }
+  75% { clip-path:inset(76% 0 4% 0);  translate:5px 0; }
+  100%{ clip-path:inset(40% 0 40% 0); translate:0 0; }
+}
+@keyframes errTearB{
+  0%  { clip-path:inset(70% 0 8% 0);  translate:7px 0; }
+  25% { clip-path:inset(8% 0 72% 0);  translate:-9px 0; }
+  50% { clip-path:inset(48% 0 30% 0); translate:4px 0; }
+  75% { clip-path:inset(22% 0 60% 0); translate:-5px 0; }
+  100%{ clip-path:inset(40% 0 40% 0); translate:0 0; }
+}
+@keyframes errTearBody{
+  0%, 100%{ translate:0 0; }
+  25%     { translate:2px 0; }
+  50%     { translate:-2px 0; }
+  75%     { translate:1px 0; }
+}
+
+/* ==================================================================
+   THE CATALOGUE  (errors/index.html)
+   ================================================================== */
+.err-cat{
+  position:relative; z-index:1;
+  flex:1 0 auto;
+  width:100%; max-width:var(--page-max);
+  margin:0 auto;
+  padding:var(--s-9) var(--page-pad) var(--s-8);
+  display:flex; flex-direction:column; gap:var(--s-8);
+}
+.err-cat__head{ display:flex; flex-direction:column; gap:var(--s-5); max-width:calc(var(--s-11) * 5); }
+.err-cat__head .err__lead{ font-size:var(--fs-text-lg); }
+.err-cat .card-grid{ grid-template-columns:repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+.err-tile__face{
+  position:relative;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  padding:var(--s-6) var(--s-4) var(--s-4);
+  min-height:calc(var(--s-10) + var(--s-6));
+  overflow:hidden;
+}
+.err-tile__n{
+  font-family:var(--display-font);
+  font-size:calc(42px * var(--display-scale));
+  letter-spacing:var(--tr-brand-floor);
+  line-height:1;
+  color:var(--title-a);
+  background:linear-gradient(175deg, var(--title-a) 22%, var(--title-b) 96%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.err-tile__fx{
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--label);
+}
+.err-tile__fx .fa{ color:var(--mist); margin-right:var(--s-2); }
+.err-tile .card__name{ font-size:var(--fs-text-md); }
+.err-tile__d{ margin:0; font-size:var(--fs-text-sm); color:var(--text-dim); line-height:1.5; }
+
+/* ==================================================================
+   NARROW — the stage goes on top, as its own row
+   ================================================================== */
+@media (max-width: 760px){
+  .err__main{
+    grid-template-columns:minmax(0, 1fr);
+    grid-template-rows:var(--err-stage-h) auto;
+    align-items:start;
+    gap:var(--s-5);
+    padding-block:var(--s-5) var(--s-7);
+  }
+  .err__stage{ grid-row:1; min-height:0; }
+  /* On a phone the stage is one short row and the readout would sit on
+     the scene. It repeats what the meta line states; the scene keeps the
+     row to itself. */
+  .err__hud{ display:none; }
+  .err__copy{ grid-row:2; }
+  .err__lead{ font-size:var(--fs-text-md); }
+  .err__all .t{ display:none; }
+}
+@media (max-width: 620px){
+  .err .nav__brand .brand-text{ display:none; }
+}
+
+/* ==================================================================
+   RULE 6 — the scene is a capability
+   ================================================================== */
+/* Forced colours: the compositor owns the palette, and a canvas painted
+   from our tokens would ignore it. The words are the page. */
+@media (forced-colors: active){
+  .err__fx{ display:none; }
+  .err--drawn .err__code{ opacity:1; }
+  .err__code, .err-tile__n{ -webkit-text-fill-color:CanvasText; background:none; }
+  .err__notice-body .w::after{ background:CanvasText; }
+}
+@media (prefers-reduced-motion: reduce){
+  .err--tear .err__code.is-tearing,
+  .err--tear .err__code.is-tearing::before,
+  .err--tear .err__code.is-tearing::after{ animation:none; opacity:0; }
+  .err--tear .err__code.is-tearing{ opacity:1; }
+  .err--meh .err__code .d,
+  .err--meh .err__copy .editorial-title,
+  .err--meh .err__lead{ transition:none; }
+  .err__notice-body .w::after{ transition:none; }
+}

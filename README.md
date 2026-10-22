@@ -37,6 +37,7 @@ icon subset need an origin, so both fall back.
 | `assets/logo/` | Two files, on purpose: the current lucya.systems mark (the same one `gallery.cfg` serves as `logo-new.svg`, tracked as `configurator/app/static/logo/lucya_logo.svg`), and `gallery-mark.svg`, the unbranded default for an app that has configured no logo. The combined lettering SVG in `app/static/logo/` is **not** here — it has the previous drawing of the bird baked into it. The footer lockup is composed instead: the mark, plus the wordmark as type in the display face. |
 | `assets/img/nova-*.svg` | The house artwork, wide and square — the same two cuts the configurator serves, and the pair an app's `wallpaper` / `wallpaper_mobile` is. Vector: the whole backdrop is 8 KB and costs nothing to paint. |
 | `assets/img/plate-*.svg` | Abstract stand-ins for photographs. Deliberately **not** the operator's own pictures: `photos/` and `thumbnails/` are gitignored, so a committed showcase cannot borrow from them. |
+| `errors/` | **The error pages.** Nineteen codes, each with its own scene drawn from the tokens, and a catalogue at `errors/index.html`. Generated from one table: edit `errors/build.py`, run `python3 errors/build.py`. Served from the folder root, because every page pins `<base href="/errors/">`. |
 
 ## The six rules, in one screen
 

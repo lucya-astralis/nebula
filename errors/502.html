@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<base href="/errors/">
+<title>502 — Bad gateway</title>
+<meta name="description" content="502 Bad gateway. The server behind this one answered nonsense.">
+<link rel="preload" href="../assets/fonts/SpaceGrotesk-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/JetBrainsMono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/logo/lucya_logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../nebula.css">
+<link rel="stylesheet" href="../fa-icons.css">
+<link rel="stylesheet" href="errors.css">
+<script src="errors.js" defer></script>
+</head>
+<body class="err" data-fx="gateway">
+
+<div class="site-bg" aria-hidden="true">
+  <picture>
+    <source media="(max-width: 760px)" srcset="../assets/img/nova-square.svg">
+    <img src="../assets/img/nova-wide-16-9.svg" alt="" decoding="async">
+  </picture>
+</div>
+<canvas class="err__fx" aria-hidden="true"></canvas>
+
+<nav class="nav" aria-label="Site">
+  <div class="nav__inner">
+    <a class="nav__brand" href="/">
+      <span class="mark mark--nav" aria-hidden="true"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg><span class="mark__ghost mark__ghost--r"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg></span><span class="mark__ghost mark__ghost--b"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece piece--ghost" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece piece--ghost" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece piece--ghost" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece piece--ghost" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece piece--ghost" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece piece--ghost" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece piece--ghost" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece piece--ghost" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg></span></span>
+      <span class="brand-text">
+        <span class="brand-name">lucya</span>
+        <span class="brand-sub">Error <b>502</b></span>
+      </span>
+    </a>
+    <a class="btn btn--ghost btn--sm err__all" href="./"><i class="fa fa-table-cells" aria-hidden="true"></i><span class="t">All codes</span></a>
+  </div>
+</nav>
+
+<main class="err__main">
+  <div class="err__copy">
+    <p class="section__doc">
+      <span>Status <b>502</b></span>
+      <span>Bad gateway</span>
+      <span>Class <b>5xx</b> Server</span>
+      <span data-now-wrap hidden>At <b><time data-now></time></b></span>
+    </p>
+    <p class="err__code" aria-hidden="true" data-text="502"><span class="d">5</span><span class="d">0</span><span class="d">2</span></p>
+    <h1 class="editorial-title">The server behind this one answered nonsense.</h1>
+    <p class="err__lead">This server passed your request on and got back a reply it couldn&#x27;t use. Usually the service behind it is restarting — give it a moment.</p>
+    <div class="err__acts">
+        <button class="btn btn--primary" type="button" data-retry hidden><i class="fa fa-clock-rotate-left" aria-hidden="true"></i> <span data-retry-label>Try again</span></button>
+        <a class="btn" href="/"><i class="fa fa-house" aria-hidden="true"></i> Home</a>
+    </div>
+  </div>
+  <div class="err__stage">
+          <p class="err__hud" data-hud aria-hidden="true"></p>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="foot__inner">
+    <span class="foot__brand"><span class="mark mark--foot" aria-hidden="true"><svg class="mark__svg" viewBox="0 0 964 543" focusable="false"><path class="piece" d="M112,148L260,217L409.69,379.66L467.26,264.53L400,222.08L400,204.02L0,0L112,148Z"/><path class="piece" d="M964,0L564,204.02L564,222.08L496.74,264.53L554.31,379.66L704,217L852,148L964,0Z"/><path class="piece" d="M172.93,266.68L315.8,308.65L247.36,234.28L59.81,146.84L172.93,266.68Z"/><path class="piece" d="M904.19,146.84L716.64,234.28L648.2,308.65L791.07,266.68L904.19,146.84Z"/><path class="piece" d="M289.78,367.82L400.19,400.35L343.4,338.64L191.3,293.96L289.78,367.82Z"/><path class="piece" d="M772.7,293.96L620.6,338.64L563.81,400.35L674.22,367.82L772.7,293.96Z"/><path class="piece" d="M518,67L415,100L403,120L454,122L421,210.5L482,249L543,210.5L538,85L518,67Z"/><path class="piece" d="M482,282L544.5,407L482,543L419.5,407L482,282Z"/></svg></span><span class="foot__wordmark">lucya</span></span>
+    <span class="foot__meta">Status 502</span>
+  </div>
+</footer>
+
+</body>
+</html>
