@@ -203,6 +203,10 @@ G["arrowright"] = [[(0, 2.6), (3.2, 2.6)], [(2.3, 4.2), (3.9, 2.6), (2.3, 1.0)]]
 G["arrowleft"] = [[(4, 2.6), (0.8, 2.6)], [(1.7, 4.2), (0.1, 2.6), (1.7, 1.0)]]
 G["arrowup"] = [[(2, 0), (2, 5.1)], [(0.4, 4.2), (2, 5.8), (3.6, 4.2)]]
 G["arrowdown"] = [[(2, 6), (2, 0.9)], [(0.4, 1.8), (2, 0.2), (3.6, 1.8)]]
+# the diagonal pair a link leaves the page with: shaft stops short of the
+# head, so its square end sits inside it
+G["arrowNE"] = [[(0.4, 0.8), (3.0, 4.4)], [(1.4, 5.2), (3.6, 5.2), (3.6, 3.0)]]
+G["arrowSE"] = [[(0.4, 5.2), (3.0, 1.6)], [(1.4, 0.8), (3.6, 0.8), (3.6, 3.0)]]
 G["space"] = []
 
 # Display draws its A as the wordmark's wedge, not as Mono's cut box: a
@@ -222,6 +226,7 @@ MARKS = {
     "circumflex": [[(0.8, 5.4), (2, 6.4), (3.2, 5.4)]],
     "tilde": [[(0.6, 5.5), (1.4, 6.3), (2.6, 5.5), (3.4, 6.3)]],
     "ring": [box(1.2, 5.3, 2.8, 6.8, 0.4)],
+    "macron": [[(0.8, 6), (3.2, 6)]],
 }
 
 ACCENTED = {
@@ -235,11 +240,15 @@ ACCENTED = {
     0x00D3: ("O", "acute"), 0x00F3: ("o", "acute"), 0x00D4: ("O", "circumflex"), 0x00F4: ("o", "circumflex"),
     0x00DA: ("U", "acute"), 0x00FA: ("u", "acute"),
     0x00D1: ("N", "tilde"), 0x00F1: ("n", "tilde"),
+    # the long vowels of romanised Japanese: Kōshin, Seiki-tō
+    0x0100: ("A", "macron"), 0x0101: ("a", "macron"), 0x0112: ("E", "macron"),
+    0x0113: ("e", "macron"), 0x012A: ("I", "macron"), 0x014C: ("O", "macron"),
+    0x014D: ("o", "macron"), 0x016A: ("U", "macron"), 0x016B: ("u", "macron"),
 }
 # the dotted i takes its own dot off before a mark sits on it
 DOTLESS = {"i": [[(0.6, 4.5), (2, 4.5), (2, 0)], [(0.4, 0), (3.6, 0)]]}
 ACCENTED.update({0x00ED: ("dotlessi", "acute"), 0x00EF: ("dotlessi", "dieresis"),
-                 0x00EE: ("dotlessi", "circumflex")})
+                 0x00EE: ("dotlessi", "circumflex"), 0x012B: ("dotlessi", "macron")})
 G["dotlessi"] = DOTLESS["i"]
 
 SINGLES = {
@@ -249,7 +258,7 @@ SINGLES = {
     0x201A: "quotesinglbase", 0x201C: "quotedblleft", 0x201D: "quotedblright",
     0x201E: "quotedblbase", 0x2192: "arrowright", 0x2190: "arrowleft", 0x2191: "arrowup",
     0x2193: "arrowdown", 0x20AC: "Euro", 0x00B0: "degree", 0x00DF: "germandbls", 0x0131: "dotlessi",
-    0x00A0: "space",
+    0x00A0: "space", 0x2197: "arrowNE", 0x2198: "arrowSE",
 }
 
 
@@ -822,6 +831,11 @@ ICONS = {
     "warning": [closed((0, 0.4), (3.4, 7.6), (4.6, 7.6), (8, 0.4)), [(4, 5.4), (4, 3.4)], dot(4, 1.9, 1.0)],
     "user-edit": [box(1, 4.6, 4.6, 8, IK), [(0, 0), (0, 2.8, 1.4), (4.6, 2.8)],
                   closed((4.6, 0), (4.6, 1.2), (6.8, 3.4), (8, 2.2), (5.8, 0))],
+    # ---- for lucya.systems (2026-10)
+    "pulse": [[(0, 4), (2.2, 4), (3.2, 6.8), (4.8, 1.2), (5.8, 4), (8, 4)]],
+    "book": [closed((4, 0.8), (0, 1.8), (0, 7.6), (4, 6.6)), closed((4, 0.8), (8, 1.8), (8, 7.6), (4, 6.6))],
+    "code": [[(2.8, 6.6), (0.4, 4), (2.8, 1.4)], [(5.2, 6.6), (7.6, 4), (5.2, 1.4)]],
+    "mail": [box(0, 1, 8, 7, 0), [(0, 7), (4, 3.6), (8, 7)]],
 }
 
 def build_icons(face):
@@ -1067,6 +1081,7 @@ WORDMARK_MARKS = {
     "circumflex": [[(-1.6, 0), (0, 1.3), (1.6, 0)]],
     "tilde": [[(-2, 0), (-0.8, 1.1), (0.8, 0), (2, 1.1)]],
     "ring": [box(-1, 0, 1, 1.6, 0.3)],
+    "macron": [[(-1.8, 0), (1.8, 0)]],
 }
 
 

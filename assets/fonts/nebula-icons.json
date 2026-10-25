@@ -95,5 +95,9 @@
 "health": "e05d",
 "tag": "e05e",
 "warning": "e05f",
-"user-edit": "e060"
+"user-edit": "e060",
+"pulse": "e061",
+"book": "e062",
+"code": "e063",
+"mail": "e064"
 }

@@ -132,3 +132,7 @@
 .ni-tag{ --ni:"\e05e"; }
 .ni-warning{ --ni:"\e05f"; }
 .ni-user-edit{ --ni:"\e060"; }
+.ni-pulse{ --ni:"\e061"; }
+.ni-book{ --ni:"\e062"; }
+.ni-code{ --ni:"\e063"; }
+.ni-mail{ --ni:"\e064"; }
