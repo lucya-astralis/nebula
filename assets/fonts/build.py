@@ -36,6 +36,17 @@ from fontTools.pens.ttGlyphPen import TTGlyphPen
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 VERSION = "1.000"
+# head.created / head.modified, fixed: fontTools would stamp the build time,
+# and then every run rewrites every file and a copied font never matches
+# its source byte for byte. 2026-10-25 00:00 UTC, in seconds since 1904.
+STAMP = 3844454400
+
+
+def save(font, path):
+    font["head"].created = font["head"].modified = STAMP
+    font.recalcTimestamp = False
+    font.flavor = "woff2"
+    font.save(path)
 
 # ---------------------------------------------------------------- the grid
 CAP, XH, ASC, DSC = 6, 4.5, 6.5, -2
@@ -750,6 +761,67 @@ ICONS = {
     "pause": [rect(1, 0, 3.2, 8), rect(4.8, 0, 7, 8)],
     "calendar": [box(0, 0, 8, 7, 0), [(0, 4.8), (8, 4.8)], [(2.2, 8), (2.2, 6)], [(5.8, 8), (5.8, 6)],
                  rect(1.4, 1.2, 3.4, 3.2)],
+    # ---- the rest of what the aperture gallery and console draw (2026-10)
+    "angles-down": [[(1, 6.8), (4, 3.8), (7, 6.8)], [(1, 3.6), (4, 0.6), (7, 3.6)]],
+    "angles-up": [[(1, 1.2), (4, 4.2), (7, 1.2)], [(1, 4.4), (4, 7.4), (7, 4.4)]],
+    "refresh": [[(0, 3.2), (0, 6.8, IK), (6.0, 6.8)], [(5.4, 8), (6.6, 6.8), (5.4, 5.6)],
+                [(8, 4.8), (8, 1.2, IK), (2.0, 1.2)], [(2.6, 2.4), (1.4, 1.2), (2.6, 0)]],
+    "rotate-left": [[(0, 4.2), (0, 0, IK), (8, 0, IK), (8, 6.4, IK), (2.5, 6.4)],
+                    [(3.5, 8), (1.9, 6.4), (3.5, 4.8)]],
+    "rotate-right": [[(8, 4.2), (8, 0, IK), (0, 0, IK), (0, 6.4, IK), (5.5, 6.4)],
+                     [(4.5, 8), (6.1, 6.4), (4.5, 4.8)]],
+    "archive": [box(0, 5.6, 8, 8, 0), [(0.8, 5.6), (0.8, 0, 0.6), (7.2, 0, 0.6), (7.2, 5.6)],
+                [(3, 3.6), (5, 3.6)]],
+    "point": [{"fill": [(2.8, 2), (5.2, 2), (6, 2.8), (6, 5.2), (5.2, 6), (2.8, 6), (2, 5.2), (2, 2.8)]}],
+    "ok": [box(0, 0, 8, 8, IK), [(2, 4.2), (3.6, 2.6), (6.2, 5.4)]],
+    "box-up": [box(0, 0, 8, 8, IK), [(4, 1.8), (4, 5.0)], [(2.2, 4.2), (4, 6), (5.8, 4.2)]],
+    "branch": [rect(0.6, 0, 2.6, 1.8), rect(0.6, 6.2, 2.6, 8), rect(5.4, 6.2, 7.4, 8),
+               [(1.6, 1.8), (1.6, 6.2)], [(6.4, 6.2), (6.4, 3.8), (1.6, 3.8)]],
+    "merge": [rect(0.6, 0, 2.6, 1.8), rect(0.6, 6.2, 2.6, 8), rect(5.4, 0, 7.4, 1.8),
+              [(1.6, 1.8), (1.6, 6.2)], [(6.4, 1.8), (6.4, 4.2), (1.6, 4.2)]],
+    "eraser": [closed((0.6, 3.4), (3.8, 0.2), (7.6, 4.0), (4.4, 7.2)), [(1.93, 4.73), (5.13, 1.53)]],
+    "file": [closed((1, 0), (1, 8), (5, 8), (7, 6), (7, 0)), [(5, 8), (5, 6), (7, 6)]],
+    "file-code": [closed((1, 0), (1, 8), (5, 8), (7, 6), (7, 0)), [(5, 8), (5, 6), (7, 6)],
+                  [(3.4, 4.4), (2.4, 3.2), (3.4, 2)], [(4.6, 4.4), (5.6, 3.2), (4.6, 2)]],
+    "film": [box(0, 0, 8, 8, 0), [(2, 0), (2, 8)], [(6, 0), (6, 8)], [(0, 4), (2, 4)], [(6, 4), (8, 4)]],
+    "save": [closed((0, 0), (0, 8), (6.4, 8), (8, 6.4), (8, 0)), [(2, 8), (2, 5.6), (5.6, 5.6), (5.6, 8)],
+             [(2, 0), (2, 3), (6, 3), (6, 0)]],
+    "gauge": [[(0, 1.2), (0, 5.2, 2.2), (8, 5.2, 2.2), (8, 1.2)], [(4, 1.6), (5.8, 4.4)],
+              rect(3.2, 0.6, 4.8, 2.2)],
+    "globe": [box(0, 0, 8, 8, 2.2), [(0, 4), (8, 4)], [(4, 0), (4, 8)]],
+    "grip": [rect(2.2, 0.4, 3.6, 1.8), rect(4.4, 0.4, 5.8, 1.8), rect(2.2, 3.3, 3.6, 4.7),
+             rect(4.4, 3.3, 5.8, 4.7), rect(2.2, 6.2, 3.6, 7.6), rect(4.4, 6.2, 5.8, 7.6)],
+    "hammer": [closed((0.4, 6.4), (1.6, 7.6), (7.6, 7.6), (7.6, 5.6), (1.6, 5.6)), [(4.6, 5.6), (4.6, 0)]],
+    "drive": [box(0, 0, 8, 3.6, IK), [(0.4, 3.6), (1.8, 8), (6.2, 8), (7.6, 3.6)], rect(5.4, 1.2, 6.6, 2.4)],
+    "heading": [[(1.4, 0), (1.4, 8)], [(6.6, 0), (6.6, 8)], [(1.4, 4), (6.6, 4)], [(0, 8), (2.8, 8)],
+                [(5.2, 8), (8, 8)], [(0, 0), (2.8, 0)], [(5.2, 0), (8, 0)]],
+    "id-card": [box(0, 0.6, 8, 7.4, 0), rect(1.2, 3, 3.4, 5.4), [(4.6, 5), (6.8, 5)], [(4.6, 3), (6.8, 3)]],
+    "key": [box(0, 2.4, 3.4, 5.6, 0.8), [(3.4, 4), (7.6, 4), (7.6, 2.2)], [(5.6, 4), (5.6, 2.4)]],
+    "keyboard": [box(0, 1, 8, 7, 0), rect(1.2, 4.4, 2.4, 5.6), rect(3.4, 4.4, 4.6, 5.6),
+                 rect(5.6, 4.4, 6.8, 5.6), [(2, 2.6), (6, 2.6)]],
+    "link-off": [[(3.2, 7), (0, 7, IK), (0, 1, IK), (3.2, 1)], [(4.8, 7), (8, 7, IK), (8, 1, IK), (4.8, 1)],
+                 [(1, 0), (7, 8)]],
+    "list": [rect(0, 6.4, 1.4, 7.8), rect(0, 3.3, 1.4, 4.7), rect(0, 0.2, 1.4, 1.6),
+             [(3, 7.1), (8, 7.1)], [(3, 4), (8, 4)], [(3, 0.9), (8, 0.9)]],
+    "checklist": [[(0, 4.4), (1.2, 3.2), (3, 6.4)], [(4.4, 7), (8, 7)], [(4.4, 4), (8, 4)], [(4.4, 1), (8, 1)]],
+    "pin": [closed((4, 0), (1, 4), (1, 7, 1.0), (7, 7, 1.0), (7, 4)), rect(3.2, 4.4, 4.8, 6)],
+    "unlock": [box(0, 0, 8, 5, 0), [(1.8, 5), (1.8, 8, 1.2), (6.2, 8, 1.2), (6.2, 7)], [(4, 3.4), (4, 1.6)]],
+    "chip": [box(1.4, 1.4, 6.6, 6.6, 0.6), rect(3, 3, 5, 5), [(3, 6.6), (3, 8)], [(5, 6.6), (5, 8)],
+             [(3, 0), (3, 1.4)], [(5, 0), (5, 1.4)], [(0, 3), (1.4, 3)], [(0, 5), (1.4, 5)],
+             [(6.6, 3), (8, 3)], [(6.6, 5), (8, 5)]],
+    "palette": [box(0, 0, 8, 7.4, 2.0), rect(1.6, 3.6, 2.8, 4.8), rect(3.4, 5.0, 4.6, 6.2),
+                rect(5.2, 3.6, 6.4, 4.8), rect(3.4, 1.0, 4.6, 2.2)],
+    "sign-out": [[(4, 8), (0, 8), (0, 0), (4, 0)], [(2.6, 4), (6.8, 4)], [(5.6, 6), (7.6, 4), (5.6, 2)]],
+    "sign-in": [[(4, 8), (8, 8), (8, 0), (4, 0)], [(0, 4), (4.6, 4)], [(3.6, 6), (5.6, 4), (3.6, 2)]],
+    "scroll": [box(1.2, 0, 6.8, 6.2, 0), box(0, 6.2, 8, 8, 0), [(2.6, 4.4), (5.4, 4.4)], [(2.6, 2.2), (5.4, 2.2)]],
+    "server": [box(0, 4.4, 8, 8, 0.6), box(0, 0, 8, 3.6, 0.6), rect(5.6, 5.6, 6.8, 6.8), rect(5.6, 1.2, 6.8, 2.4)],
+    "steps": [box(0.6, 3.6, 3.4, 8, 1.0), box(4.6, 0, 7.4, 4.4, 1.0)],
+    "sliders": [[(0, 6.4), (8, 6.4)], [(0, 1.6), (8, 1.6)], rect(1.6, 5.2, 3.4, 7.6), rect(4.6, 0.4, 6.4, 2.8)],
+    "health": [box(0, 0, 8, 8, IK), [(4, 2), (4, 6)], [(2, 4), (6, 4)]],
+    "tag": [closed((0, 4), (2.6, 7.2), (8, 7.2), (8, 0.8), (2.6, 0.8)), rect(2.2, 3.4, 3.4, 4.6)],
+    "warning": [closed((0, 0.4), (3.4, 7.6), (4.6, 7.6), (8, 0.4)), [(4, 5.4), (4, 3.4)], dot(4, 1.9, 1.0)],
+    "user-edit": [box(1, 4.6, 4.6, 8, IK), [(0, 0), (0, 2.8, 1.4), (4.6, 2.8)],
+                  closed((4.6, 0), (4.6, 1.2), (6.8, 3.4), (8, 2.2), (5.8, 0))],
 }
 
 def build_icons(face):
@@ -1137,9 +1209,8 @@ def faces():
 if __name__ == "__main__":
     for filename, face in faces():
         font = build(face)
-        font.flavor = "woff2"
         out = os.path.join(HERE, filename)
-        font.save(out)
+        save(font, out)
         print(f"{filename:28} {len(font.getGlyphOrder()):4} glyphs  {os.path.getsize(out):6} bytes")
     word_face = Face("Nebula Wordmark", "Regular", 400, advance=0, side=48, cap=700,
                      stroke_w=168, cut=0, grid=(None, CAP))
@@ -1149,9 +1220,8 @@ if __name__ == "__main__":
     word_face.diamond = True       # points are the mark's tail
     word_face.flush = True         # a diagonal runs into the corner; no facet
     font = build_wordmark(word_face)
-    font.flavor = "woff2"
     out = os.path.join(HERE, "NebulaWordmark-400.woff2")
-    font.save(out)
+    save(font, out)
     print(f"{'NebulaWordmark-400.woff2':28} {len(font.getGlyphOrder()):4} glyphs  {os.path.getsize(out):6} bytes")
     print("  kern", " ".join(f"{a}{b}{v}" for (a, b), v in WORDMARK_KERN.items()))
     write_lockup(font, os.path.join(HERE, "..", "logo", "lucya_lockup_test.svg"))
@@ -1160,11 +1230,15 @@ if __name__ == "__main__":
                      stroke_w=110, cut=72, grid=(8, 8), bottom=-100, height=920)
     icon_face.butt = True
     font = build_icons(icon_face)
-    font.flavor = "woff2"
     out = os.path.join(HERE, "NebulaIcons.woff2")
-    font.save(out)
+    save(font, out)
     print(f"{'NebulaIcons.woff2':28} {len(ICONS):4} icons   {os.path.getsize(out):6} bytes")
     css = os.path.join(HERE, "..", "..", "icons.css")
     with open(css, "w") as fh:
         fh.write(icons_css())
     print("icons.css")
+    import json
+    with open(os.path.join(HERE, "nebula-icons.json"), "w") as fh:
+        json.dump({n: "%x" % (0xE000 + i) for i, n in enumerate(ICONS)}, fh, indent=0)
+        fh.write("\n")
+    print("nebula-icons.json")
