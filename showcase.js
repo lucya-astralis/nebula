@@ -730,10 +730,10 @@
   /* ---- toasts ---- */
   var toastRegion = $('#demo-toasts');
   var TOAST_WORDS = {
-    '':    ['fa-circle-info', 'Album reindexed — 412 photos.'],
-    ok:    ['fa-check', 'Configuration saved.'],
-    amb:   ['fa-circle-info', 'Two photos had no EXIF date.'],
-    error: ['fa-circle-exclamation', 'The album could not be written.']
+    '':    ['ni-info', 'Album reindexed — 412 photos.'],
+    ok:    ['ni-check', 'Configuration saved.'],
+    amb:   ['ni-info', 'Two photos had no EXIF date.'],
+    error: ['ni-alert', 'The album could not be written.']
   };
   function demoToast(kind) {
     if (!toastRegion) return;
@@ -741,7 +741,7 @@
     var t = document.createElement('div');
     t.className = 'toast' + (kind ? ' toast--' + kind : '');
     var i = document.createElement('i');
-    i.className = 'fa ' + spec[0];
+    i.className = 'ni ' + spec[0];
     i.setAttribute('aria-hidden', 'true');
     var words = document.createElement('span');
     words.textContent = spec[1];
@@ -784,14 +784,14 @@
     field.addEventListener('blur', function () { caps.hidden = true; });
 
     /* the reveal puts focus back with the caret where it was */
-    var revealLabel = $('.login__reveal-label', reveal), revealIcon = $('.fa', reveal);
+    var revealLabel = $('.login__reveal-label', reveal), revealIcon = $('.ni', reveal);
     reveal.addEventListener('click', function () {
       var shown = field.type === 'text';
       var at = field.selectionStart;
       field.type = shown ? 'password' : 'text';
       revealLabel.textContent = shown ? 'Show' : 'Hide';
-      revealIcon.classList.toggle('fa-eye', shown);
-      revealIcon.classList.toggle('fa-eye-slash', !shown);
+      revealIcon.classList.toggle('ni-eye', shown);
+      revealIcon.classList.toggle('ni-eye-off', !shown);
       reveal.setAttribute('aria-pressed', String(!shown));
       field.focus();
       try { field.setSelectionRange(at, at); } catch (e) { /* not every type allows it */ }

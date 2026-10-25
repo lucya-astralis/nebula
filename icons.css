@@ -1,0 +1,92 @@
+/* ==================================================================
+   NEBULA ICONS  —  GENERATED FILE, DO NOT EDIT BY HAND
+   ==================================================================
+   Written by assets/fonts/build.py, together with the font. Every icon
+   is drawn there, on the same stroker and the same cut as Nebula Mono;
+   add one to ICONS and re-run the script. A class not listed below
+   renders nothing.
+
+   <i class="ni ni-home" aria-hidden="true"></i>
+   ================================================================== */
+@font-face{
+  font-family:'Nebula Icons';
+  src:url('assets/fonts/NebulaIcons.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  /* block, not swap: there is no sensible fallback glyph for an icon font,
+     and swap would flash the raw private-use codepoint as tofu first */
+  font-display:block;
+}
+.ni{
+  font-family:'Nebula Icons';
+  font-weight:400;
+  font-style:normal;
+  font-variant:normal;
+  line-height:1;
+  display:inline-block;
+  text-rendering:auto;
+  -webkit-font-smoothing:antialiased;
+  /* icons sit beside mono labels that are tracked out; the glyph must not
+     inherit that letter-spacing or it drifts off its own box */
+  letter-spacing:0;
+  text-transform:none;
+}
+.ni::before{ content:var(--ni); }
+/* fixed-width variant: keeps icons in a column (kv lists, menus) aligned */
+.ni-fw{ width:1.25em; text-align:center; }
+
+.ni-home{ --ni:"\e000"; }
+.ni-grid{ --ni:"\e001"; }
+.ni-chevron-left{ --ni:"\e002"; }
+.ni-chevron-right{ --ni:"\e003"; }
+.ni-chevron-up{ --ni:"\e004"; }
+.ni-chevron-down{ --ni:"\e005"; }
+.ni-arrow-right{ --ni:"\e006"; }
+.ni-arrow-left{ --ni:"\e007"; }
+.ni-arrow-up{ --ni:"\e008"; }
+.ni-arrow-down{ --ni:"\e009"; }
+.ni-turn-up{ --ni:"\e00a"; }
+.ni-external{ --ni:"\e00b"; }
+.ni-info{ --ni:"\e00c"; }
+.ni-alert{ --ni:"\e00d"; }
+.ni-check{ --ni:"\e00e"; }
+.ni-close{ --ni:"\e00f"; }
+.ni-history{ --ni:"\e010"; }
+.ni-clock{ --ni:"\e011"; }
+.ni-search{ --ni:"\e012"; }
+.ni-layers{ --ni:"\e013"; }
+.ni-chart{ --ni:"\e014"; }
+.ni-star{ --ni:"\e015"; }
+.ni-images{ --ni:"\e016"; }
+.ni-image{ --ni:"\e017"; }
+.ni-camera{ --ni:"\e018"; }
+.ni-shield{ --ni:"\e019"; }
+.ni-balance{ --ni:"\e01a"; }
+.ni-shuffle{ --ni:"\e01b"; }
+.ni-text{ --ni:"\e01c"; }
+.ni-sort{ --ni:"\e01d"; }
+.ni-tags{ --ni:"\e01e"; }
+.ni-route{ --ni:"\e01f"; }
+.ni-tree{ --ni:"\e020"; }
+.ni-folder{ --ni:"\e021"; }
+.ni-folder-open{ --ni:"\e022"; }
+.ni-database{ --ni:"\e023"; }
+.ni-download{ --ni:"\e024"; }
+.ni-upload{ --ni:"\e025"; }
+.ni-expand{ --ni:"\e026"; }
+.ni-eye{ --ni:"\e027"; }
+.ni-eye-off{ --ni:"\e028"; }
+.ni-plus{ --ni:"\e029"; }
+.ni-minus{ --ni:"\e02a"; }
+.ni-link{ --ni:"\e02b"; }
+.ni-lock{ --ni:"\e02c"; }
+.ni-user{ --ni:"\e02d"; }
+.ni-settings{ --ni:"\e02e"; }
+.ni-trash{ --ni:"\e02f"; }
+.ni-filter{ --ni:"\e030"; }
+.ni-menu{ --ni:"\e031"; }
+.ni-copy{ --ni:"\e032"; }
+.ni-edit{ --ni:"\e033"; }
+.ni-play{ --ni:"\e034"; }
+.ni-pause{ --ni:"\e035"; }
+.ni-calendar{ --ni:"\e036"; }

@@ -234,7 +234,7 @@
   --fs-chrome-xl: 20px;    /* a headline number: a stat tile, a count */
 
   /* Icons are not type, but they are sized like it: one step under the cap
-     height of whatever label they lead. `.fa` reads this, and so does any
+     height of whatever label they lead. `.ni` reads this, and so does any
      BOX built to hold an icon — that is what keeps a glyph and an <img>
      emblem the same size in the same slot. */
   --fs-ico:       .92em;
@@ -2115,7 +2115,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .toast--ok   { border-left-color:var(--ok); }
 .toast--amb  { border-left-color:var(--amb); }
 .toast--error{ border-left-color:var(--red); }
-.toast--error .fa{ color:var(--red); }
+.toast--error .ni{ color:var(--red); }
 
 /* ==================================================================
    RAIL  —  the sections of one app, standing still
@@ -2143,7 +2143,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   color:var(--text-dim);
   border-left:0;
 }
-.rail__nav .menu__option > .fa{ width:1.2em; text-align:center; font-size:var(--icon-md); color:var(--glyph-machine); }
+.rail__nav .menu__option > .ni{ width:1.2em; text-align:center; font-size:var(--icon-md); color:var(--glyph-machine); }
 .rail__nav .menu__option:hover{ color:var(--text); background-color:rgba(255,255,255,.04); }
 .rail__nav .menu__option[aria-current="page"]{
   color:var(--text);
@@ -2151,7 +2151,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   box-shadow:inset 2px 0 0 var(--acc);
   font-weight:500;
 }
-.rail__nav .menu__option[aria-current="page"] > .fa{ color:var(--text); }
+.rail__nav .menu__option[aria-current="page"] > .ni{ color:var(--text); }
 .rail__nav .menu__option:focus-visible{ outline:var(--hair) solid var(--acc); outline-offset:-2px; }
 @media (hover: none){
   .rail__nav .menu__option:hover:not([aria-current="page"]){
@@ -2283,7 +2283,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   color:var(--red);
   font-size:var(--fs-text-sm);
 }
-.login__error > .fa{ flex:none; }
+.login__error > .ni{ flex:none; }
 .login__submit{ margin-top:var(--s-3); min-height:var(--tap); }
 .login__foot{
   margin:var(--s-4) 0 0;

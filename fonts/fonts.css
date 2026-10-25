@@ -1,0 +1,227 @@
+/* The Nebula fontset specimen. Only the scaffolding around the type lives
+   here; the faces themselves are declared once, below, exactly as an app
+   sheet would declare them. */
+
+@font-face{ font-family:'Nebula Mono'; src:url('../assets/fonts/NebulaMono-400.woff2') format('woff2'); font-weight:100 450; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Nebula Mono'; src:url('../assets/fonts/NebulaMono-500.woff2') format('woff2'); font-weight:451 550; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Nebula Mono'; src:url('../assets/fonts/NebulaMono-600.woff2') format('woff2'); font-weight:551 650; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Nebula Mono'; src:url('../assets/fonts/NebulaMono-700.woff2') format('woff2'); font-weight:651 900; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Nebula Wordmark'; src:url('../assets/fonts/NebulaWordmark-400.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Nebula Display'; src:url('../assets/fonts/NebulaDisplay-400.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+
+:root{
+  --nb-mono:    "Nebula Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --nb-display: "Nebula Display", "Space Grotesk", sans-serif;
+  --nb-wordmark:"Nebula Wordmark", "Space Grotesk", sans-serif;
+}
+
+/* The comparison lab: the whole page swaps voice by redefining two tokens,
+   never by overriding a rule (rule 6). Every component below inherits it. */
+html.voice-nebula{
+  --mono: var(--nb-mono);
+  --display-font: var(--nb-wordmark);
+}
+
+.fs{
+  position:relative; z-index:1;
+  width:100%; max-width:var(--page-max);
+  margin:0 auto;
+  padding:var(--s-9) var(--page-pad) var(--s-9);
+  display:flex; flex-direction:column; gap:var(--s-9);
+}
+.fs__lead{
+  max-width:62ch; margin:0;
+  color:var(--text-dim);
+  font-size:var(--fs-text-lg); line-height:1.6; letter-spacing:var(--tr-text);
+}
+.fs__lead b{ color:var(--text); font-weight:500; }
+.fs__block{ display:flex; flex-direction:column; gap:var(--s-5); min-width:0; }
+
+/* hero: the display face, once, big */
+.fs__hero{
+  display:flex; flex-direction:column; gap:var(--s-6);
+  padding:var(--s-8) var(--s-6);
+  background-color:var(--glass);
+  -webkit-backdrop-filter:var(--blur-2); backdrop-filter:var(--blur-2);
+  border:var(--hair) solid var(--line);
+}
+.fs__word{
+  margin:0;
+  font-family:var(--nb-wordmark);
+  font-size:calc(var(--fs-text-hero) * var(--display-scale));
+  font-weight:400; line-height:1;
+  letter-spacing:var(--tr-brand-floor);
+  color:var(--text);
+  overflow-wrap:anywhere;
+}
+.fs__word--display{ font-family:var(--nb-display); font-size:calc(var(--fs-text-editorial) * var(--display-scale)); letter-spacing:var(--tr-display); }
+
+/* the two faces side by side */
+.fs__pair{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:var(--s-4); }
+@media (max-width: 760px){ .fs__pair{ grid-template-columns:minmax(0, 1fr); } }
+.fs__face{
+  display:flex; flex-direction:column; gap:var(--s-4);
+  padding:var(--s-5);
+  background-color:var(--glass-hi);
+  border:var(--hair) solid var(--line);
+  min-width:0;
+}
+.fs__k{
+  font-family:var(--nb-mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  color:var(--label);
+}
+.fs__k b{ color:var(--text); font-weight:400; }
+.fs__big{
+  margin:0;
+  font-family:var(--nb-mono);
+  font-size:var(--fs-chrome-display); line-height:1.1;
+  letter-spacing:var(--tr-chrome-display);
+  color:var(--text);
+  overflow-wrap:anywhere;
+}
+.fs__big--display{ font-family:var(--nb-display); font-size:calc(var(--fs-chrome-display) * var(--display-scale)); letter-spacing:var(--tr-display); }
+
+/* the logo lockup: the mark and the wordmark at one cap height */
+/* the mark and the wordmark: the mark stands one and a half caps tall,
+   the word sits on its optical centre */
+.fs__lockup{ display:flex; align-items:center; gap:var(--s-6); flex-wrap:wrap; min-width:0; }
+.fs__lockup-mark{ height:calc(var(--fs-text-hero) * 1.05); width:auto; flex:none; }
+.fs__lockup-word{
+  margin:0;
+  font-family:var(--nb-wordmark);
+  font-size:calc(var(--fs-text-hero) * var(--display-scale));
+  font-weight:400; line-height:1;
+  letter-spacing:var(--tr-brand-floor);
+  color:var(--text);
+  overflow-wrap:anywhere;
+}
+
+/* the test lockup, at four sizes and once on a light ground */
+.fs__test{
+  display:flex; flex-direction:column; gap:var(--s-7); align-items:flex-start;
+  padding:var(--s-8) var(--s-6);
+  background-color:var(--bg);
+  border:var(--hair) solid var(--line);
+}
+.fs__test .fs__row{ gap:var(--s-7); align-items:center; }
+.fs__test img{ display:block; width:auto; max-width:100%; }
+.fs__test-lg{ height:calc(var(--s-10) * 1.25); }
+.fs__test-md{ height:var(--s-9); }
+.fs__test-sm{ height:var(--s-7); }
+.fs__test-xs{ height:var(--s-5); }
+/* the file is white, as the mark is; inverted it shows the black cut */
+.fs__test--light{ background-color:#f2f2f4; }
+.fs__test--light img{ filter:invert(1); }
+
+/* the weight ladder */
+.fs__ladder{ display:flex; flex-direction:column; border-top:var(--hair) solid var(--line); }
+.fs__rung{
+  display:grid; grid-template-columns:var(--s-10) minmax(0, 1fr);
+  align-items:baseline; gap:var(--s-4);
+  padding:var(--s-4) 0;
+  border-bottom:var(--hair) solid var(--line);
+}
+.fs__rung-t{
+  font-family:var(--nb-mono);
+  font-size:var(--fs-chrome-xl); letter-spacing:var(--tr-chrome-xl); text-transform:uppercase;
+  color:var(--text);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.fs__rung--400 .fs__rung-t{ font-weight:400; }
+.fs__rung--500 .fs__rung-t{ font-weight:500; }
+.fs__rung--600 .fs__rung-t{ font-weight:600; }
+.fs__rung--700 .fs__rung-t{ font-weight:700; }
+
+/* the chrome scale: each size with the one tracking that goes with it */
+.fs__scale .fs__rung-t{ font-weight:400; }
+.fs__scale .fs__rung--xs .fs__rung-t{ font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); }
+.fs__scale .fs__rung--sm .fs__rung-t{ font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); }
+.fs__scale .fs__rung--md .fs__rung-t{ font-size:var(--fs-chrome-md); letter-spacing:var(--tr-chrome-md); }
+.fs__scale .fs__rung--lg .fs__rung-t{ font-size:var(--fs-chrome-lg); letter-spacing:var(--tr-chrome-lg); }
+.fs__scale .fs__rung--xl .fs__rung-t{ font-size:var(--fs-chrome-xl); letter-spacing:var(--tr-chrome-xl); }
+
+/* the glyph table */
+.fs__glyphs{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(var(--s-9), 1fr));
+  gap:var(--hair);
+  padding:var(--hair);
+  background-color:var(--line);
+  margin:0; list-style:none;
+}
+.fs__glyph{
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  aspect-ratio:1;
+  background-color:var(--bg);
+  font-family:var(--nb-mono);
+  font-size:var(--fs-chrome-xl);
+  color:var(--text);
+}
+.fs__glyphs--display .fs__glyph{ font-family:var(--nb-display); }
+.fs__glyphs--wordmark .fs__glyph{ font-family:var(--nb-wordmark); }
+.fs__big--wordmark{ font-family:var(--nb-wordmark); font-size:calc(var(--fs-chrome-display) * var(--display-scale)); letter-spacing:var(--tr-brand-floor); }
+.fs__big--icons{ font-size:var(--fs-chrome-display); letter-spacing:0; line-height:1.3; color:var(--text); }
+.fs__big--icons .ni{ margin-right:.3em; }
+.fs__big--eth{ font-family:"Ethnocentric", sans-serif; font-size:calc(var(--fs-chrome-display) * var(--display-scale)); letter-spacing:var(--tr-brand-floor); }
+.fs__glyphs--icons .fs__glyph{ font-size:var(--fs-chrome-xl); }
+.fs__glyph-cp{
+  position:absolute; left:var(--s-1); bottom:var(--s-1);
+  font-family:var(--nb-mono);
+  font-size:var(--fs-chrome-xs); letter-spacing:0;
+  color:var(--text-ghost);
+}
+@media (hover: hover){
+  .fs__glyph:hover{ color:var(--acc); }
+}
+
+/* in context: real components, under the lab switch */
+.fs__ctx{
+  display:flex; flex-direction:column; gap:var(--s-5);
+  padding:var(--s-5);
+  background-color:var(--glass);
+  -webkit-backdrop-filter:var(--blur-2); backdrop-filter:var(--blur-2);
+  border:var(--hair) solid var(--line);
+}
+.fs__row{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s-3); }
+.fs__meta{
+  margin:0;
+  font-family:var(--mono);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  color:var(--label);
+  line-height:1.9;
+}
+.fs__meta b{ color:var(--text); font-weight:400; }
+.fs__code{
+  margin:0;
+  padding:var(--s-4);
+  background-color:var(--bg);
+  border:var(--hair) solid var(--line);
+  font-family:var(--mono); font-size:var(--fs-chrome-md); line-height:1.7;
+  color:var(--text-dim);
+  overflow-x:auto;
+}
+.fs__code b{ color:var(--acc); font-weight:400; }
+.fs__switch{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--s-4); }
+
+/* the grid the faces are drawn on */
+.fs__rules{ margin:0; padding:0; list-style:none; display:grid; gap:var(--s-3); }
+.fs__rules li{
+  display:grid; grid-template-columns:var(--s-7) minmax(0, 1fr); gap:var(--s-3);
+  color:var(--text-dim); font-size:var(--fs-text-md); line-height:1.6;
+}
+.fs__rules li > span{
+  font-family:var(--nb-mono); font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm);
+  color:var(--acc);
+}
+.fs__rules b{ color:var(--text); font-weight:500; }
+
+@media (max-width: 620px){
+  .fs__hero{ padding:var(--s-6) var(--s-4); }
+  /* the lockup stays one line: mark and word shrink together */
+  .fs__lockup{ flex-wrap:nowrap; gap:var(--s-4); }
+  .fs__lockup-mark{ height:calc(var(--fs-text-editorial) * 1.05); }
+  .fs__lockup-word{ font-size:calc(var(--fs-text-editorial) * var(--display-scale)); }
+  .fs__rung{ grid-template-columns:var(--s-9) minmax(0, 1fr); }
+}
+.fs__glyphs--icons .fs__glyph-cp{ right:var(--s-1); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

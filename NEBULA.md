@@ -669,6 +669,38 @@ its two colour flanks on hover, and the boot screen draws it piece by piece.
 The two ghost hexes are **not** palette colours and never appear on a surface,
 a label or a control — only on a copy of the mark itself.
 
+### Icons are drawn with the type's pen
+
+`<i class="ni ni-home" aria-hidden="true"></i>`. Nebula Icons is an icon font
+drawn by the same stroker as Nebula Mono (`assets/fonts/build.py`): line
+icons on an 8 × 8 grid, one stroke, square ends, corners cut and never
+rounded, no circles. An icon is a label with a picture in it, so it should look
+like one more glyph of the label beside it, not like clip art borrowed from
+another family. `icons.css` is generated with the font; a class not in it
+renders nothing.
+
+Names say what the icon is **for**, not what it looks like. Porting markup
+from the Font Awesome subset the apps used to carry: `fa fa-*` becomes
+`ni ni-*`, and these names changed —
+
+| Font Awesome | Nebula |
+|---|---|
+| `house` | `home` |
+| `table-cells` | `grid` |
+| `magnifying-glass` | `search` |
+| `xmark` | `close` |
+| `circle-info` / `circle-exclamation` | `info` / `alert` |
+| `clock-rotate-left` | `history` |
+| `layer-group` | `layers` |
+| `chart-simple` | `chart` |
+| `shield-halved` | `shield` |
+| `scale-balanced` | `balance` |
+| `folder-tree` | `tree` |
+| `eye-slash` | `eye-off` |
+| `align-left` / `arrow-down-wide-short` | `text` / `sort` |
+| `arrow-turn-up` / `arrow-up-right-from-square` | `turn-up` / `external` |
+| `calendar-day` | `calendar` |
+
 ---
 
 ## Building a new app
@@ -684,7 +716,7 @@ adds only what is genuinely new.
 app/static/
   nebula.css      ← the language: tokens + base + components (copy verbatim)
   app.css         ← this app's own layout and its own components only
-  fa-icons.css    ← generated glyph subset, if you use icons
+  icons.css       ← Nebula Icons, generated, if you use icons
   fonts/          ← static per-weight woff2 instances, never a variable font
 ```
 

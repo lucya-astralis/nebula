@@ -176,7 +176,7 @@ def head(title, description):
 <link rel="preload" href="../assets/fonts/JetBrainsMono-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="../assets/logo/lucya_logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../nebula.css">
-<link rel="stylesheet" href="../fa-icons.css">
+<link rel="stylesheet" href="../icons.css">
 <link rel="stylesheet" href="errors.css">
 <script src="errors.js" defer></script>
 </head>"""
@@ -202,7 +202,7 @@ def bar(sub, here=False):
         <span class="brand-sub">{sub}</span>
       </span>
     </a>
-    <a class="btn btn--ghost btn--sm err__all" href="./"{current}><i class="fa fa-table-cells" aria-hidden="true"></i><span class="t">All codes</span></a>
+    <a class="btn btn--ghost btn--sm err__all" href="./"{current}><i class="ni ni-grid" aria-hidden="true"></i><span class="t">All codes</span></a>
   </div>
 </nav>"""
 
@@ -217,10 +217,10 @@ def foot(meta):
 
 
 ACTIONS = {
-    "home":   ('<a class="btn{p}" href="/"><i class="fa fa-house" aria-hidden="true"></i> Home</a>'),
-    "back":   ('<button class="btn{p}" type="button" data-back hidden><i class="fa fa-chevron-left" aria-hidden="true"></i> Back</button>'),
-    "retry":  ('<button class="btn{p}" type="button" data-retry hidden><i class="fa fa-clock-rotate-left" aria-hidden="true"></i> <span data-retry-label>Try again</span></button>'),
-    "signin": ('<a class="btn{p}" href="/login" data-open><i class="fa fa-arrow-right" aria-hidden="true"></i> Sign in</a>'),
+    "home":   ('<a class="btn{p}" href="/"><i class="ni ni-home" aria-hidden="true"></i> Home</a>'),
+    "back":   ('<button class="btn{p}" type="button" data-back hidden><i class="ni ni-chevron-left" aria-hidden="true"></i> Back</button>'),
+    "retry":  ('<button class="btn{p}" type="button" data-retry hidden><i class="ni ni-history" aria-hidden="true"></i> <span data-retry-label>Try again</span></button>'),
+    "signin": ('<a class="btn{p}" href="/login" data-open><i class="ni ni-arrow-right" aria-hidden="true"></i> Sign in</a>'),
 }
 
 
@@ -249,7 +249,7 @@ def stage(fx):
           {hud}"""
     if fx == "mosaic":
         return f"""<div class="err__lock">
-            <i class="fa fa-shield-halved" aria-hidden="true"></i>
+            <i class="ni ni-shield" aria-hidden="true"></i>
             <p class="err__lock-t">Content filter</p>
             <span class="switch-wrap">
               <span class="switch__word" aria-hidden="true">On</span>
@@ -366,14 +366,14 @@ def catalogue():
   </header>
 
   <section aria-labelledby="std">
-    <h2 class="eyebrow" id="std"><i class="fa fa-layer-group" aria-hidden="true"></i> The standard set <span class="eyebrow__n">{len(STANDARD)}</span></h2>
+    <h2 class="eyebrow" id="std"><i class="ni ni-layers" aria-hidden="true"></i> The standard set <span class="eyebrow__n">{len(STANDARD)}</span></h2>
     <ul class="card-grid">
 {std}
     </ul>
   </section>
 
   <section aria-labelledby="odd">
-    <h2 class="eyebrow" id="odd"><i class="fa fa-star" aria-hidden="true"></i> The odd ones <span class="eyebrow__n">{len(ODD)}</span></h2>
+    <h2 class="eyebrow" id="odd"><i class="ni ni-star" aria-hidden="true"></i> The odd ones <span class="eyebrow__n">{len(ODD)}</span></h2>
     <ul class="card-grid">
 {odd}
     </ul>
