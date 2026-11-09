@@ -169,13 +169,17 @@ def lint_html(path: Path) -> list[Finding]:
 REFERENCE = Path(__file__).resolve().parent.parent / "nebula.css"
 HEADER_VERSION = re.compile(r"NEBULA\s+(\d+\.\d+\.\d+)")
 TOKEN_VERSION = re.compile(r"--nebula-version\s*:\s*[\"'](\d+\.\d+\.\d+)[\"']")
+# nebula.js says it twice as well: its header, and the VERSION it exports
+JS_VERSION = re.compile(r"var\s+VERSION\s*=\s*[\"'](\d+\.\d+\.\d+)[\"']")
+REFERENCE_JS = REFERENCE.with_suffix(".js")
 
 
 def sheet_version(path: Path) -> tuple[str | None, str | None]:
-    """(header version, --nebula-version) of a sheet; None where absent."""
+    """(header version, in-file version) of a copy: --nebula-version for the
+    sheet, VERSION for nebula.js. None where absent."""
     text = path.read_text(encoding="utf-8")
     head = HEADER_VERSION.search(text[:400])
-    token = TOKEN_VERSION.search(text)
+    token = (JS_VERSION if path.suffix == ".js" else TOKEN_VERSION).search(text)
     return (head.group(1) if head else None, token.group(1) if token else None)
 
 
@@ -191,6 +195,11 @@ def check_versions(paths: list[str]) -> int:
     if ref_head is None or ref_head != ref_token:
         print(f"{REFERENCE}: reference is inconsistent (header {ref_head}, token {ref_token})")
         return 2
+    if REFERENCE_JS.exists():
+        js_head, js_token = sheet_version(REFERENCE_JS)
+        if js_head != ref_head or js_token != ref_head:
+            print(f"{REFERENCE_JS}: says {js_head}/{js_token}, the sheet says {ref_head} - they ship together, bump both")
+            return 2
     print(f"reference  {ref_head}  {REFERENCE}")
     worst = 0
     for arg in paths:

@@ -838,7 +838,7 @@ every component in the showcase. The app's own stylesheet loads after it and
 adds only what is genuinely new.
 
 **The copy carries its version.** The first line of `nebula.css` says
-`NEBULA 2.1.0`, and `--nebula-version` says the same. Never edit a copy by
+`NEBULA 2.2.0`, and `--nebula-version` says the same. Copy `nebula/nebula.js` with it, same version: it is the keyboard (below). Never edit a copy by
 hand: change the language here and bump it. To see how far an app's copy is
 behind, run:
 
@@ -915,6 +915,7 @@ Use the names; a new app is then already wearing the language.
 | `.pager` / `.pager__p` / `.pager__range` / `.pager__gap` | Too much at once. The current page is a state: solid `--acc-deep`; the range ("41–60 of 412") in the number voice |
 | `.drop` / `.drop__list` | Give me a file: a `<label>` round a real `<input type=file>`. `.is-over` while dragging is the accent. The ONE dashed border in the sheet, because a dashed edge means "put something here" |
 | `.tbl th[aria-sort]` + `.tbl__sort` | In what order. The sheet paints `aria-sort`; the sorted column is the accent, the others show an arrow on hover only |
+| `nebula.js` | **The keyboard**, found by ARIA role: arrow keys, Home/End and a roving tabindex for `[role=tablist]`, `[role=radiogroup]`, `[role=toolbar]` and `.menu[popover]` (with type-ahead; Tab closes). A pick-one `.seg` is `role="radiogroup"` with `role="radio"` options; the sheet paints `aria-checked` / `aria-selected` like `.is-on` |
 | `.fold` / `.fold__body` | A native `<details>`: more, if you want it. Opens to `height: auto` with no script |
 | `.nav__progress` | Opt-in reading progress on the bar's bottom edge, driven by the scroll position |
 | `.u-reveal` | A specimen or section that settles in as it scrolls into view. Never on the first screen, never on a control |

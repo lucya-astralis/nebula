@@ -20,6 +20,42 @@ Versions follow semver for a stylesheet:
 
 ---
 
+## 2.2.0 — 2026-11-09
+
+The keyboard. Nothing in the sheet changes how anything looks.
+
+### Added
+
+- **`nebula.js`**, the first script that is part of the language. It carries
+  the same version as the sheet and ships beside it, deferred, with no
+  dependencies and no inline styles. It finds its parts by ARIA role and
+  gives each group a **roving tabindex**: Tab reaches the group once, and the
+  arrow keys move inside it.
+
+  | Part | Keys |
+  |---|---|
+  | `[role=tablist]` > `[role=tab]` | Left/Right (Up/Down with `aria-orientation=vertical`), Home, End. The focused tab is activated by clicking it, so the app's own handler stays the only one |
+  | `[role=radiogroup]` > `[role=radio]` | Arrow keys on both axes, Home, End. Selection follows focus, as with native radios, and `aria-checked` stays in step with clicks |
+  | `[role=toolbar]` | The same keys, focus only |
+  | `.menu[popover]` | Opens on the checked option, or the first. Up/Down, Home, End, and a letter jumps to the next option starting with it. Tab closes the menu and focus moves on. Options get `role="menuitemradio"` and `aria-checked` |
+
+  For content added later, call `NebulaKeys.init(root)`.
+- **The sheet paints ARIA state for `.seg__opt`.** `[aria-checked="true"]` and
+  `[aria-selected="true"]` look like `.is-on`, in forced colours too, so
+  markup may carry either one.
+
+### Changed
+
+- **A pick-one `.seg` is a radiogroup.** The pattern is
+  `role="radiogroup"` with `role="radio"` on each `.seg__opt`, no longer
+  `role="group"` with plain buttons. The old markup still renders. It is
+  eight tab stops and no "selected" for a screen reader, so move it over
+  when you touch it.
+- `nebula_lint.py --version` checks `nebula.js` too (header and `VERSION`),
+  and refuses a reference whose sheet and script disagree.
+
+---
+
 ## 2.1.0 — 2026-11-09
 
 New components for the screens around the content. Nothing an app already

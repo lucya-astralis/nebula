@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="nebula.css">
 <link rel="stylesheet" href="fa-icons.css">
 <link rel="stylesheet" href="showcase.css">
+<script src="nebula.js" defer></script>
 <script src="showcase.js" defer></script>
 </head>
 <body>
@@ -50,9 +51,9 @@
       <input type="search" id="docsearch" placeholder="Filter chapters" autocomplete="off">
     </label>
 
-    <div class="seg" role="group" aria-label="Effects tier">
-      <button class="seg__opt is-on" data-fx="full" type="button">Full</button>
-      <button class="seg__opt" data-fx="lite" type="button">Lite</button>
+    <div class="seg" role="radiogroup" aria-label="Effects tier">
+      <button class="seg__opt is-on" role="radio" data-fx="full" type="button">Full</button>
+      <button class="seg__opt" role="radio" data-fx="lite" type="button">Lite</button>
     </div>
   </div>
   <span class="nav__progress" aria-hidden="true"></span>
@@ -80,7 +81,7 @@
 
   <div class="section__doc">
     <span>Language <b>Nebula</b></span>
-    <span>Version <b>2.1.0</b></span>
+    <span>Version <b>2.2.0</b></span>
     <span>Accent <b id="doc-acc">#5865F2</b></span>
     <span>Radius <b>0</b></span>
     <span>Faces <b>3</b></span>
@@ -204,10 +205,10 @@
                 <span class="brand-sub">console</span>
               </span>
             </span>
-            <span class="seg" role="group" aria-label="View">
-              <button class="seg__opt is-on" type="button" data-demo-seg>Grid</button>
-              <button class="seg__opt" type="button" data-demo-seg>Table</button>
-              <button class="seg__opt" type="button" data-demo-seg>Map</button>
+            <span class="seg" role="radiogroup" aria-label="View">
+              <button class="seg__opt is-on" role="radio" type="button" data-demo-seg>Grid</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>Table</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>Map</button>
             </span>
             <span class="status push">
               <span class="dot dot--ok"></span> Synced
@@ -363,10 +364,10 @@
               <span class="app__logo mark mark--square hue-teal" aria-hidden="true"><i class="fa fa-chart-simple"></i></span>
               <span class="brand-text"><span class="brand-name">Relay</span><span class="brand-sub">operations</span></span>
             </span>
-            <span class="seg" role="group" aria-label="Section">
-              <button class="seg__opt is-on" type="button" data-demo-seg>Overview</button>
-              <button class="seg__opt" type="button" data-demo-seg>Services</button>
-              <button class="seg__opt" type="button" data-demo-seg>Incidents</button>
+            <span class="seg" role="radiogroup" aria-label="Section">
+              <button class="seg__opt is-on" role="radio" type="button" data-demo-seg>Overview</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>Services</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>Incidents</button>
             </span>
             <span class="status push"><span class="dot dot--ok"></span> All systems normal</span>
           </div>
@@ -420,10 +421,10 @@
               <span class="app__logo mark mark--square hue-peach" aria-hidden="true"><i class="fa fa-table-cells"></i></span>
               <span class="brand-text"><span class="brand-name">Taskline</span><span class="brand-sub">projects</span></span>
             </span>
-            <span class="seg" role="group" aria-label="View">
-              <button class="seg__opt is-on" type="button" data-demo-seg>Board</button>
-              <button class="seg__opt" type="button" data-demo-seg>List</button>
-              <button class="seg__opt" type="button" data-demo-seg>Timeline</button>
+            <span class="seg" role="radiogroup" aria-label="View">
+              <button class="seg__opt is-on" role="radio" type="button" data-demo-seg>Board</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>List</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>Timeline</button>
             </span>
             <button class="btn btn--primary push" type="button" data-demo-toast="ok">New task</button>
           </div>
@@ -652,9 +653,9 @@
         <span class="hint">rule 01</span>
       </div>
       <div class="lab__row">
-        <div class="seg" role="group" aria-label="Rule 01">
-          <button class="seg__opt is-on" type="button" data-heresy="violet" data-on="false">Accent = state only</button>
-          <button class="seg__opt" type="button" data-heresy="violet" data-on="true">Accent = everything</button>
+        <div class="seg" role="radiogroup" aria-label="Rule 01">
+          <button class="seg__opt is-on" role="radio" type="button" data-heresy="violet" data-on="false">Accent = state only</button>
+          <button class="seg__opt" role="radio" type="button" data-heresy="violet" data-on="true">Accent = everything</button>
         </div>
       </div>
       <p class="lab__note">
@@ -718,9 +719,9 @@
     <div class="lab">
       <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 02</span></div>
       <div class="lab__row">
-        <div class="seg" role="group" aria-label="Rule 02">
-          <button class="seg__opt is-on" type="button" data-heresy="radius" data-on="false">--radius: 0</button>
-          <button class="seg__opt" type="button" data-heresy="radius" data-on="true">--radius: 9px</button>
+        <div class="seg" role="radiogroup" aria-label="Rule 02">
+          <button class="seg__opt is-on" role="radio" type="button" data-heresy="radius" data-on="false">--radius: 0</button>
+          <button class="seg__opt" role="radio" type="button" data-heresy="radius" data-on="true">--radius: 9px</button>
         </div>
       </div>
       <p class="lab__note">
@@ -817,9 +818,9 @@
       <div class="lab__head"><i class="fa fa-layer-group"></i> Backdrop <span class="hint">the wallpaper under everything</span></div>
 
       <div class="lab__row">
-        <div class="seg" role="group" aria-label="Backdrop treatment">
-          <button class="seg__opt is-on" type="button" data-wp="nova">Brand art (nova)</button>
-          <button class="seg__opt" type="button" data-wp="photo">Photograph</button>
+        <div class="seg" role="radiogroup" aria-label="Backdrop treatment">
+          <button class="seg__opt is-on" role="radio" type="button" data-wp="nova">Brand art (nova)</button>
+          <button class="seg__opt" role="radio" type="button" data-wp="photo">Photograph</button>
         </div>
       </div>
 
@@ -853,9 +854,9 @@
     <div class="lab">
       <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 03</span></div>
       <div class="lab__row">
-        <div class="seg" role="group" aria-label="Rule 03">
-          <button class="seg__opt is-on" type="button" data-heresy="opaque" data-on="false">Blurred glass</button>
-          <button class="seg__opt" type="button" data-heresy="opaque" data-on="true">Opaque slabs</button>
+        <div class="seg" role="radiogroup" aria-label="Rule 03">
+          <button class="seg__opt is-on" role="radio" type="button" data-heresy="opaque" data-on="false">Blurred glass</button>
+          <button class="seg__opt" role="radio" type="button" data-heresy="opaque" data-on="true">Opaque slabs</button>
         </div>
       </div>
       <p class="lab__note">
@@ -984,9 +985,9 @@
     <div class="lab">
       <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 04</span></div>
       <div class="lab__row">
-        <div class="seg" role="group" aria-label="Rule 04">
-          <button class="seg__opt is-on" type="button" data-heresy="voice" data-on="false">Interface</button>
-          <button class="seg__opt" type="button" data-heresy="voice" data-on="true">Terminal</button>
+        <div class="seg" role="radiogroup" aria-label="Rule 04">
+          <button class="seg__opt is-on" role="radio" type="button" data-heresy="voice" data-on="false">Interface</button>
+          <button class="seg__opt" role="radio" type="button" data-heresy="voice" data-on="true">Terminal</button>
         </div>
       </div>
       <p class="lab__note">
@@ -1073,9 +1074,9 @@
     <div class="lab">
       <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 05</span></div>
       <div class="lab__row">
-        <div class="seg" role="group" aria-label="Rule 05">
-          <button class="seg__opt is-on" type="button" data-heresy="measure" data-on="false">On the scale</button>
-          <button class="seg__opt" type="button" data-heresy="measure" data-on="true">Off by a pixel</button>
+        <div class="seg" role="radiogroup" aria-label="Rule 05">
+          <button class="seg__opt is-on" role="radio" type="button" data-heresy="measure" data-on="false">On the scale</button>
+          <button class="seg__opt" role="radio" type="button" data-heresy="measure" data-on="true">Off by a pixel</button>
         </div>
       </div>
       <p class="lab__note">
@@ -1134,21 +1135,21 @@
     <div class="spec u-reveal">
       <div class="spec__label"><span>.seg</span><span>Segmented control — tabs, language, mode, view</span><span class="n">05</span></div>
       <div class="spec__stage">
-        <div class="seg" role="group" aria-label="Demo tabs">
-          <button class="seg__opt is-on" type="button" data-demo-seg>Site</button>
-          <button class="seg__opt" type="button" data-demo-seg>Album</button>
-          <button class="seg__opt" type="button" data-demo-seg>Photos</button>
-          <button class="seg__opt" type="button" data-demo-seg>Trip</button>
+        <div class="seg" role="radiogroup" aria-label="Demo tabs">
+          <button class="seg__opt is-on" role="radio" type="button" data-demo-seg>Site</button>
+          <button class="seg__opt" role="radio" type="button" data-demo-seg>Album</button>
+          <button class="seg__opt" role="radio" type="button" data-demo-seg>Photos</button>
+          <button class="seg__opt" role="radio" type="button" data-demo-seg>Trip</button>
         </div>
-        <div class="seg" role="group" aria-label="Demo language">
-          <button class="seg__opt is-on" type="button" data-demo-seg>EN</button>
-          <button class="seg__opt" type="button" data-demo-seg>DE</button>
-          <button class="seg__opt" type="button" data-demo-seg>JP</button>
+        <div class="seg" role="radiogroup" aria-label="Demo language">
+          <button class="seg__opt is-on" role="radio" type="button" data-demo-seg>EN</button>
+          <button class="seg__opt" role="radio" type="button" data-demo-seg>DE</button>
+          <button class="seg__opt" role="radio" type="button" data-demo-seg>JP</button>
         </div>
-        <div class="seg" role="group" aria-label="Demo state">
-          <button class="seg__opt is-on" type="button" data-demo-seg>Default</button>
-          <button class="seg__opt" type="button" data-demo-seg>Off</button>
-          <button class="seg__opt" type="button" disabled>Locked</button>
+        <div class="seg" role="radiogroup" aria-label="Demo state">
+          <button class="seg__opt is-on" role="radio" type="button" data-demo-seg>Default</button>
+          <button class="seg__opt" role="radio" type="button" data-demo-seg>Off</button>
+          <button class="seg__opt" role="radio" type="button" disabled>Locked</button>
         </div>
       </div>
       <p class="spec__note">
@@ -1221,10 +1222,10 @@
           </label>
           <div class="field">
             <span class="field__top"><span class="field__label">Reel mode</span></span>
-            <div class="seg" role="group" aria-label="Reel mode">
-              <button class="seg__opt is-on" type="button" data-demo-seg>Featured</button>
-              <button class="seg__opt" type="button" data-demo-seg>Random</button>
-              <button class="seg__opt" type="button" data-demo-seg>Off</button>
+            <div class="seg" role="radiogroup" aria-label="Reel mode">
+              <button class="seg__opt is-on" role="radio" type="button" data-demo-seg>Featured</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>Random</button>
+              <button class="seg__opt" role="radio" type="button" data-demo-seg>Off</button>
             </div>
             <span class="field__help">Three states, so a segmented control and not a checkbox.</span>
           </div>
@@ -2105,10 +2106,10 @@
       <div class="spec__label"><span>.stack · .panel · @container</span><span>The pane decides, not the window</span><span class="n">02</span></div>
       <div class="spec__stage spec__stage--block">
         <div class="row row--split cq-bar">
-          <div class="seg" role="group" aria-label="Pane width">
-            <button class="seg__opt" type="button" data-cq="320">320</button>
-            <button class="seg__opt" type="button" data-cq="480">480</button>
-            <button class="seg__opt is-on" type="button" data-cq="full">Full</button>
+          <div class="seg" role="radiogroup" aria-label="Pane width">
+            <button class="seg__opt" role="radio" type="button" data-cq="320">320</button>
+            <button class="seg__opt" role="radio" type="button" data-cq="480">480</button>
+            <button class="seg__opt is-on" role="radio" type="button" data-cq="full">Full</button>
           </div>
           <span class="status">Pane <b class="num" id="cq-readout">—</b></span>
         </div>
@@ -2152,10 +2153,10 @@
       <div class="spec__label"><span>startViewTransition · @view-transition</span><span>Things move, they do not jump</span><span class="n">03</span></div>
       <div class="spec__stage spec__stage--block">
         <div class="row row--split cq-bar">
-          <div class="seg" role="group" aria-label="Order the plates">
-            <button class="seg__opt is-on" type="button" data-vt-sort="date">Newest</button>
-            <button class="seg__opt" type="button" data-vt-sort="name">Name</button>
-            <button class="seg__opt" type="button" data-vt-sort="shuffle"><i class="fa fa-shuffle"></i> Shuffle</button>
+          <div class="seg" role="radiogroup" aria-label="Order the plates">
+            <button class="seg__opt is-on" role="radio" type="button" data-vt-sort="date">Newest</button>
+            <button class="seg__opt" role="radio" type="button" data-vt-sort="name">Name</button>
+            <button class="seg__opt" role="radio" type="button" data-vt-sort="shuffle"><i class="fa fa-shuffle"></i> Shuffle</button>
           </div>
           <a class="btn" href="errors/404.html">Open an error page <i class="fa fa-arrow-right"></i></a>
         </div>

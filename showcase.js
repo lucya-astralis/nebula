@@ -713,6 +713,14 @@
     if (densityVal) densityVal.textContent = opt.dataset.density;
   });
 
+  /* A view transition that a newer one replaces is SKIPPED, and its
+     promises reject — arrowing quickly through tabs does exactly that.
+     Skipping is the intended behaviour; the rejection is not an error. */
+  function settle(vt) {
+    if (!vt) return;
+    [vt.ready, vt.finished, vt.updateCallbackDone].forEach(function (p) { if (p) p.catch(function () {}); });
+  }
+
   /* ---- the example apps: one tab per app, crossfaded ---- */
   var appTabs = $$('[data-app]');
   appTabs.forEach(function (tab) {
@@ -728,7 +736,7 @@
       };
       var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
         || document.documentElement.classList.contains('fx-lite');
-      if (document.startViewTransition && !calm) document.startViewTransition(show);
+      if (document.startViewTransition && !calm) settle(document.startViewTransition(show));
       else show();
     });
   });
@@ -877,7 +885,7 @@
         var apply = function () { order.forEach(function (c) { vtGrid.appendChild(c); }); };
         if (document.startViewTransition && !reduce.matches
             && !document.documentElement.classList.contains('fx-lite')) {
-          document.startViewTransition(apply);
+          settle(document.startViewTransition(apply));
         } else {
           apply();
         }

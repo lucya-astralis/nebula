@@ -1,5 +1,5 @@
 /* ==================================================================
-   NEBULA 2.1.0  —  the design language of lucya.systems
+   NEBULA 2.2.0  —  the design language of lucya.systems
    ------------------------------------------------------------------
    VERSION. This sheet is copied into every app rather than linked, so
    a copy has to be able to say which one it is. The number lives in
@@ -105,7 +105,7 @@
 @layer nebula.tokens{
 
 :root{
-  --nebula-version: "2.1.0";
+  --nebula-version: "2.2.0";
 
   /* ================================================================
      GROUND
@@ -742,7 +742,7 @@
      palette the OS owns — a half-blended copy is worse than none */
   .mark__ghost{ display:none; }
   .card::before, .card::after, .hud__corner{ forced-color-adjust:none; }
-  .btn--primary, .tag.is-active, .seg__opt.is-on, .menu__option.is-active{
+  .btn--primary, .tag.is-active, .seg__opt:is(.is-on, [aria-checked="true"], [aria-selected="true"]), .menu__option.is-active{
     forced-color-adjust:none;
     background:Highlight; color:HighlightText; border-color:Highlight;
   }
@@ -1401,8 +1401,11 @@ code{
   cursor:pointer; white-space:nowrap;
   transition:color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
-.seg__opt:hover:not(:disabled):not(.is-on){ color:var(--text); background-color:rgba(255,255,255,.06); }
-.seg__opt.is-on{
+.seg__opt:hover:not(:disabled):not(.is-on, [aria-checked="true"], [aria-selected="true"]){ color:var(--text); background-color:rgba(255,255,255,.06); }
+/* selected is the class OR the ARIA state: a radiogroup's aria-checked
+   and a tablist's aria-selected are what a screen reader hears, and
+   nebula.js keeps them in step, so markup may carry either */
+.seg__opt:is(.is-on, [aria-checked="true"], [aria-selected="true"]){
   color:var(--text);
   background-color:oklch(from var(--acc) l c h / .20);
   box-shadow:inset 0 0 0 1px oklch(from var(--acc) l c h / .55);

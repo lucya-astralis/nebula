@@ -29,8 +29,9 @@ icon subset need an origin, so both fall back.
 |---|---|
 | `NEBULA.md` | **The instructions.** Read this before writing CSS for a lucya.systems app. |
 | `CHANGELOG.md` | **What changed, and how to move a copy forward.** Every app carries its own copy of `nebula.css`; this is the record of versions, with a *you will see / do* pair for every breaking change. |
-| `nebula.css` | **The language, portable** — version 2.1.0, in its first line and in `--nebula-version`. Tokens, base, and every component in the showcase. Copy it verbatim into a new app; its own sheet loads after. |
+| `nebula.css` | **The language, portable** — version 2.2.0, in its first line and in `--nebula-version`. Tokens, base, and every component in the showcase. Copy it verbatim into a new app; its own sheet loads after. |
 | `index.html` | The showcase: twelve chapters — the app shell, four example apps beyond the gallery, the rules, the platform features and the build guide. |
+| `nebula.js` | **The keyboard.** Arrow keys, Home/End and a roving tabindex for tablists, radiogroups (every pick-one `.seg`), toolbars and popover menus, found by their ARIA roles. Copy it next to `nebula.css`, same version. No dependencies. |
 | `showcase.css` | Only the documentation scaffolding around the specimens. Not part of the language. |
 | `showcase.js` | The labs. Also carries `nebulaAccent()`, a byte-identical JS port of the gallery's `_accent_shades()` — verified against the Python for eight inputs. |
 | `fa-icons.css` | A copy of the gallery's generated Font Awesome subset, with relative paths. Adding an `fa-*` class not listed in it renders a blank box; rebuild with `python tools/build_fa_subset.py` in the repo root and copy the result back. |
