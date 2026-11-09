@@ -28,8 +28,9 @@ icon subset need an origin, so both fall back.
 | File | |
 |---|---|
 | `NEBULA.md` | **The instructions.** Read this before writing CSS for a lucya.systems app. |
-| `nebula.css` | **The language, portable.** Tokens, base, and every component in the showcase. Copy it verbatim into a new app; its own sheet loads after. |
-| `index.html` | The showcase: eight chapters, from the app shell to the build guide. |
+| `CHANGELOG.md` | **What changed, and how to move a copy forward.** Every app carries its own copy of `nebula.css`; this is the record of versions, with a *you will see / do* pair for every breaking change. |
+| `nebula.css` | **The language, portable** — version 2.1.0, in its first line and in `--nebula-version`. Tokens, base, and every component in the showcase. Copy it verbatim into a new app; its own sheet loads after. |
+| `index.html` | The showcase: twelve chapters — the app shell, four example apps beyond the gallery, the rules, the platform features and the build guide. |
 | `showcase.css` | Only the documentation scaffolding around the specimens. Not part of the language. |
 | `showcase.js` | The labs. Also carries `nebulaAccent()`, a byte-identical JS port of the gallery's `_accent_shades()` — verified against the Python for eight inputs. |
 | `fa-icons.css` | A copy of the gallery's generated Font Awesome subset, with relative paths. Adding an `fa-*` class not listed in it renders a blank box; rebuild with `python tools/build_fa_subset.py` in the repo root and copy the result back. |
@@ -37,6 +38,7 @@ icon subset need an origin, so both fall back.
 | `assets/logo/` | Two files, on purpose: the current lucya.systems mark (the same one `gallery.cfg` serves as `logo-new.svg`, tracked as `configurator/app/static/logo/lucya_logo.svg`), and `gallery-mark.svg`, the unbranded default for an app that has configured no logo. The combined lettering SVG in `app/static/logo/` is **not** here — it has the previous drawing of the bird baked into it. The footer lockup is composed instead: the mark, plus the wordmark as type in the display face. |
 | `assets/img/nova-*.svg` | The house artwork, wide and square — the same two cuts the configurator serves, and the pair an app's `wallpaper` / `wallpaper_mobile` is. Vector: the whole backdrop is 8 KB and costs nothing to paint. |
 | `assets/img/plate-*.svg` | Abstract stand-ins for photographs. Deliberately **not** the operator's own pictures: `photos/` and `thumbnails/` are gitignored, so a committed showcase cannot borrow from them. |
+| `tools/nebula_lint.py` | **The rules, checked.** `python tools/nebula_lint.py nebula.css app.css page.html` exits 1 on a raw hex, a rounded corner, an off-scale px or duration, an unpaired `backdrop-filter`, or a `style=""` attribute, and a kind colour outside an avatar, tag or mark. `--version <copy>` says which Nebula a copy is and how far behind. No dependencies. |
 | `errors/` | **The error pages.** Nineteen codes, each with its own scene drawn from the tokens, and a catalogue at `errors/index.html`. Generated from one table: edit `errors/build.py`, run `python3 errors/build.py`. Served from the folder root, because every page pins `<base href="/errors/">`. |
 
 ## The six rules, in one screen

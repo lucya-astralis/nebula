@@ -156,6 +156,50 @@ each of them beats a bare attribute selector on specificity, which leaves an
 element the markup calls hidden sitting on screen with its controls still in
 the tab order. The attribute already means this; the sheet only makes it true.
 
+**One accent for state, a kind palette for everything else** (2026-11-09).
+With the accent as the only hue on the page, every glyph, rule and glow that
+wore it, and a wallpaper drawn in it, washed the whole screen violet: *"noch
+sehr in die Akzentfarbe gewaschen, maybe auch andere Farben benutzen"*. So
+categories get colours of their own, and the accent keeps state alone.
+
+| Token | Hue | For |
+|---|---|---|
+| `--hue-teal` `--hue-sky` `--hue-lime` `--hue-rose` `--hue-peach` `--hue-sand` | 190 · 235 · 128 · 355 · 55 · 95 | what a thing *is*, and only where that is the point: a person's avatar, an app's or project's mark, a tag |
+
+- **One lightness, one chroma.** All six are `oklch(0.80 0.10 h)`, so no hue
+  shouts over another and each clears 4.5:1 as text on `--surface`. They keep
+  their distance from the accent (~275) and from the three statuses.
+- **Not a scale.** Kinds are not ranked. Use them in order and cycle.
+- **The line.** A kind colour goes on exactly two kinds of thing:
+  - an **identity**, telling people or apps apart at a glance: an `.avatar`
+    (initials in a mail list, on a task card) and a `.mark` (an app's logo)
+  - a **category**, telling groups apart at a glance: a `.tag`
+
+  Nothing else gets one: no section numbers, headings, cards, panels, rows,
+  glyphs in front of labels or chrome. "Each card a different colour" and
+  "each chapter its own hue" were tried and taken back out (user,
+  2026-11-09: *"andere Farben nur da wo es Sinn ergibt … keine Nummerierung
+  oder verschiedene Cards, da muss ne Grenze gesetzt werden"*). They decorate,
+  they tell nothing apart that the layout does not already, and on a full page
+  they become a second wash.
+- **The line is enforced, not remembered.** `.hue-*` only matches as
+  `:is(.avatar, .tag, .mark).hue-*`, so on a card it does nothing, and
+  `nebula_lint.py` flags it in markup (`rule-1`). Glyphs before labels are mist.
+  They are neither the accent (no state) nor a kind (no identity).
+- **How it reads:** the class sets `--hue`, `--hue-line` and `--hue-wash`. A
+  static `.tag` and an `.avatar` take their text, edge and a faint wash from
+  them, and without one stay neutral.
+
+**The world turns with the accent.** As in the gallery's console, a new accent
+turns the backdrop, mist and the kind palette with it. Every colour is a
+position *relative* to the built-in accent in OKLCH: the hue moves by the
+angle between the two accents, chroma scales with how saturated the new one
+is, and lightness never moves. Nova keeps its depth whatever the colour, and
+a grey accent gives a grey world. The maths is `aperture/palette.py`
+(`recolour_svg`, `mist_tokens`); the showcase carries a line-for-line JS port
+(`turnWorld()` in `showcase.js`). An app with a server recolours nova there,
+as the console does with `/bg/<cut>?accent=`.
+
 ### 2. Square corners, always
 
 `--radius: 0`. Only genuinely round things — a status dot, a circular button —
@@ -284,34 +328,91 @@ setting* (`wallpaper_tint = off`), not a departure — and it is what overriding
 the language correctly looks like: token values, each with the reason written
 next to it, and not one rule touched.
 
-### 4. The mono voice is the chrome; the sans voice is the content
+**Elevation is a ladder, like blur.** Blur alone gave the page no depth.
+Blurring a black ground gives you black, so every pane was the same black as
+the black under it, and the page read as one flat sheet. Height is now read
+twice: by how far out of focus the backdrop behind a pane is, and by what the
+pane casts below it.
 
-- **JetBrains Mono, uppercase, tracked** — the furniture *around*
-  the content: section labels, counts, badges, dates, corner indices, filters,
-  sort controls, meta lines, and every measured value (EXIF rows, sizes,
-  dimensions). If it is a fact the software knows about itself, it is in this
-  voice.
-- **Space Grotesk, sentence case** — everything a person *reads*: page titles,
-  descriptions, panel bodies, leads, help text, empty states, error copy.
-- **The display face (Ethnocentric)** — the wordmark, one big word on a landing
-  screen, a 404 numeral. **Never a heading.** It is swappable per deployment,
-  which is why every rule that sets display type wraps its size in a `calc()`
-  against `--display-scale`: faces disagree wildly about how much of the em
-  they ink.
+| Plane | What | Fill · blur · shadow |
+|---|---|---|
+| ground | the wallpaper | — |
+| page | `.stack`, `.card`, a specimen | `--glass` · `--blur-2` · `--shadow-0`, a soft contact shadow: it *sits* on the page, it does not float |
+| raised | a hovered card, the door | `--glass-hi` · `--blur-3` · `--shadow-1`, up `--lift` (3px) |
+| floating | menus, dialogs, toasts | `--overlay` · `--blur-3` · `--shadow-2`; a dialog also pushes the page back to `--blur-2` |
 
-Stripping the first group to sentence sans made a grid *look unfinished*: the
-labels stopped separating the furniture from the content and dissolved into it.
+The bar casts `--shadow-bar` once there is page under it, so content passes
+*beneath* the frame instead of being cut off by it. A shadow below a pane is
+not a darker fill, so rule 3 stands as written. It is never a bevel: no light
+edge on top and no gloss, only a shadow below.
 
-**Never `text-transform` data.** Uppercase is for fixed UI words only, never for
-a name, path, filename, identifier or a user's own search query —
-`Pride_MUC_26` is not `PRIDE_MUC_26`. Casing data is restyling data.
+**The ground has planes too.** The wallpaper, then light, bloom, vignette and
+dim over it. There is no grid: a 32px lattice over the art repeated on every
+screen and made them all read as the same technical sheet.
 
-**The token name carries the voice.** `--fs-chrome-*` is the mono voice,
-`--fs-text-*` is the sans voice, and each `--fs-chrome-N` has exactly one
-`--tr-chrome-N` that goes with it. Reaching for the wrong one is then visible in
-the source, not only on screen. Tracking **falls as size rises** — that is a
-formula, not a preference: the reason to track is optical, and small caps need
-air that large caps do not.
+- `--wallpaper-light` is a **neutral** key light, high on the left. It is
+  white and never the accent, because another violet wash is exactly what got
+  the old palette thrown out.
+- `--wallpaper-vignette` lets the corners fall away.
+- **Parallax:** over the first `--depth-range` (200vh) of scroll, the
+  picture travels `--depth-drift` (6vh) while the panes move with the page.
+  Two planes moving at two rates is the depth cue the eye trusts most. It runs on a
+  scroll timeline with no listener, and it is off for reduced motion, under
+  `.fx-lite` and without support.
+
+### 4. The chrome is quieter than the content
+
+Two voices still, and the split between them is still the line the sheet is
+sorted on. What changed (2026-11-09, *"weniger Terminal, mehr einfaches aber
+Profi-GUI-Look"*) is **how** the chrome is told apart.
+
+- **The interface voice**: Space Grotesk **500**, one step smaller
+  (`--fs-chrome-*`, 11.5–14px), `--label` tone, sentence case, no tracking. It
+  is the furniture *around* the content: labels, counts, badges, dates,
+  filters, buttons, tabs, menu rows, meta lines. Measured values (EXIF rows,
+  sizes, counts) take `--num-font` with **tabular figures**, so a column lines
+  up without a monospaced face.
+- **The reading voice**: Space Grotesk at `--fs-text-*`, `--text` / `--text-dim`.
+  This is everything a person *reads*: page titles, descriptions, panel bodies,
+  leads, help text, empty states, error copy.
+- **Mono** (JetBrains Mono) is for what really is code: a token, a hex, a key
+  hint, a path, a command, a one-time code.
+- **The display face (Ethnocentric)** is the wordmark, one big word on a
+  landing screen, a 404 numeral. **Never a heading.** It is swappable per
+  deployment, which is why every rule that sets display type wraps its size in
+  a `calc()` against `--display-scale`: faces disagree wildly about how much of
+  the em they ink.
+
+**Why not mono caps any more.** The chrome used to be mono, uppercase and
+tracked open. It separated furniture from content very well, and it made every
+screen read like a console: a page made of readouts reads as a terminal, not
+as an application. A desktop interface separates the two by **size, weight
+and tone** in one family, and that is what this does.
+
+**Why not plain sans either.** Stripping the chrome to sentence sans at the
+reading size made a grid *look unfinished* once already: the labels dissolved
+into the content. The difference stays; only the costume goes.
+
+**Four tokens carry the voice**: `--ui-font`, `--ui-case`, `--ui-weight` and
+`--num-font`. A component never names a face for its chrome; it names these.
+The showcase's Voice chapter puts the terminal back by redefining exactly
+those four plus the chrome scale, which shows the swap is complete.
+
+**Never `text-transform` data.** Even with `--ui-case: none` the rule stands
+for any app that sets a case: never on a name, path, filename, identifier or a
+user's own search query. `Pride_MUC_26` is not `PRIDE_MUC_26`.
+
+**The token name carries the voice.** `--fs-chrome-*` is the interface voice,
+`--fs-text-*` is the reading voice, and each `--fs-chrome-N` has exactly one
+`--tr-chrome-N`. Lower-case sans is not tracked open (that was something
+capitals needed), so the small steps get a breath of air and the large ones
+tighten.
+
+**A control's label is read before it is pressed.** Buttons carry `--text`, not
+the dimmed furniture grey. The committing button is a **solid** `--acc-deep`
+face with white text, as in any desktop application; the others are outlined
+glass. A tinted primary next to outlined buttons read as "a slightly
+different outline".
 
 ### 5. Measure is rationed like colour
 
@@ -407,7 +508,7 @@ on the generous composition of femboyconsulting.com (2026-10-13).
   open slightly on hover and keyboard focus, using `--mark-spread` and
   `--mark-lift`. The gesture is off on touch, under reduced motion and lite mode.
 - `--fs-chrome-display` with `--tr-chrome-display` gives headline-sized measured
-  values their own mono step; do not size counters from the content scale.
+  values their own interface step; do not size counters from the content scale.
 - `.mark--signature` is a large, decorative closing mark. It may replay the
   existing chromatic split on hover; reduced motion and lite mode keep it still.
 - `.foot--editorial` can close with `.foot__floor`, an oversized wordmark in
@@ -498,9 +599,9 @@ markup, the script, and nothing else.
 | Title — "Sign in" | sans, `--fs-text-lg`, 700 | A heading in the reading voice, never the display face (rule 4) |
 | **Why you are here**, when the app knows | `.login__why`: `--acc` left rule over a faint accent fill, text in `--text` | The accent never sits on its own tint (rule 1). Not `role="alert"` — it answers a question, it does not interrupt |
 | One line on what this door guards | `--text-dim`, `--fs-text-sm` | Reading copy bottoms out at `--text-dim` |
-| Field label | mono, uppercase, tracked, `--label` | Furniture (rule 4). A real `<label for>` |
+| Field label | the interface voice, `--label` | Furniture (rule 4). A real `<label for>` |
 | The field, with the reveal inside it | input reset, 16px | The 16px is the iOS zoom threshold (rule 5's exception) |
-| Caps Lock status | amber, mono | Amber, not red: it is the reason a refusal is *about* to happen |
+| Caps Lock status | amber, interface voice | Amber, not red: it is the reason a refusal is *about* to happen |
 | The refusal | `--red` + a glyph, `role="alert"` | The one red message on the door. Never hue alone (rule 6) |
 | One `.btn--primary` — the one that commits | glyph + word | Exactly one primary per row |
 | The way back if the password is lost | `--text-ghost` over a hairline, the command in mono | A door without a "lost the key" note is a wall |
@@ -671,6 +772,62 @@ a label or a control — only on a copy of the mark itself.
 
 ---
 
+## The platform — what the browser now does for the sheet
+
+The sheet used to ask scripts for things the browser now does by itself. The
+look has not changed at all; what changed is who does the work. The
+showcase's *Platform* chapter runs each of these live.
+
+**The cascade has an order, and it is declared.** `nebula.css` opens with
+
+```css
+@layer nebula.tokens, nebula.base, nebula.components, nebula.gates, nebula.utilities;
+```
+
+Gates beat components by position in that order, not by being written later,
+and utilities beat everything Nebula has. **Your app's sheet stays
+unlayered**, and then it beats all of Nebula with one class: no extra
+specificity, no `!important`. To put app rules *under* some of Nebula,
+declare `@layer nebula, app;` and write them in `app`.
+
+**Tints are relative colour.** Every tint, ring and glow is
+`oklch(from var(--acc) l c h / .16)`, not `rgba(var(--acc-rgb), .16)`. Setting
+`--acc` is enough; the `-rgb` triplets are still defined for older app sheets,
+but this sheet does not read them. Mixes use `color-mix(in oklch, …)`.
+
+**Panes answer to their own width.** `.stack` and `.panel` are query
+containers (`container: pane / inline-size`) and `.hud` is one too. The `.set`
+row drops its controls under **560px of pane**, `.kv` stacks under **420px**.
+Those used to be viewport steps, so a settings stack in a side column kept
+three columns on a wide screen. Window-level decisions (the bar, the rail,
+the footer, `--tap`) stay on the 760 / 620 media steps.
+
+**Motion without script.**
+
+| Was | Is |
+|---|---|
+| a scroll listener toggling `.nav--scrolled` | `animation-timeline: scroll(root)` over the first `--s-3`; the class stays for browsers without it |
+| dialog/toast entrance keyframes, no exit | `@starting-style` in, the closed state out; `display` / `overlay` with `allow-discrete` keep a closing dialog on screen. Longhands only: a browser that does not know `allow-discrete` drops a whole `transition:` that names it |
+| a dropdown script for open, close, Escape, outside click | `popover` + `popovertarget`; placed by anchor positioning (`position-area`, `position-try-fallbacks`), a CSSOM fallback where unsupported |
+| a white flash between pages | `@view-transition { navigation: auto }` behind `no-preference`; the bar carries `view-transition-name: nebula-bar` and holds still |
+| a script measuring `scrollHeight` to animate open | `.fold`: `::details-content` + `interpolate-size: allow-keywords` on `:root` |
+
+`text-wrap: balance` is set on headings and titles, `pretty` on running text.
+
+**What is required and what is not.** `@layer`, container queries and
+relative colour are the floor, so browsers from 2024 on. Everything else is
+an enhancement: without it the page is the same page without the movement.
+Each piece is gated on rule 6's terms: reduced motion turns off view
+transitions and `.u-reveal`, `.fx-lite` turns off the enter and exit
+transitions, and forced colours gets the open menu button and `.fold` in its
+border list.
+
+**Two things that are not motion.** The bar's deeper state and the reading
+line are tied to the scroll position, not to a clock. Nobody waits through
+them, so reduced motion leaves them on.
+
+---
+
 ## Building a new app
 
 ### Step 1 — take the sheet, don't reinvent it
@@ -679,6 +836,19 @@ Copy `nebula/nebula.css` and `nebula/assets/fonts/` into the new app's static
 directory and link the sheet **first**. It carries the tokens, the base, and
 every component in the showcase. The app's own stylesheet loads after it and
 adds only what is genuinely new.
+
+**The copy carries its version.** The first line of `nebula.css` says
+`NEBULA 2.1.0`, and `--nebula-version` says the same. Never edit a copy by
+hand: change the language here and bump it. To see how far an app's copy is
+behind, run:
+
+```bash
+python nebula/tools/nebula_lint.py --version app/static/nebula.css
+```
+
+To move it forward, follow [CHANGELOG.md](CHANGELOG.md), which has a *Breaking*
+section with a "you will see / do" pair for every change an app has to react
+to.
 
 ```
 app/static/
@@ -700,7 +870,7 @@ For every element, in order:
 2. **Is it interactive furniture?** A hover, a corner bracket, a HUD stroke, a
    frame → `--chrome`.
 3. **Is it a static label, count, badge or measured value?** → `--label`, in the
-   mono voice, uppercase, tracked.
+   interface voice (`--ui-font`, `--fs-chrome-*`).
 4. **Is it something a person reads?** → Space Grotesk, sentence case,
    `--text` / `--text-dim` / `--text-ghost`.
 5. **Does it sit on the page?** → `--glass` (`--glass-hi` if it is read).
@@ -734,9 +904,20 @@ Use the names; a new app is then already wearing the language.
 | `.tag` / `.tag-bar` | Filter chips. A **control**: ship it as `<button type="button">` with `aria-pressed`, never a `<span>` |
 | `.tag--static` | A tag that is a *label*, not a control — a read-only qualifier. Not a button: a focus stop that does nothing is worse than none |
 | `.u-glass` / `.u-scrim` | Rule 3 as one reusable move, for an element the vocabulary does not cover |
-| `.chrome-voice` | Rule 4's mono voice as one class, for the same reason |
+| `.chrome-voice` | Rule 4's interface voice as one class, for the same reason |
 | `.field` / `.field__label` / `.field__help` | A form control; the left border is the state channel (accent = set, grey = unset, amber = staged) |
-| `.menu` / `.menu__option` | A dropdown; the active row is marked on its leading edge |
+| `.menu` / `.menu__option` | A dropdown; the active row is marked on its leading edge. Ship it as `<div class="menu" popover>` inside a `.menu-host`, opened by `popovertarget` — see *The platform* |
+| `.section__head--numbered` + `[data-sections]` | A chapter opener on a long page: a counter-drawn numeral, outlined in mist, beside an editorial-size title. The markup carries no digits |
+| `.empty` / `.empty__ico` / `.empty__t` / `.empty__d` | Nothing here yet: what would be here, why not, and the ONE thing to do. `.empty--sm` without the frame |
+| `.skel` (`--text`, `--title`, `--block`, `--avatar`) | Not there yet: the shape of what is coming. Container gets `aria-busy`, blocks `aria-hidden`; the sweep (`--skel-sweep`) stops for reduced motion and Lite |
+| `.tip-host` + `.tip[role=tooltip]` | What an icon-only control does. Referenced by `aria-describedby`, shown on hover (after a delay) and on focus; never the only place an instruction lives. `.tip--below` flips it |
+| `.crumbs` | Where am I. The last step is `aria-current="page"` in `--text`, not the accent; steps truncate one by one |
+| `.pager` / `.pager__p` / `.pager__range` / `.pager__gap` | Too much at once. The current page is a state: solid `--acc-deep`; the range ("41–60 of 412") in the number voice |
+| `.drop` / `.drop__list` | Give me a file: a `<label>` round a real `<input type=file>`. `.is-over` while dragging is the accent. The ONE dashed border in the sheet, because a dashed edge means "put something here" |
+| `.tbl th[aria-sort]` + `.tbl__sort` | In what order. The sheet paints `aria-sort`; the sorted column is the accent, the others show an arrow on hover only |
+| `.fold` / `.fold__body` | A native `<details>`: more, if you want it. Opens to `height: auto` with no script |
+| `.nav__progress` | Opt-in reading progress on the bar's bottom edge, driven by the scroll position |
+| `.u-reveal` | A specimen or section that settles in as it scrolls into view. Never on the first screen, never on a control |
 | `.card` / `.card-grid` / `.card__img` / `.card__idx` / `.card__cap` | A content tile, with the `--chrome` corner brackets on hover/focus |
 | `.stack` / `.panel` / `.kv` | Hairline-separated panels and a key/value readout (`.num` for measured values) |
 | `.hud` / `.hud__corner` / `.hud__reticle` / `.hud__bar` | The viewfinder idiom — only where the screen **is** an instrument |
@@ -746,7 +927,7 @@ Use the names; a new app is then already wearing the language.
 | `.switch` / `.switch-wrap` / `.switch__word` | One setting, on or off — the other half of `.seg`. On is an accent FILL, and the word beside it says which |
 | `.meter` / `.meter__fill` | How much of something there is. The fill is the one progress the accent is for; the value rides `--p` through the CSSOM |
 | `.set` / `.set__ico` / `.set__text` / `.set__aside` | The setting row: icon, name and a line of prose, then the controls. Lives in a `.stack` |
-| `.tbl` / `.tbl-wrap` | Rows of facts in the two voices; a `.num` column goes mono and tabular |
+| `.tbl` / `.tbl-wrap` | Rows of facts in the two voices; a `.num` column takes tabular figures |
 | `.dlg` / `.dlg__head` / `.dlg__body` / `.dlg__foot` | A `<dialog>` on `--overlay`. A question, not a screen |
 | `.toast` / `.toasts` | That happened. Its edge is `--chrome`, because reporting is not a state; `--ok` / `--amb` / `--error` are statuses |
 | `.rail` / `.rail__nav` | The sections of one app, standing still — the console's rail: each place a word in the reading voice with a mist glyph, the current one full text on a faint accent ground with an inset accent line on its leading edge, on its bottom edge once the rail is a strip (below 620px) |
@@ -880,6 +1061,11 @@ def accent_shades(rgb):
 
 - [ ] **Count the accents on one screen.** More than a handful means furniture
       has been painted with state colour — go back to step 2.
+- [ ] `python nebula/tools/nebula_lint.py --version static/nebula.css` — current.
+- [ ] `python nebula/tools/nebula_lint.py new.css templates/*.html` — clean.
+      It runs the radius and px greps below, plus raw hexes outside `:root`,
+      raw durations, an unpaired `backdrop-filter` and `style=""` attributes.
+      An exception carries `/* nebula-allow: <kind> — reason */` on its line.
 - [ ] `grep -n 'border-radius' new.css` — every hit is `var(--radius)` or a
       genuinely round thing.
 - [ ] `grep -oE '(padding|gap|margin|font-size|letter-spacing):[^;]*[0-9]+px' new.css`
@@ -888,7 +1074,7 @@ def accent_shades(rgb):
 - [ ] **Every `--fs-*` token matches the voice of the thing it sizes.** A rule
       that only overrides a size — a desktop type-scale block is all of these —
       says nothing about its own voice, so it is the easy place to land a
-      `--fs-text-*` on a mono eyebrow. Check it against what the browser
+      `--fs-text-*` on an interface-voice eyebrow. Check it against what the browser
       computes, not against what the rule looks like.
 - [ ] No opaque fill on a floating surface, and **no bevel**: no
       `inset 0 1px 0 rgba(255,255,255,…)`, no gloss gradient down a pane.
@@ -930,7 +1116,7 @@ Six rules:
 1. Black ground, grey furniture, ONE accent (--acc). The accent marks
    STATE only: links, focus, active/selected/open, featured, live.
    Furniture is --chrome (hovers, brackets, HUD strokes) or --label
-   (static mono furniture: labels, counts, badges, measured values).
+   (static furniture: labels, counts, badges, measured values).
    Before colouring something purple, ask whether it carries state.
    The accent never sits on its own tint: on an accent fill the label
    is --on-acc or --text. Reading copy bottoms out at --text-dim;
@@ -944,8 +1130,10 @@ Six rules:
    Aero, and it argues with rule 2. --pane is the exception to the
    ladder: DEEP BLACK, no hue in the fill and --blur-1 behind it, so
    the app bar never takes an album's colour.
-4. Mono, uppercase, tracked = the chrome AROUND the content. Space
-   Grotesk, sentence case = everything a person reads. The display face
+4. The chrome AROUND the content is the interface voice: Space
+   Grotesk 500, one step smaller, --label tone, no caps, no tracking
+   (--ui-font / --ui-case / --ui-weight). Everything a person reads is
+   Space Grotesk at --fs-text-*. Mono is for code only. The display face
    is the wordmark's voice and never a heading's. Use --fs-chrome-* vs
    --fs-text-*: the token name carries the voice.
 5. Measure is rationed like colour. Every size, space, duration and

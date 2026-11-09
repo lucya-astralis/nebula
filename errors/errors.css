@@ -124,8 +124,8 @@
   position:absolute; left:0; bottom:0;
   margin:0;
   display:flex; flex-direction:column; gap:var(--s-1);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--label);
   font-variant-numeric:tabular-nums;
   white-space:pre;
@@ -146,7 +146,7 @@
   letter-spacing:var(--tr-display);
   text-transform:uppercase;
 }
-.err .foot__meta{ font-family:var(--mono); font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase; }
+.err .foot__meta{ font-family:var(--ui-font); font-weight:var(--ui-weight); font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case); }
 
 /* ==================================================================
    SCENES THAT LIVE IN THE DOM
@@ -163,8 +163,8 @@
 .err__wait{ display:flex; flex-direction:column; gap:var(--s-2); max-width:calc(var(--s-11) * 2.4); }
 .err__wait-top{
   display:flex; justify-content:space-between; gap:var(--s-4);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--label);
   font-variant-numeric:tabular-nums;
 }
@@ -188,8 +188,8 @@
   display:flex; justify-content:space-between; gap:var(--s-4);
   padding-bottom:var(--s-3);
   border-bottom:var(--hair) solid var(--line);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--label);
 }
 .err__notice-body{ margin:0; font-size:var(--fs-text-lg); line-height:1.9; color:var(--text-dim); }
@@ -205,8 +205,8 @@
 .err__notice-body .w.is-x::after{ scale:1 1; }
 .err__notice-foot{
   display:flex; justify-content:space-between; gap:var(--s-4);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--text-ghost);
 }
 
@@ -227,8 +227,8 @@
 .err__lock .fa{ font-size:var(--fs-chrome-xl); color:var(--mist); }
 .err__lock-t{
   margin:0;
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:var(--ui-case);
   color:var(--label);
 }
 .err__lock .switch:disabled{ opacity:1; cursor:not-allowed; }
@@ -328,8 +328,8 @@
   -webkit-text-fill-color:transparent;
 }
 .err-tile__fx{
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--label);
 }
 .err-tile__fx .fa{ color:var(--mist); margin-right:var(--s-2); }

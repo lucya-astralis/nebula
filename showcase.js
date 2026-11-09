@@ -167,6 +167,109 @@
   var accPresets = $('#acc-presets');
   var docAcc     = $('#doc-acc');
 
+  /* ================================================================
+     THE WORLD TURNS WITH THE ACCENT
+     ----------------------------------------------------------------
+     A port of the gallery's aperture/palette.py, to the letter, so the
+     showcase does what the console does: change the accent and the
+     backdrop, the mist and the kind palette turn with it. Everything
+     here is a position RELATIVE to the built-in accent, worked in
+     OKLCH: the hue moves by the angle between the two accents, the
+     chroma scales with how saturated the new accent is, and lightness
+     never moves — so nova keeps its depth whatever the colour, and a
+     grey accent gives a grey world rather than a violet one.
+     ================================================================ */
+  var BASE_ACCENT = [0x61, 0x6E, 0xF3];   /* the built-in --acc */
+  function toLin(c) { return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  function toSrgb(c) { return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055; }
+  function rgbToOklch(rgb) {
+    var r = toLin(rgb[0] / 255), g = toLin(rgb[1] / 255), b = toLin(rgb[2] / 255);
+    var l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    var m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    var s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    var L = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s;
+    var A = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s;
+    var B = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
+    var H = Math.atan2(B, A) * 180 / Math.PI;
+    return [L, Math.hypot(A, B), ((H % 360) + 360) % 360];
+  }
+  function oklchLin(L, C, H) {
+    var a = C * Math.cos(H * Math.PI / 180), b = C * Math.sin(H * Math.PI / 180);
+    var l = Math.pow(L + 0.3963377774 * a + 0.2158037573 * b, 3);
+    var m = Math.pow(L - 0.1055613458 * a - 0.0638541728 * b, 3);
+    var s = Math.pow(L - 0.0894841775 * a - 1.2914855480 * b, 3);
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+           -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+           -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s];
+  }
+  /* out of gamut, the CHROMA gives way, in small steps, never the hue */
+  function oklchToRgb(L, C, H) {
+    var lin;
+    for (;;) {
+      lin = oklchLin(L, C, H);
+      if (lin.every(function (c) { return c >= -0.0005 && c <= 1.0005; }) || C <= 0) break;
+      C = Math.max(0, C - 0.004);
+    }
+    return lin.map(function (c) { return Math.round(Math.min(1, Math.max(0, toSrgb(Math.max(0, c)))) * 255); });
+  }
+  function frame(accent) {
+    var base = rgbToOklch(BASE_ACCENT), now = rgbToOklch(accent);
+    return { hue: now[2], k: Math.min(1, now[1] / base[1]), turn: now[2] - base[2] };
+  }
+  /* palette.py's MIST: a fixed ladder of lightness and chroma, the
+     accent's own hue */
+  var MIST = { glyph: [0.80, 0.050], ramp: [[0.90, 0.030], [0.78, 0.050], [0.66, 0.071], [0.54, 0.090]] };
+  /* the kind palette's own hues, drawn against the built-in accent */
+  var KIND = { teal: 190, sky: 235, lime: 128, rose: 355, peach: 55, sand: 95 };
+
+  /* the two cuts of nova, fetched once as text and recoloured per accent */
+  var novaSrc = { wide: 'assets/img/nova-wide-16-9.svg', square: 'assets/img/nova-square.svg' };
+  var novaText = {}, novaUrl = {};
+  function recolourSvg(svg, f) {
+    return svg.replace(/#([0-9a-fA-F]{6})\b/g, function (all, body) {
+      var rgb = [0, 2, 4].map(function (i) { return parseInt(body.substr(i, 2), 16); });
+      var o = rgbToOklch(rgb);
+      if (o[1] < 0.02) return all;   /* greys (the shards, the black) stay as they are */
+      return hex(oklchToRgb(o[0], o[1] * f.k, o[2] + f.turn)).toLowerCase();
+    });
+  }
+  var worldTurn = 0;
+  function turnWorld(accent) {
+    var f = frame(accent), root = document.documentElement;
+    var isBase = Math.abs(f.turn) < 0.5 && f.k > 0.995;
+
+    /* mist and the kind palette */
+    root.style.setProperty('--mist', hex(oklchToRgb(MIST.glyph[0], MIST.glyph[1] * f.k, f.hue)));
+    MIST.ramp.forEach(function (st, i) {
+      root.style.setProperty('--mist-' + (i + 1), hex(oklchToRgb(st[0], st[1] * f.k, f.hue)));
+    });
+    Object.keys(KIND).forEach(function (name) {
+      /* the kinds keep their distance from the accent by turning with it */
+      root.style.setProperty('--hue-' + name,
+        'oklch(0.80 ' + (0.10 * Math.max(f.k, 0.35)).toFixed(3) + ' ' + ((KIND[name] + f.turn) % 360 + 360) % 360 + ')');
+    });
+
+    /* the backdrop: the same SVG, every chromatic stop turned */
+    var img = $('#wallpaper'), source = $('.site-bg source');
+    if (!img || !window.fetch || !window.Blob || !window.URL) return;
+    var ticket = ++worldTurn;
+    var cuts = Object.keys(novaSrc);
+    Promise.all(cuts.map(function (cut) {
+      if (novaText[cut]) return novaText[cut];
+      return fetch(novaSrc[cut]).then(function (r) { return r.text(); })
+        .then(function (t) { novaText[cut] = t; return t; });
+    })).then(function () {
+      if (ticket !== worldTurn) return;   /* a newer accent has arrived */
+      cuts.forEach(function (cut) {
+        if (novaUrl[cut]) URL.revokeObjectURL(novaUrl[cut]);
+        novaUrl[cut] = isBase ? null
+          : URL.createObjectURL(new Blob([recolourSvg(novaText[cut], f)], { type: 'image/svg+xml' }));
+      });
+      img.src = novaUrl.wide || novaSrc.wide;
+      if (source) source.srcset = novaUrl.square || novaSrc.square;
+    }).catch(function () { /* offline or file:// — the backdrop stays as served */ });
+  }
+
   function applyAccent(raw, quiet) {
     var rgb = parseHex(raw);
     if (!rgb) {
@@ -183,6 +286,7 @@
     root.style.setProperty('--acc-rgb', d.rgb);
     root.style.setProperty('--acc-deep', hex(d.deep));
     root.style.setProperty('--acc-soft', hex(d.soft));
+    turnWorld(d.acc);
 
     if (docAcc) docAcc.textContent = hex(d.acc).toUpperCase();
 
@@ -325,7 +429,7 @@
     violet: 'Rule 01 — the accent is painting furniture too',
     radius: 'Rule 02 — corners are rounded, and the brackets are gone',
     opaque: 'Rule 03 — legibility is being bought with darkness',
-    voice:  'Rule 04 — the chrome lost the mono voice',
+    voice:  'Rule 04 — the chrome speaks like a terminal again',
     measure:'Rule 05 — every value is off the scale by a pixel or two'
   };
   var heresyWhat = $('#heresy-what');
@@ -460,26 +564,75 @@
      ================================================================ */
 
   /* the nav's accent hairline brightens once the page has moved */
+  /* The sheet reads this state off a scroll timeline now; the listener is
+     the fallback for a browser that cannot, and only it binds one. */
   var nav = $('#nav');
-  function onScroll() {
-    if (nav) nav.classList.toggle('nav--scrolled', window.scrollY > 8);
+  var cssScroll = window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll()');
+  if (!cssScroll) {
+    var onScroll = function () {
+      if (nav) nav.classList.toggle('nav--scrolled', window.scrollY > 8);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
 
   /* scroll spy — the side nav marks the chapter you are reading, which
      is STATE, which is why it is the accent */
   var chapters = $$('.chapter');
-  var navLinks = $$('#sidenav a');
-  if ('IntersectionObserver' in window && chapters.length) {
-    var seen = {};
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { seen[e.target.id] = e.intersectionRatio; });
-      var best = null, bestR = 0;
-      Object.keys(seen).forEach(function (id) { if (seen[id] > bestR) { bestR = seen[id]; best = id; } });
-      if (best) navLinks.forEach(function (a) { a.classList.toggle('is-active', a.getAttribute('href') === '#' + best); });
-    }, { rootMargin: '-20% 0px -55% 0px', threshold: [0, 0.15, 0.4, 0.75, 1] });
-    chapters.forEach(function (c) { io.observe(c); });
+  var navLinks = $$('#sidenav .sidenav__list a');
+  var sideList = $('#sidenav .sidenav__list'), sideN = $('#sidenav-n');
+
+  /* The current chapter is the last one whose top has passed a reading
+     line a third of the way down the window. It used to be "the chapter
+     with the largest visible RATIO", which a short chapter always wins
+     over a long one — so the rail marked Voice while you read Wrong. */
+  var current = null;
+  function spy() {
+    var line = window.innerHeight * 0.33, now = chapters[0];
+    chapters.forEach(function (c) { if (c.getBoundingClientRect().top <= line) now = c; });
+    if (!now || now === current) return;
+    current = now;
+    navLinks.forEach(function (a) {
+      if (a.getAttribute('href') === '#' + now.id) {
+        /* aria-current is what a screen reader hears AND what the
+           sheet's rail paints; one attribute, both jobs */
+        a.setAttribute('aria-current', 'location');
+        var n = $('.sidenav__n', a);
+        if (sideN && n) sideN.textContent = n.textContent;
+        /* in the one-column strip, keep the current place in view */
+        if (sideList && sideList.scrollWidth > sideList.clientWidth) {
+          sideList.scrollTo({ left: a.offsetLeft - sideList.clientWidth / 3, behavior: 'smooth' });
+        }
+      } else {
+        a.removeAttribute('aria-current');
+      }
+    });
+  }
+  var spyQueued = false;
+  window.addEventListener('scroll', function () {
+    if (spyQueued) return;
+    spyQueued = true;
+    requestAnimationFrame(function () { spyQueued = false; spy(); });
+  }, { passive: true });
+  window.addEventListener('resize', spy);
+  spy();
+
+  /* Per-chapter reading lines. Each chapter gets a named view timeline,
+     the common ancestor hoists the names (timeline-scope) so the rail —
+     which is not inside any chapter — can see them, and each line runs
+     on its chapter's timeline. Named here once, because the list of
+     chapters lives in the markup; from then on the browser drives it. */
+  if (window.CSS && CSS.supports && CSS.supports('animation-timeline: view()')) {
+    var names = [];
+    chapters.forEach(function (c) {
+      var name = '--ch-' + c.id;
+      names.push(name);
+      c.style.setProperty('view-timeline-name', name);
+      var link = $('#sidenav a[href="#' + c.id + '"] .sidenav__p');
+      if (link) link.style.setProperty('animation-timeline', name);
+    });
+    var docEl = $('.doc');
+    if (docEl) docEl.style.setProperty('timeline-scope', names.join(', '));
   }
 
   /* the nav search filters the chapter list — a real control, not a
@@ -516,33 +669,231 @@
     filterNote.innerHTML = 'Filter: <b>' + state.tag + '</b> · sorted by <b>'
       + state.sort.toLowerCase() + '</b>. Both controls are live.';
   }
-  function closeSort() {
-    if (!sortMenu) return;
-    sortMenu.hidden = true;
-    if (sortBtn) sortBtn.setAttribute('aria-expanded', 'false');
-  }
-  if (sortBtn && sortMenu) {
-    sortBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var open = sortMenu.hidden;
-      sortMenu.hidden = !open;
-      sortBtn.setAttribute('aria-expanded', String(open));
-    });
-    $$('.menu__option', sortMenu).forEach(function (opt) {
+  /* A popover menu. The browser opens and closes it (popovertarget),
+     handles Escape and a click outside, and places it by anchor
+     positioning. What is left here is what choosing an option MEANS —
+     plus, for a browser without anchor positioning, placing it under its
+     button from the button's rectangle. A CSSOM write, which a strict
+     CSP allows; a style="" attribute it would drop. */
+  var cssAnchor = window.CSS && CSS.supports && CSS.supports('position-area: block-end');
+  function wireMenu(menu, onPick) {
+    if (!menu) return;
+    var btn = $('[popovertarget="' + menu.id + '"]');
+    $$('.menu__option', menu).forEach(function (opt) {
       opt.addEventListener('click', function () {
-        $$('.menu__option', sortMenu).forEach(function (o) {
+        $$('.menu__option', menu).forEach(function (o) {
           var on = o === opt;
           o.classList.toggle('is-active', on);
           o.setAttribute('aria-selected', String(on));
         });
-        state.sort = opt.dataset.sort;
-        if (sortVal) sortVal.textContent = state.sort;
-        noteState();
-        closeSort();
+        onPick(opt);
+        if (menu.hidePopover) menu.hidePopover();
       });
     });
-    document.addEventListener('click', closeSort);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSort(); });
+    if (!cssAnchor && btn) {
+      menu.addEventListener('toggle', function (e) {
+        if (e.newState !== 'open') return;
+        var r = btn.getBoundingClientRect();
+        var below = window.innerHeight - r.bottom > menu.offsetHeight + 8;
+        menu.style.setProperty('position', 'fixed');
+        menu.style.setProperty('left', Math.min(r.left, window.innerWidth - menu.offsetWidth - 8) + 'px');
+        menu.style.setProperty('top', (below ? r.bottom + 4 : r.top - menu.offsetHeight - 4) + 'px');
+      });
+    }
+  }
+  if (sortMenu) {
+    wireMenu(sortMenu, function (opt) {
+      state.sort = opt.dataset.sort;
+      if (sortVal) sortVal.textContent = state.sort;
+      noteState();
+    });
+  }
+  var densityVal = $('#demo-density-val');
+  wireMenu($('#demo-density-menu'), function (opt) {
+    if (densityVal) densityVal.textContent = opt.dataset.density;
+  });
+
+  /* ---- the example apps: one tab per app, crossfaded ---- */
+  var appTabs = $$('[data-app]');
+  appTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var show = function () {
+        appTabs.forEach(function (t) {
+          var on = t === tab;
+          t.classList.toggle('is-on', on);
+          t.setAttribute('aria-selected', String(on));
+          var panel = document.getElementById(t.getAttribute('aria-controls'));
+          if (panel) panel.hidden = !on;
+        });
+      };
+      var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        || document.documentElement.classList.contains('fx-lite');
+      if (document.startViewTransition && !calm) document.startViewTransition(show);
+      else show();
+    });
+  });
+  /* meters that carry their value in markup: data-p -> --p (CSSOM, so a
+     strict CSP still lets it through) */
+  $$('.meter[data-p]').forEach(function (m) {
+    var fill = $('.meter__fill', m);
+    if (fill) fill.style.setProperty('--p', m.dataset.p);
+  });
+
+  /* ---- 2.1: skeleton, pager, drop zone, sortable head ---- */
+  var skelDemo = $('#skel-demo'), skelBtn = $('#skel-reload'), skelStatus = $('#skel-status');
+  if (skelDemo && skelBtn) {
+    skelBtn.addEventListener('click', function () {
+      var ready = $$('[data-skel-ready]', skelDemo), wait = $$('[data-skel-wait]', skelDemo);
+      skelDemo.setAttribute('aria-busy', 'true');
+      skelBtn.disabled = true;
+      ready.forEach(function (r) { r.hidden = true; });
+      wait.forEach(function (r) { r.hidden = false; });
+      if (skelStatus) skelStatus.innerHTML = '<span class="dot dot--amb"></span> Loading';
+      setTimeout(function () {
+        wait.forEach(function (r) { r.hidden = true; });
+        ready.forEach(function (r) { r.hidden = false; });
+        skelDemo.removeAttribute('aria-busy');
+        skelBtn.disabled = false;
+        if (skelStatus) skelStatus.innerHTML = '<span class="dot dot--ok"></span> Loaded';
+      }, 1800);
+    });
+  }
+
+  var pager = $('#demo-pager'), pagerRange = $('#demo-pager-range');
+  if (pager) {
+    var PER = 20, TOTAL = 412, LAST = 21, page = 3;
+    var showPage = function (n) {
+      page = Math.max(1, Math.min(LAST, n));
+      /* the middle three follow the current page, as a real pager does */
+      var buttons = $$('.pager__p', pager);
+      var start = Math.max(2, Math.min(LAST - 3, page - 1));
+      buttons.slice(1, 4).forEach(function (b, i) {
+        b.dataset.pager = String(start + i);
+        b.textContent = String(start + i);
+      });
+      /* an ellipsis only where pages are actually left out */
+      var gaps = $$('.pager__gap', pager);
+      if (gaps[0]) gaps[0].hidden = start <= 2;
+      if (gaps[1]) gaps[1].hidden = start + 2 >= LAST - 1;
+      buttons.forEach(function (b) {
+        if (Number(b.dataset.pager) === page) b.setAttribute('aria-current', 'page');
+        else b.removeAttribute('aria-current');
+      });
+      var from = (page - 1) * PER + 1, to = Math.min(TOTAL, page * PER);
+      if (pagerRange) pagerRange.textContent = from + '–' + to + ' of ' + TOTAL;
+      $('[data-pager="prev"]', pager).setAttribute('aria-disabled', String(page === 1));
+      $('[data-pager="next"]', pager).setAttribute('aria-disabled', String(page === LAST));
+    };
+    pager.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-pager]');
+      if (!b) return;
+      var v = b.dataset.pager;
+      showPage(v === 'prev' ? page - 1 : v === 'next' ? page + 1 : Number(v));
+    });
+    showPage(page);
+  }
+
+  var drop = $('#demo-drop'), dropInput = $('#demo-drop-input'), dropList = $('#demo-drop-list');
+  if (drop && dropInput && dropList) {
+    var listFiles = function (files) {
+      dropList.textContent = '';
+      Array.prototype.forEach.call(files, function (f) {
+        var li = document.createElement('li');
+        var ico = document.createElement('i'); ico.className = 'fa fa-image'; ico.setAttribute('aria-hidden', 'true');
+        var name = document.createElement('span'); name.textContent = f.name;
+        var size = document.createElement('span'); size.className = 'num';
+        size.textContent = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(f.size / 1024)) + ' KB';
+        li.appendChild(ico); li.appendChild(name); li.appendChild(size);
+        dropList.appendChild(li);
+      });
+    };
+    /* dragenter/leave fire for every child the pointer crosses; a counter
+       keeps the state from flickering off over the label's own text */
+    var dragDepth = 0;
+    drop.addEventListener('dragenter', function (e) { e.preventDefault(); dragDepth++; drop.classList.add('is-over'); });
+    drop.addEventListener('dragover', function (e) { e.preventDefault(); });
+    drop.addEventListener('dragleave', function () { dragDepth--; if (dragDepth <= 0) { dragDepth = 0; drop.classList.remove('is-over'); } });
+    drop.addEventListener('drop', function (e) {
+      e.preventDefault(); dragDepth = 0; drop.classList.remove('is-over');
+      if (e.dataTransfer && e.dataTransfer.files.length) listFiles(e.dataTransfer.files);
+    });
+    dropInput.addEventListener('change', function () { listFiles(dropInput.files); });
+  }
+
+  var sortTbl = $('#demo-sort-tbl');
+  if (sortTbl) {
+    $$('.tbl__sort', sortTbl).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var th = btn.closest('th');
+        var dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+        $$('th', sortTbl).forEach(function (h) { h.setAttribute('aria-sort', h === th ? dir : 'none'); });
+        var col = Number(btn.dataset.col), isNum = btn.hasAttribute('data-num');
+        var body = $('tbody', sortTbl);
+        var rows = $$('tr', body);
+        rows.sort(function (a, b) {
+          var x = a.cells[col], y = b.cells[col];
+          var c = isNum ? Number(x.dataset.v) - Number(y.dataset.v) : x.textContent.localeCompare(y.textContent);
+          return dir === 'ascending' ? c : -c;
+        });
+        rows.forEach(function (r) { body.appendChild(r); });
+      });
+    });
+  }
+
+  /* ---- the pane demo: a width the window does not have ---- */
+  var cqDemo = $('#cq-demo'), cqReadout = $('#cq-readout');
+  if (cqDemo) {
+    $$('[data-cq]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        $$('[data-cq]').forEach(function (x) { x.classList.toggle('is-on', x === b); });
+        /* a drag on the corner writes an inline width; the buttons take it back */
+        cqDemo.style.removeProperty('width');
+        if (b.dataset.cq === 'full') cqDemo.style.removeProperty('--cq-w');
+        else cqDemo.style.setProperty('--cq-w', b.dataset.cq + 'px');
+      });
+    });
+    if ('ResizeObserver' in window && cqReadout) {
+      new ResizeObserver(function (entries) {
+        var w = Math.round(entries[0].contentRect.width);
+        cqReadout.textContent = w + ' px';
+      }).observe($('.stack', cqDemo));
+    }
+  }
+
+  /* ---- view transitions: the grid re-orders, each card travels ---- */
+  var vtGrid = $('#vt-grid');
+  if (vtGrid) {
+    var vtCards = $$('.card', vtGrid);
+    vtCards.forEach(function (c, i) { c.style.setProperty('view-transition-name', 'vt-card-' + i); });
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    $$('[data-vt-sort]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        $$('[data-vt-sort]').forEach(function (x) { x.classList.toggle('is-on', x === b); });
+        var how = b.dataset.vtSort;
+        var order = vtCards.slice();
+        if (how === 'name') order.sort(function (a, c) { return a.dataset.name.localeCompare(c.dataset.name); });
+        else if (how === 'date') order.sort(function (a, c) { return c.dataset.date - a.dataset.date; });
+        else order.sort(function () { return Math.random() - 0.5; });
+        var apply = function () { order.forEach(function (c) { vtGrid.appendChild(c); }); };
+        if (document.startViewTransition && !reduce.matches
+            && !document.documentElement.classList.contains('fx-lite')) {
+          document.startViewTransition(apply);
+        } else {
+          apply();
+        }
+      });
+    });
+  }
+
+  /* ---- invoker commands: command="show-modal" opens the dialog with no
+     handler. Where the browser does not know the attribute, two lines do. */
+  if (!('command' in HTMLButtonElement.prototype)) {
+    $$('[data-invoker-fallback][commandfor]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var t = document.getElementById(b.getAttribute('commandfor'));
+        if (t && b.getAttribute('command') === 'show-modal' && t.showModal) t.showModal();
+      });
+    });
   }
 
   $$('#demo-tags .tag').forEach(function (t) {

@@ -1,6 +1,15 @@
 /* ==================================================================
-   NEBULA  —  the design language of lucya.systems
+   NEBULA 2.1.0  —  the design language of lucya.systems
    ------------------------------------------------------------------
+   VERSION. This sheet is copied into every app rather than linked, so
+   a copy has to be able to say which one it is. The number lives in
+   two places that must agree: this header and --nebula-version below
+   (which a script can read with getComputedStyle). CHANGELOG.md says
+   what changed between versions and how to move a copy forward;
+   `python tools/nebula_lint.py --version <copy>` says how far behind a
+   copy is. Semantic versioning: a change an app has to react to is a
+   major, a new token or component a minor, a fix a patch.
+
    This is the portable sheet: the tokens and the base components that
    every lucya.systems app wears. The gallery (app/static/style.css)
    and the configurator (configurator/app/static/style.css) are the two
@@ -57,7 +66,47 @@
    landing screen, a 404 numeral. Never a section heading. */
 @font-face{ font-family:'Ethnocentric'; src:url('assets/fonts/Ethnocentric-Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
 
+/* ------------------------------------------------------------------
+   THE LAYERS
+   The order the sheet is read in, stated once, instead of left to
+   where a rule happens to sit in the file:
+
+     tokens      :root and the palettes — the values, nothing else
+     base        the reset, the backdrop, the glass treatment
+     components  the vocabulary, with its own narrow/touch steps
+     gates       rule 6: fx-lite, reduced transparency, contrast,
+                 forced colours, reduced motion
+     utilities   .u-* — they override components, always
+
+   Two things this buys. A gate now beats every component by POSITION
+   IN THE ORDER, not by being written later or more specifically — the
+   forced-colours block used to sit above the components and lose to
+   .btn--primary on source order alone. And an app's own sheet, left
+   unlayered, beats the whole of Nebula without a single specificity
+   fight: `.my-btn` wins over `.btn` because it is the app's, not
+   because it has more classes. An app that wants to sit UNDER some of
+   Nebula declares `@layer nebula, app;` and puts its rules in `app`.
+
+   The blocks below are not re-indented: the layer is named at the
+   start of each block and closed at its end.
+   ------------------------------------------------------------------ */
+@layer nebula.tokens, nebula.base, nebula.components, nebula.gates, nebula.utilities;
+
+/* Cross-document view transitions: a same-origin navigation crossfades
+   instead of flashing white, and the app bar (view-transition-name
+   below) holds still across it. Top level on purpose — not inside a
+   layer — and behind no-preference, so a visitor who asked the OS for
+   less motion gets an ordinary page swap. Both pages must carry it,
+   which every page wearing this sheet does. */
+@media (prefers-reduced-motion: no-preference){
+  @view-transition{ navigation:auto; }
+}
+
+@layer nebula.tokens{
+
 :root{
+  --nebula-version: "2.1.0";
+
   /* ================================================================
      GROUND
      ----------------------------------------------------------------
@@ -144,6 +193,12 @@
                    Spell the idea, so a light-ground fork stays sane. */
   --acc-src:     #5865f2;   /* the brand hex, for reference only */
   --acc:         #616ef3;   /* 4.7:1 on --surface, 5.0:1 on --bg */
+  /* The -rgb triplets are kept for app sheets that still write
+     rgba(var(--acc-rgb), .16). This sheet no longer reads them: every
+     tint here is RELATIVE to its colour, oklch(from var(--acc) l c h
+     / .16), so an app or a config that sets --acc alone gets every
+     tint, ring and glow in the new colour. With triplets, a forgotten
+     --acc-rgb left half the states in the old blue. */
   --acc-rgb:     97,110,243;
   --acc-deep:    #404ee7;   /* 6.1:1 under white text */
   --acc-soft:    #a4abf8;   /* 9.0:1 on --surface */
@@ -169,6 +224,40 @@
   --amb:      #d9a24a;  --amb-rgb: 217,162,74;   --amb-deep:  #7a5410;
   --ok:       #58f298;  --ok-rgb:  88,242,152;   --ok-deep:   #11723f;
   --red:      #e0625f;  --red-rgb: 224,98,95;    --red-deep:  #97201d;
+
+  /* ================================================================
+     THE KIND PALETTE — colour for WHAT a thing is, never for its state
+     ----------------------------------------------------------------
+     One accent still marks state. But a page with nothing else in
+     colour read washed in that one violet (user, 2026-11-09: "noch sehr
+     in die Akzentfarbe gewaschen, maybe auch andere Farben benutzen"):
+     the only hue on the screen was the accent, so every glyph, rule and
+     glow that wore it — or the wallpaper drawn in it — tinted the whole
+     page. Now identities and categories get colours of their own —
+     and ONLY those, where telling things apart at a glance is the point:
+
+       a person's .avatar, an app's or project's .mark, a .tag
+
+     Never a number, a heading, a card, a panel, a row or a glyph in
+     front of a label: that decorates, and on a full page it is a second
+     wash. The utilities below enforce the line in their selectors.
+
+     Six hues, set in OKLCH at ONE lightness and ONE chroma, so no hue
+     shouts over another and every one clears 4.5:1 as text on
+     --surface. The hues keep their distance from the accent (violet,
+     ~275) and from the three statuses (green, amber, red), so a kind is
+     never mistaken for "selected" or for "failed". Kinds are not
+     ranked: use them in this order and cycle, never as a scale.
+
+     A component reads the kind from --hue, and falls back to its old
+     neutral when none is set; .hue-* sets it, on an avatar, a tag or a
+     mark only (utilities layer). */
+  --hue-teal:  oklch(0.80 0.10 190);
+  --hue-sky:   oklch(0.80 0.10 235);
+  --hue-lime:  oklch(0.80 0.10 128);
+  --hue-rose:  oklch(0.80 0.10 355);
+  --hue-peach: oklch(0.80 0.10 55);
+  --hue-sand:  oklch(0.80 0.10 95);
 
   /* ================================================================
      RULE 5 — MEASURE
@@ -218,20 +307,45 @@
   --s-10: 96px;
   --s-11: 144px; /* editorial page rhythm */
 
-  /* ---- type: two voices, four steps each -------------------------
-     The names carry rule 4, so the token you reach for tells you
-     which voice you are in: --fs-chrome-* is mono, uppercase and
-     tracked; --fs-text-* is Space Grotesk in sentence case. Picking
-     the wrong one is then visible in the source, not only on screen.
+  /* ---- the interface voice ---------------------------------------
+     Rule 4 still splits the page in two — the CHROME around the
+     content, and the content — but the chrome no longer speaks in a
+     terminal's voice. It used to be JetBrains Mono, uppercase, tracked
+     wide: every label, button, tab and menu row read like a console
+     readout, and a page made of them read as a terminal rather than as
+     an application (user, 2026-11-09: "weniger terminal, mehr einfaches
+     aber profi gui look").
 
-     The old sheet had ten sizes between 9px and 15px — 10px and
-     10.5px are not a hierarchy anyone perceives, they are noise that
-     reads as inconsistency and lets two apps diverge invisibly. */
-  --fs-chrome-xs: 9.5px;   /* card index, field flag, menu head */
-  --fs-chrome-sm: 10.5px;  /* the workhorse: buttons, tags, meta */
-  --fs-chrome-md: 12px;    /* field labels, menu rows, search */
+     Now the chrome is the same sans as the content, told apart the way
+     a desktop interface tells them apart: by SIZE (one step smaller),
+     WEIGHT (500, not 400) and TONE (--label, not --text) — not by
+     switching typeface and shouting. Mono is left for what really is
+     code: a token, a hex, a key, a path.
+
+     Four tokens carry the whole voice, so it can be swapped in one
+     place — the showcase's Voice chapter puts the terminal back by
+     redefining exactly these:
+       --ui-font     the chrome's face
+       --ui-case     its case: none, i.e. whatever the markup says
+       --ui-weight   its weight
+       --num-font    measured values; tabular figures keep columns
+                     aligned without a monospaced face */
+  --ui-font:   var(--sans);
+  --ui-case:   none;
+  --ui-weight: 500;
+  --num-font:  var(--sans);
+
+  /* ---- type: two voices, steps each -------------------------------
+     --fs-chrome-* sizes the interface voice; --fs-text-* sizes what a
+     person reads. The chrome steps sit a little above the old mono
+     caps (9.5 / 10.5 / 12): sentence-case sans needs more size than
+     capitals for the same presence, and 11.5px is the floor at which a
+     label is read rather than deciphered. */
+  --fs-chrome-xs: 11.5px;  /* card index, field flag, menu head */
+  --fs-chrome-sm: 12.5px;  /* the workhorse: buttons, tags, meta */
+  --fs-chrome-md: 13px;    /* field labels, menu rows, search */
   --fs-chrome-lg: 14px;    /* a measured value with its own line */
-  --fs-chrome-xl: 20px;    /* a headline number: a stat tile, a count */
+  --fs-chrome-xl: 22px;    /* a headline number: a stat tile, a count */
 
   /* Icons are not type, but they are sized like it: one step under the cap
      height of whatever label they lead. `.fa` reads this, and so does any
@@ -261,20 +375,19 @@
   --brand-floor-opacity: .18;
 
   /* ---- tracking, bound to size -----------------------------------
-     One formula, not fourteen opinions: tracking FALLS as size
-     rises, because the reason to track is optical, and small caps
-     need the air that large caps do not. Every --fs-chrome-* has
-     exactly one --tr-chrome-* that goes with it, same suffix. */
-  --tr-chrome-xs: .24em;
-  --tr-chrome-sm: .18em;
-  --tr-chrome-md: .14em;
-  --tr-chrome-lg: .10em;
-  --tr-chrome-xl: .04em;    /* the formula continues: bigger, tighter */
+     Still one value per chrome size, same suffix. Lower-case sans is
+     not tracked open — that was a capitals' need — so the small steps
+     get a breath of air for legibility and the large ones tighten. */
+  --tr-chrome-xs: .02em;
+  --tr-chrome-sm: .01em;
+  --tr-chrome-md: .005em;
+  --tr-chrome-lg: 0em;
+  --tr-chrome-xl: -.01em;   /* bigger, tighter */
   --tr-otp:       .32em;    /* a one-time code, read back digit by digit */
   --tr-text:      .01em;
   --tr-title:     .03em;
   --tr-head:     -.005em;   /* a sans heading tightens, it never tracks */
-  --tr-num:       .06em;    /* mono digits in a value column */
+  --tr-num:       .01em;    /* digits in a value column: tabular figures do the aligning */
   --tr-display:   .14em;    /* the display face, which inks its own em */
 
   /* Icons are sized off the type scale but are not type: a glyph at
@@ -290,6 +403,8 @@
      any more than a padding. */
   --mark-split: .5s;
   --boot-fade:  .45s;
+  /* the skeleton's sweep: one pass of light across a loading block */
+  --skel-sweep: 1.6s;
 
   /* ---- motion ----------------------------------------------------
      Three durations. Anything slower than --dur-3 is an animation
@@ -386,12 +501,37 @@
   /* ---- elevation --------------------------------------------------
      Two shadows and one glow, instead of nine hand-typed one-offs
      (the old sheet spent three different values on what was meant to
-     be the same accent glow). Shadows are for things that genuinely
-     float ABOVE the page — a menu, a dialog. A card does not float. */
-  --shadow-1: 0 2px 10px rgba(0,0,0,.35);
-  --shadow-2: 0 18px 44px rgba(0,0,0,.55);
-  --glow-acc: 0 0 20px -6px rgba(var(--acc-rgb),.70);
-  --ring-acc: 0 0 0 1px rgba(var(--acc-rgb),.22);
+     be the same accent glow).
+
+     ELEVATION IS A LADDER, LIKE BLUR. There are four planes, and each
+     step up takes the next blur AND the next shadow, so height is read
+     twice — by what is behind a pane (more out of focus) and by what it
+     casts below it:
+
+       ground    the wallpaper. No shadow, nothing behind it.
+       page      a pane laid on the page: .stack, .card, .field, a
+                 specimen. --shadow-0: no offset worth seeing, a wide,
+                 soft fall-off. It does not float; it SITS, and the
+                 shadow is the contact with the ground. Without it every
+                 pane was the same black as the black under it and the
+                 page read as one flat sheet.
+       raised    a pane you are about to act on: a hovered card, a
+                 focused search. --shadow-1, one blur step more.
+       floating  menus, dialogs, toasts. --shadow-2, --blur-3.
+
+     A shadow is not a darker FILL. Rule 3 forbids the second; the first
+     is what lets the blur read as distance at all. And it is never a
+     bevel: no light edge on top, no gloss, a shadow BELOW only. */
+  --shadow-0: 0 1px 0 rgba(0,0,0,.45), 0 14px 32px -18px rgba(0,0,0,.85);
+  --shadow-1: 0 2px 0 rgba(0,0,0,.35), 0 18px 40px -14px rgba(0,0,0,.80);
+  --shadow-2: 0 18px 44px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.35);
+  /* the bar, once there is page under it: a fall-off, so the content
+     reads as passing BENEATH the frame rather than being cut by it */
+  --shadow-bar: 0 10px 28px -14px rgba(0,0,0,.9);
+  /* how far a raised pane rises */
+  --lift: 3px;
+  --glow-acc: 0 0 20px -6px oklch(from var(--acc) l c h / .70);
+  --ring-acc: 0 0 0 1px oklch(from var(--acc) l c h / .22);
 
   /* ---- shape and layout ------------------------------------------ */
   /* The smallest target that is reliably hit with a thumb. It used to live
@@ -461,7 +601,7 @@
      tint, not to the dimming: turning the tint off must set this
      transparent too, or a backdrop asked for in full colour still has
      an accent wash sitting on it. */
-  --wallpaper-bloom: rgba(var(--acc-rgb),0.07);
+  --wallpaper-bloom: oklch(from var(--acc) l c h / 0.07);
   /* The dim laid over the picture, as a pair, because the two ends are
      a real decision and the apps disagree about it. The ramp below is
      for a PHOTOGRAPH: it darkens towards the footer of a scrolling
@@ -470,7 +610,28 @@
      on the art's own falloff and the bottom half goes black. */
   --wallpaper-shade-top: rgba(0,0,0,0.62);
   --wallpaper-shade-bot: rgba(0,0,0,0.82);
-  --wallpaper-grid: rgba(255,255,255,.03);
+
+  /* ---- depth in the ground ---------------------------------------
+     Glass shows depth only if there is something behind it to put out
+     of focus. Blur a black ground and you get black: that is why a
+     page of panes on a dark wallpaper read flat however much blur it
+     was given. So the ground itself gets planes:
+
+       --wallpaper-light     a NEUTRAL key light, high on the left. White,
+                             never the accent: one more violet wash is
+                             exactly what got the old palette thrown out.
+                             Panes over it catch it through their blur.
+       --wallpaper-vignette  the edges fall away, so the middle of the
+                             screen is nearer than its corners.
+       --depth-drift         parallax: the picture travels this far over
+                             the first --depth-range of scroll, while the
+                             panes over it move with the page — two planes
+                             at two rates, the depth cue the eye trusts
+                             most. Behind the motion gate. */
+  --wallpaper-light:    rgba(255,255,255,.055);
+  --wallpaper-vignette: rgba(0,0,0,.55);
+  --depth-drift: 6vh;
+  --depth-range: 200vh;
 }
 
 /* ---- THE PALETTES (gallery.cfg `palette`, on <html data-palette>) ------
@@ -488,6 +649,10 @@
   --ramp-time-1:    #CBE1F5; --ramp-time-2:    #98BCDC; --ramp-time-3:    #7397B5; --ramp-time-4:    #517390;
   --ramp-machine-1: #DDDDE4; --ramp-machine-2: #B6B6C1; --ramp-machine-3: #91919B; --ramp-machine-4: #6D6E77;
 }
+
+} /* @layer nebula.tokens */
+
+@layer nebula.gates{
 
 /* ==================================================================
    RULE 6 — THE ENVIRONMENT GATES
@@ -563,12 +728,16 @@
 @media (forced-colors: active){
   :root{
     --line: CanvasText; --line-strong: CanvasText;
-    --glow-acc: none; --shadow-1: none; --shadow-2: none;
+    --glow-acc: none; --shadow-0: none; --shadow-1: none; --shadow-2: none; --shadow-bar: none;
   }
   .nav, .menu, .card, .panel, .stack, .field, .btn, .seg, .tag,
   .hud, .nav__search{ border:var(--hair) solid CanvasText; }
   .switch, .dlg, .toast, .avatar, .set__ico, .meter, .login__card,
-  .login__why, .rail__nav, .tbl td, .tbl th{ border:var(--hair) solid CanvasText; }
+  .login__why, .rail__nav, .tbl td, .tbl th, .fold{ border:var(--hair) solid CanvasText; }
+  .empty, .drop, .tip, .pager__p, .skel{ border:var(--hair) solid CanvasText; }
+  .pager__p:is([aria-current="page"]), .drop.is-over{ forced-color-adjust:none; background:Highlight; color:HighlightText; border-color:Highlight; }
+  .tbl th[aria-sort="ascending"] .tbl__sort, .tbl th[aria-sort="descending"] .tbl__sort{ color:Highlight; }
+  .menu-host > .btn:has(+ .menu:popover-open){ border-color:Highlight; }
   /* the split is two fixed hexes blended to screen, and neither survives a
      palette the OS owns — a half-blended copy is worse than none */
   .mark__ghost{ display:none; }
@@ -578,10 +747,31 @@
     background:Highlight; color:HighlightText; border-color:Highlight;
   }
   .switch[aria-checked="true"], .meter__fill{ forced-color-adjust:none; background:Highlight; }
-  .rail__nav .menu__option[aria-current="page"]{
+  .rail__nav .menu__option:is([aria-current="page"], [aria-current="location"]){
     forced-color-adjust:none; background:Highlight; color:HighlightText;
   }
 }
+
+/* --- reduced motion, the blanket. Durations to nothing rather than
+   animations removed, so every end state still lands — a dialog still
+   opens, a toast still goes. Scroll-linked effects (the bar's state,
+   the reading line) are not motion the visitor waits through and are
+   left alone; .u-reveal and the view transitions opt out on their own
+   because they ARE motion. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; } /* nebula-allow: duration - the blanket sets every duration to nothing */
+  html{ scroll-behavior:auto; }
+}
+
+/* fx-lite is set by script, so it cannot stop a navigation that has
+   already started; it can still stop the next one from animating. */
+.fx-lite::view-transition-group(*),
+.fx-lite::view-transition-old(*),
+.fx-lite::view-transition-new(*){ animation:none; }
+
+} /* @layer nebula.gates */
+
+@layer nebula.base{
 
 /* ==================================================================
    BASE
@@ -589,6 +779,26 @@
 *{ box-sizing:border-box; }
 html,body{ margin:0; padding:0; }
 html{ scroll-behavior:smooth; }
+/* `height: auto` becomes a value a transition can reach — a .fold
+   opening, a pane growing to its content — without measuring it in
+   script first. Inherited, so it is said once, here. */
+:root{ interpolate-size:allow-keywords; }
+
+/* Headings balance their lines, so a two-line title does not end on a
+   single orphaned word; running text avoids a last line of one word.
+   Both are layout hints the browser may skip on a very long block. */
+h1, h2, h3, h4,
+.section__slug .name, .editorial-title, .dlg__t, .card__name, .set__t, .login__title{ text-wrap:balance; }
+p, li, dd, figcaption, blockquote{ text-wrap:pretty; }
+
+/* The page swap itself, on the motion scale rather than the browser's
+   default quarter second. */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*){
+  animation-duration:var(--dur-3);
+  animation-timing-function:var(--ease-out);
+}
 
 body{
   color:var(--text);
@@ -651,10 +861,10 @@ code{
    an element the vocabulary does not cover still gets it right
    instead of hand-typing a fourth set of numbers. */
 .chrome-voice{
-  font-family:var(--mono);
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
   font-size:var(--fs-chrome-sm);
   letter-spacing:var(--tr-chrome-sm);
-  text-transform:uppercase;
+  text-transform:var(--ui-case);
   color:var(--label);
 }
 
@@ -688,18 +898,44 @@ code{
   object-fit:cover;
   filter:var(--wallpaper-filter);
 }
-/* grid overlay + one accent bloom + darkening */
+/* Two planes, back to front:
+     picture   the wallpaper, which travels                (z 0)
+     ::after   light, bloom, vignette and the dim over it  (z 1)
+   There is no grid. It used to lie over the picture as a 32px lattice,
+   and it was the one thing on the ground that repeated: graph paper
+   over the art made every screen read as the same technical sheet.
+   (user, 2026-11-09: "das grid im wallpaper weg".) The light and the
+   vignette are what carry the ground now. */
+.site-bg picture{ z-index:0; }
 .site-bg::after{
   content:"";
   position:absolute; inset:0;
+  z-index:1;
   background-image:
-    linear-gradient(to right, var(--wallpaper-grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--wallpaper-grid) 1px, transparent 1px),
+    radial-gradient(ellipse 60% 50% at 18% 8%, var(--wallpaper-light) 0%, transparent 70%),
     radial-gradient(ellipse at 78% 68%, var(--wallpaper-bloom) 0%, transparent 52%),
+    radial-gradient(ellipse 120% 90% at 50% 42%, transparent 55%, var(--wallpaper-vignette) 100%),
     linear-gradient(var(--wallpaper-shade-top), var(--wallpaper-shade-bot));
-  background-size:32px 32px, 32px 32px, auto, auto;
-  background-repeat:repeat, repeat, no-repeat, no-repeat;
+  background-repeat:no-repeat;
 }
+
+/* Parallax. Driven by the scroll position (no listener), over the first
+   --depth-range of the page — the opening screens, where the ground is
+   most of what you see; after that the planes hold still. Each plane is
+   made taller than the window by exactly the distance it travels, so no
+   edge ever shows. This IS motion: it is off for reduced motion, under
+   .fx-lite, and in any browser without scroll timelines. */
+@supports (animation-timeline: scroll()){
+  @media (prefers-reduced-motion: no-preference){
+    html:not(.fx-lite) .site-bg picture{
+      bottom:calc(var(--depth-drift) * -1);
+      animation:depth-far linear both;
+      animation-timeline:scroll(root block);
+      animation-range:0 var(--depth-range);
+    }
+  }
+}
+@keyframes depth-far { to{ translate:0 calc(var(--depth-drift) * -1); } }
 
 /* ==================================================================
    THE GLASS TREATMENT
@@ -730,6 +966,10 @@ code{
   -webkit-backdrop-filter:var(--scrim-blur);
 }
 
+} /* @layer nebula.base */
+
+@layer nebula.components{
+
 /* ==================================================================
    NAV  —  the bar every app carries
    ------------------------------------------------------------------
@@ -753,8 +993,8 @@ code{
   position:absolute; left:0; right:0; bottom:-1px; height:1px;
   pointer-events:none;
   background:linear-gradient(90deg,
-    transparent 2%, rgba(var(--acc-rgb),.5) 30%,
-    rgba(var(--acc-rgb),.45) 50%, rgba(var(--acc-rgb),.5) 70%, transparent 98%);
+    transparent 2%, oklch(from var(--chrome) l c h / .5) 30%,
+    oklch(from var(--chrome) l c h / .45) 50%, oklch(from var(--chrome) l c h / .5) 70%, transparent 98%);
   opacity:.35;
   transition:opacity var(--dur-2) var(--ease);
 }
@@ -762,8 +1002,62 @@ code{
    accent hairline brightens. Deeper, not lighter: black is the point of
    --pane, and this is a state cue rather than the "it will not read" fix
    rule 3 answers with more blur. */
-.nav--scrolled{ background-color:var(--pane-scrolled); }
+.nav--scrolled{ background-color:var(--pane-scrolled); box-shadow:var(--shadow-bar); }
 .nav--scrolled::after{ opacity:.85; }
+
+/* The same state, read off the scroll position by the browser instead
+   of a scroll listener toggling .nav--scrolled: the first --s-3 of
+   scroll runs the bar from --pane to --pane-scrolled. Nothing to bind,
+   nothing to throttle, and correct on the first frame of a page that
+   opens scrolled. .nav--scrolled stays for the browser that cannot do
+   this — a script asks `CSS.supports('animation-timeline: scroll()')`
+   and only listens when the answer is no.
+
+   `animation-timeline` comes AFTER the shorthand on purpose: the
+   shorthand resets it to auto. */
+@supports (animation-timeline: scroll()){
+  .nav{
+    animation:nav-under linear both;
+    animation-timeline:scroll(root block);
+    animation-range:0 var(--s-3);
+  }
+  .nav::after{
+    animation:nav-under-line linear both;
+    animation-timeline:scroll(root block);
+    animation-range:0 var(--s-3);
+  }
+}
+@keyframes nav-under{
+  from{ background-color:var(--pane); box-shadow:none; }
+  to  { background-color:var(--pane-scrolled); box-shadow:var(--shadow-bar); }
+}
+@keyframes nav-under-line{ from{ opacity:.35; } to{ opacity:.85; } }
+
+/* The bar holds still across a page swap: it is the frame, and a frame
+   that crossfades with the picture inside it reads as a reload. */
+.nav{ view-transition-name:nebula-bar; }
+
+/* How far down the page you are, on the bar's bottom edge. A progress
+   FILL, which rule 1 licenses for the accent — and driven by the
+   scroll position itself, so it costs no script at all. Opt-in, one
+   element: <span class="nav__progress" aria-hidden="true"></span> as
+   the bar's last child. Decorative to a screen reader, which has its
+   own sense of where it is; without support it is simply not drawn. */
+.nav__progress{ display:none; }
+@supports (animation-timeline: scroll()){
+  .nav__progress{
+    display:block;
+    position:absolute; left:0; right:0; bottom:calc(var(--hair) * -1);
+    height:var(--s-0);
+    background:var(--acc);
+    transform-origin:0 50%;
+    scale:0 1;
+    pointer-events:none;
+    animation:nav-progress linear both;
+    animation-timeline:scroll(root block);
+  }
+}
+@keyframes nav-progress{ to{ scale:1 1; } }
 .nav__inner{
   max-width:var(--page-max);
   margin:0 auto; height:100%;
@@ -775,7 +1069,7 @@ code{
 .nav__brand:hover{ color:var(--text); }
 .nav__brand img{
   height:28px; width:auto; display:block;
-  filter:drop-shadow(0 0 12px rgba(var(--acc-rgb),.35));
+  filter:drop-shadow(0 0 12px oklch(from var(--acc) l c h / .35));
 }
 .nav__brand .brand-text{ display:flex; flex-direction:column; line-height:1.05; min-width:0; }
 .nav__brand .brand-name{
@@ -790,11 +1084,11 @@ code{
    accent with a touch of the soft face — --acc alone goes a little
    muddy against black at this size. */
 .nav__brand .brand-sub{
-  font-family:var(--mono);
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
   font-size:var(--fs-chrome-xs);
   letter-spacing:var(--tr-chrome-xs);
-  text-transform:uppercase;
-  color:color-mix(in srgb, var(--acc-soft) 30%, var(--acc));
+  text-transform:var(--ui-case);
+  color:color-mix(in oklch, var(--acc-soft) 30%, var(--acc));
 }
 
 /* The search field is the aperture console's command field: it stands
@@ -816,7 +1110,7 @@ code{
 }
 .nav__search:focus-within{
   border-color:var(--acc);
-  background-color:rgba(var(--acc-rgb),.06);
+  background-color:oklch(from var(--acc) l c h / .06);
   box-shadow:var(--ring-acc), var(--glow-acc);
 }
 .nav__search i{ color:var(--text-ghost); font-size:var(--icon-md); }
@@ -873,8 +1167,8 @@ code{
   display:flex; flex-wrap:wrap; align-items:baseline;
   gap:var(--s-2) var(--s-5);
   margin:0 0 var(--s-5);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:var(--ui-case);
   color:var(--text-dim);
 }
 .section__doc > span{ display:inline-flex; align-items:baseline; gap:var(--s-2); min-width:0; }
@@ -883,13 +1177,61 @@ code{
    no dashed "sticker" border and no shouting */
 .section__doc-mark{
   color:var(--label);
-  border:var(--hair) solid rgba(var(--label-rgb),.35);
+  border:var(--hair) solid oklch(from var(--label) l c h / .35);
   padding:var(--s-0) var(--s-3);
   font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs);
 }
-.section__doc-mark.is-ok{ color:var(--ok); border-color:rgba(var(--ok-rgb),.4); }
+.section__doc-mark.is-ok{ color:var(--ok); border-color:oklch(from var(--ok) l c h / .4); }
 
 .section__head{ margin-bottom:var(--s-6); }
+
+/* A numbered section — the opener of a long page made of chapters. The
+   number is a COUNTER, so a page cannot number two chapters alike or
+   skip one, and markup carries no digits to keep in step:
+
+     <div data-sections>            counter-reset happens here
+       <section> <div class="section__head section__head--numbered">…
+
+   The numeral is drawn as an OUTLINE in mist: it says which part of the
+   page you are in (what KIND of place — mist's licence), it is not text
+   to read, and it is not the accent, because it carries no state. Mono,
+   not the display face: the display face is the wordmark's, and a
+   chapter number is not a brand moment. Without the counter it is an
+   ordinary head. */
+[data-sections]{ counter-reset:nebula-section -1; }
+.section__head--numbered{
+  counter-increment:nebula-section;
+  display:grid;
+  grid-template-columns:auto minmax(0, 1fr);
+  /* two explicit rows: the meta line (when there is one) above, and the
+     numeral and the title sharing the second — on one BASELINE, so the
+     digits sit on the same line as the letters beside them. Aligning the
+     boxes' bottom edges instead put the numeral a few pixels low, because
+     the title carries a descender guard and the numeral does not. */
+  grid-template-rows:auto auto;
+  column-gap:var(--s-6);
+  align-items:baseline;
+}
+.section__head--numbered > .section__doc{ grid-column:2; grid-row:1; }
+.section__head--numbered > .section__slug{ grid-column:2; grid-row:2; }
+.section__head--numbered::before{
+  content:counter(nebula-section, decimal-leading-zero);
+  grid-column:1; grid-row:2;
+  font-family:var(--num-font); font-variant-numeric:tabular-nums;
+  font-size:var(--fs-text-editorial);
+  font-weight:500;
+  letter-spacing:var(--tr-editorial);
+  line-height:1;
+  color:transparent;
+  -webkit-text-stroke:var(--hair) var(--mist-3);
+}
+.section__head--numbered .section__slug .name{ font-size:var(--fs-text-editorial); letter-spacing:var(--tr-editorial); line-height:1; }
+@media (forced-colors: active){
+  .section__head--numbered::before{ color:CanvasText; -webkit-text-stroke:0; }
+}
+@media (max-width: 620px){
+  .section__head--numbered{ column-gap:var(--s-4); }
+}
 .section__slug{ display:flex; align-items:baseline; gap:var(--s-4); flex-wrap:wrap; min-width:0; margin:0; }
 .section__slug .name{
   font-family:var(--sans);
@@ -935,12 +1277,15 @@ code{
   display:flex; align-items:baseline; gap:var(--s-3);
   margin:0 0 var(--s-4); padding-bottom:var(--s-3);
   border-bottom:var(--hair) solid var(--line);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); font-weight:400; letter-spacing:var(--tr-chrome-xs);
-  text-transform:uppercase;
+  font-family:var(--ui-font);
+  font-size:var(--fs-chrome-sm); font-weight:var(--ui-weight); letter-spacing:var(--tr-chrome-xs);
+  text-transform:var(--ui-case);
   color:var(--label);
 }
-.eyebrow > i{ color:var(--acc); font-size:var(--icon-sm); }
+/* the glyph in front of a label is mist: not the accent, which a label
+   that carries no state has no claim to, and not a kind hue, which is
+   for identities and categories only (rule 1) */
+.eyebrow > i{ color:var(--mist); font-size:var(--icon-sm); }
 .eyebrow__n{ margin-left:auto; font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-sm); color:var(--text-dim); }
 
 /* ==================================================================
@@ -968,11 +1313,16 @@ code{
   background-color:var(--glass);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
-  border:var(--hair) solid var(--line);
+  border:var(--hair) solid var(--line-strong);
   border-radius:var(--radius);
-  color:var(--text-dim);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  /* a control's label is READ before it is pressed: full --text, not the
+     dimmed furniture grey it had as a mono caption */
+  color:var(--text);
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:var(--ui-case);
+  /* one height for every button in a row, whatever its content — an
+     icon-only button and a labelled one sit on the same line */
+  min-height:calc(var(--s-7) + var(--s-0));
   padding:var(--s-2) var(--s-4);
   cursor:pointer; white-space:nowrap;
   display:inline-flex; align-items:center; justify-content:center; gap:var(--s-3);
@@ -980,37 +1330,44 @@ code{
              background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 .btn:hover:not(:disabled){
-  color:var(--chrome);
-  border-color:var(--chrome);
-  background-color:rgba(var(--chrome-rgb),.08);
-}
-.btn:active:not(:disabled){ background-color:rgba(var(--chrome-rgb),.14); }
-.btn:disabled{ opacity:.4; cursor:not-allowed; }
-.btn--primary{
-  background-color:rgba(var(--acc-rgb),.16);
-  border-color:rgba(var(--acc-rgb),.60);
   color:var(--text);
+  border-color:oklch(from var(--chrome) l c h / .45);
+  background-color:oklch(from var(--chrome) l c h / .08);
+}
+.btn:active:not(:disabled){ background-color:oklch(from var(--chrome) l c h / .14); }
+.btn:disabled{ opacity:.4; cursor:not-allowed; }
+/* The committing button is a SOLID face, as in any desktop application:
+   --acc-deep, the one accent face derived to carry white text (6.1:1).
+   It used to be a tint with an accent border, which next to the other
+   outlined buttons read as "a slightly different outline" — the most
+   important control in the row was one squint away from the rest. */
+.btn--primary{
+  background-color:var(--acc-deep);
+  border-color:var(--acc-deep);
+  color:#fff; /* nebula-allow: hex - white on --acc-deep, which is derived for it */
+  backdrop-filter:none; -webkit-backdrop-filter:none;
 }
 .btn--primary:hover:not(:disabled){
-  background-color:rgba(var(--acc-rgb),.28);
-  border-color:var(--acc);
-  color:#fff;
+  background-color:oklch(from var(--acc-deep) calc(l + .04) c h);
+  border-color:oklch(from var(--acc-deep) calc(l + .04) c h);
+  color:#fff; /* nebula-allow: hex - white on the lifted deep face */
   box-shadow:var(--glow-acc);
 }
-.btn--ghost{ background-color:transparent; background-image:none; border-color:transparent; color:var(--text-ghost); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
+.btn--primary:active:not(:disabled){ background-color:oklch(from var(--acc-deep) calc(l - .03) c h); }
+.btn--ghost{ background-color:transparent; background-image:none; border-color:transparent; color:var(--text-dim); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
 .btn--ghost:hover:not(:disabled){ background-color:rgba(255,255,255,.06); color:var(--text); border-color:transparent; }
 .btn--danger:hover:not(:disabled){
-  border-color:var(--red); color:var(--red); background-color:rgba(var(--red-rgb),.10);
+  border-color:var(--red); color:var(--red); background-color:oklch(from var(--red) l c h / .10);
 }
 /* the committing destructive button: a real fill, so it is not one
    hover away from looking like every other outline in the row */
 .btn--danger.btn--primary{
-  background-color:var(--red-deep); border-color:var(--red-deep); color:#fff;
+  background-color:var(--red-deep); border-color:var(--red-deep); color:#fff; /* nebula-allow: hex - white on --red-deep, which is derived for it */
 }
 .btn--danger.btn--primary:hover:not(:disabled){
   background-color:var(--red); border-color:var(--red); color:var(--on-acc);
 }
-.btn--sm{ padding:var(--s-1) var(--s-3); font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-md); }
+.btn--sm{ min-height:var(--s-7); padding:var(--s-1) var(--s-3); font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-md); }
 .btn--icon{ padding:var(--s-1) var(--s-3); font-size:var(--fs-chrome-md); letter-spacing:0; }
 .row{ display:flex; gap:var(--s-3); align-items:center; flex-wrap:wrap; }
 
@@ -1038,8 +1395,8 @@ code{
   appearance:none; background:none; border:0;
   border-radius:var(--radius);
   color:var(--text-dim);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:var(--ui-case);
   padding:var(--s-2) var(--s-4);
   cursor:pointer; white-space:nowrap;
   transition:color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
@@ -1047,8 +1404,8 @@ code{
 .seg__opt:hover:not(:disabled):not(.is-on){ color:var(--text); background-color:rgba(255,255,255,.06); }
 .seg__opt.is-on{
   color:var(--text);
-  background-color:rgba(var(--acc-rgb),.20);
-  box-shadow:inset 0 0 0 1px rgba(var(--acc-rgb),.55);
+  background-color:oklch(from var(--acc) l c h / .20);
+  box-shadow:inset 0 0 0 1px oklch(from var(--acc) l c h / .55);
 }
 .seg__opt:disabled{ cursor:not-allowed; opacity:.45; }
 
@@ -1065,8 +1422,8 @@ code{
 .tag{
   appearance:none;
   display:inline-flex; align-items:center; gap:var(--s-2);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:var(--ui-case);
   color:var(--text-dim);
   padding:var(--s-1) var(--s-3);
   border:var(--hair) solid var(--line);
@@ -1089,8 +1446,10 @@ code{
    read-only qualifier on a record. It must not look clickable and
    must not be a <button>: a focus stop that does nothing is worse
    than no focus stop. Ship it as <span class="tag tag--static">. */
-.tag--static{ cursor:default; pointer-events:none; color:var(--label); }
-.tag--static:hover{ color:var(--label); border-color:var(--line); background-color:var(--glass); }
+/* a label tag may carry a KIND (.hue-*): its text, edge and a faint wash
+   in that hue — a category, read at a glance, never a state */
+.tag--static{ cursor:default; pointer-events:none; color:var(--hue, var(--label)); border-color:var(--hue-line, var(--line)); background-color:var(--hue-wash, var(--glass)); }
+.tag--static:hover{ color:var(--hue, var(--label)); border-color:var(--hue-line, var(--line)); background-color:var(--hue-wash, var(--glass)); }
 
 /* ==================================================================
    FIELDS AND INPUTS
@@ -1112,21 +1471,21 @@ code{
 .field.is-unset{ background:transparent; border-left-color:var(--line-strong); }
 .field.is-edited{
   border-left-color:var(--amb);
-  background:linear-gradient(180deg, rgba(var(--amb-rgb),.06), transparent 60%), var(--surface);
+  background:linear-gradient(180deg, oklch(from var(--amb) l c h / .06), transparent 60%), var(--surface);
 }
 .field__top{ display:flex; align-items:center; gap:var(--s-3); }
 .field__label{
   flex:1 1 auto;
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-md); font-weight:400; letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  font-family:var(--ui-font);
+  font-size:var(--fs-chrome-md); font-weight:var(--ui-weight); letter-spacing:var(--tr-chrome-md); text-transform:var(--ui-case);
   color:var(--label);
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 .field.is-unset .field__label{ color:var(--text-ghost); }
 .field__flag{
   flex:0 0 auto;
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-md); text-transform:var(--ui-case);
   color:var(--amb);
 }
 .field__help{ color:var(--text-ghost); font-size:var(--fs-text-sm); line-height:1.45; }
@@ -1155,7 +1514,7 @@ input::placeholder, textarea::placeholder{ color:var(--text-ghost); }
 input:focus, select:focus, textarea:focus{
   outline:none;
   border-color:var(--acc);
-  background-color:rgba(var(--acc-rgb),.06);
+  background-color:oklch(from var(--acc) l c h / .06);
   box-shadow:var(--ring-acc), var(--glow-acc);
 }
 /* the field itself owns the focus ring, so the browser's default one
@@ -1215,8 +1574,8 @@ input[type="range"]:focus{
   box-shadow:none;
 }
 input[type="range"]:focus-visible{ outline:none; }
-input[type="range"]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 3px rgba(var(--acc-rgb),.45); }
-input[type="range"]:focus-visible::-moz-range-thumb{ box-shadow:0 0 0 3px rgba(var(--acc-rgb),.45); }
+input[type="range"]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 3px oklch(from var(--acc) l c h / .45); }
+input[type="range"]:focus-visible::-moz-range-thumb{ box-shadow:0 0 0 3px oklch(from var(--acc) l c h / .45); }
 
 /* the accent as a native control colour, so a checkbox and a radio
    are not the two things on the page wearing the browser's blue */
@@ -1240,10 +1599,55 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   -webkit-backdrop-filter:var(--overlay-blur);
 }
 .menu[hidden]{ display:none; }
+
+/* ---- the menu as a POPOVER, anchored to the button that opens it ----
+   <div class="menu-host">
+     <button class="btn" popovertarget="sort">…</button>
+     <div class="menu" id="sort" popover>…</div>
+   </div>
+
+   The browser then owns everything the old dropdown script did by
+   hand: the top layer (no z-index war, no clipping by an overflow
+   parent), Escape, a click outside, returning focus, and the button's
+   expanded state for a screen reader. The script is left with one job,
+   which is what choosing an option MEANS.
+
+   Placement is CSS anchor positioning: under the button, aligned to
+   its start edge, and flipped above or to the other side when there
+   is no room — the fallback the old menu never had, which is how a
+   sort menu near the foot of a page used to open off screen. Where
+   anchor positioning is not supported the script places it from the
+   button's rectangle instead (a CSSOM write, which a strict CSP
+   allows); see showcase.js.
+
+   `anchor-scope` on the host keeps two menus on one page from both
+   finding the last button named --nebula-menu. */
+.menu-host{ position:relative; anchor-scope:--nebula-menu; }
+.menu-host > [popovertarget]{ anchor-name:--nebula-menu; }
+.menu[popover]{
+  /* the UA's popover centres itself in the viewport with an auto margin
+     and paints itself Canvas/CanvasText: the menu is neither */
+  margin:0; inset:auto;
+  color:var(--text);
+  position-anchor:--nebula-menu;
+  position-area:block-end span-inline-end;
+  margin-block-start:var(--s-1);
+  position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;
+  /* in and out, as the dialog does it — same reasoning, same longhands */
+  transition-property:opacity, translate, overlay, display;
+  transition-duration:var(--dur-1);
+  transition-timing-function:var(--ease-out);
+  transition-behavior:allow-discrete;
+}
+.menu[popover]:not(:popover-open){ opacity:0; translate:0 calc(var(--s-1) * -1); }
+@starting-style{ .menu[popover]:popover-open{ opacity:0; translate:0 calc(var(--s-1) * -1); } }
+.fx-lite .menu[popover]{ transition:none; }
+/* the button says it is open: an open menu is a state (rule 1) */
+.menu-host > .btn:has(+ .menu:popover-open){ border-color:var(--acc); color:var(--text); }
 .menu__head{
   padding:var(--s-3) var(--s-4) var(--s-2);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--text-ghost);
   border-bottom:var(--hair) solid var(--line);
   margin-bottom:var(--s-1);
@@ -1253,8 +1657,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   background:none;
   display:flex; align-items:center; gap:var(--s-3);
   padding:var(--s-3) var(--s-4);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-md); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-md); letter-spacing:var(--tr-chrome-md); text-transform:var(--ui-case);
   color:var(--text-dim);
   cursor:pointer;
   border:0; border-left:2px solid transparent;
@@ -1263,13 +1667,13 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 }
 .menu__option:hover{
   color:var(--text);
-  background-color:rgba(var(--chrome-rgb),.08);
+  background-color:oklch(from var(--chrome) l c h / .08);
   border-left-color:var(--chrome);
 }
 .menu__option.is-active,
 .menu__option[aria-selected="true"]{
   color:var(--acc);
-  background-color:rgba(var(--acc-rgb),.06);
+  background-color:oklch(from var(--acc) l c h / .06);
   border-left-color:var(--acc);
   font-weight:600;
 }
@@ -1301,6 +1705,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   border:var(--hair) solid var(--line);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
+  box-shadow:var(--shadow-0);
   margin:0;
   /* `scale` is in the list on purpose: a press cue drives the
      INDEPENDENT scale property (it must — the card can carry a hover
@@ -1320,11 +1725,14 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 }
 .card::before{ top:-1px; left:-1px; border-right:0; border-bottom:0; }
 .card::after { bottom:-1px; right:-1px; border-left:0; border-top:0; }
+/* up one plane: the next fill, the next blur, the next shadow */
 .card:hover{
   background-color:var(--glass-hi);
   border-color:var(--line-strong);
-  translate:0 -2px;
+  translate:0 calc(var(--lift) * -1);
   box-shadow:var(--shadow-1);
+  backdrop-filter:var(--blur-3);
+  -webkit-backdrop-filter:var(--blur-3);
 }
 .card:active{ scale:.995; }
 .card:hover::before, .card:hover::after,
@@ -1348,7 +1756,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 /* a chip laid ON the image: --scrim, not --glass */
 .card__idx{
   position:absolute; top:var(--s-3); left:var(--s-3); z-index:3;
-  font-family:var(--mono);
+  font-family:var(--num-font); font-variant-numeric:tabular-nums;
   font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-sm);
   color:var(--text);
   background-color:var(--scrim);
@@ -1366,8 +1774,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   transition:opacity var(--dur-2) var(--ease);
 }
 .card__hover span{
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--chrome);
   border:var(--hair) solid var(--chrome);
   background-color:var(--scrim);
@@ -1390,8 +1798,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .card__name{ font-size:var(--fs-text-lg); font-weight:600; letter-spacing:var(--tr-title); line-height:1.25; color:var(--text); word-break:break-word; }
 .card__meta{
   display:flex; align-items:baseline; gap:var(--s-3); justify-content:space-between;
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-sm); text-transform:var(--ui-case);
   color:var(--text-dim);
   font-variant-numeric:tabular-nums;
 }
@@ -1404,8 +1812,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
     var(--bg-2);
   display:flex; align-items:center; justify-content:center;
   color:var(--text-ghost);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
 }
 
 /* ==================================================================
@@ -1420,16 +1828,26 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
    came through every row and the whole stack read as a lighter box:
    depth from a lighter fill, the one thing rule 3 rules out.
    ================================================================== */
+/* Both panes are QUERY CONTAINERS: what is inside them answers to the
+   width of the pane, not of the window. A settings stack in a 320px
+   side column and the same stack across a 1400px page are two
+   different layouts, and a viewport breakpoint can only ever guess at
+   which one it is looking at. (The blur already makes each of them a
+   containing block and a stacking context, so the containment costs
+   nothing new.) The steps are under THE NARROW PANE, below. */
 .stack{
+  container:pane / inline-size;
   display:flex; flex-direction:column;
   background-color:var(--glass);
   border:var(--hair) solid var(--line);
+  box-shadow:var(--shadow-0);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
   width:100%;
 }
 .stack > * + *{ border-top:var(--hair) solid var(--line); }
 .panel{
+  container:pane / inline-size;
   background-color:var(--glass-hi);
   padding:var(--s-5);
   width:100%; min-width:0;
@@ -1443,7 +1861,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   padding-bottom:var(--s-3);
   display:flex; align-items:center; gap:var(--s-3);
 }
-.panel h2 > i{ color:var(--acc); font-size:var(--icon-md); }
+.panel h2 > i{ color:var(--mist); font-size:var(--icon-md); }
 .kv{
   display:grid;
   grid-template-columns:110px minmax(0, 1fr);
@@ -1462,7 +1880,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 /* a MEASURED value is furniture and gets the mono voice; a value a
    person reads (a name, a sentence) does not */
 .kv dd.num{
-  font-family:var(--mono); font-size:var(--fs-chrome-md);
+  font-family:var(--num-font); font-size:var(--fs-chrome-md);
   letter-spacing:var(--tr-num); color:var(--label);
   font-variant-numeric:tabular-nums;
 }
@@ -1489,8 +1907,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .dot--red { background:var(--red); box-shadow:0 0 8px var(--red); }
 .status{
   display:inline-flex; align-items:center; gap:var(--s-3);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--text-dim);
 }
 
@@ -1502,11 +1920,11 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
    live monitor). Do not lift the blinking dot and the reticle into
    ordinary page chrome.
    ================================================================== */
-.hud{ position:relative; overflow:hidden; background:var(--bg-2); }
+.hud{ container:hud / inline-size; position:relative; overflow:hidden; background:var(--bg-2); }
 .hud__corner{
   position:absolute;
   width:26px; height:26px;
-  border:var(--hair) solid rgba(var(--chrome-rgb),.75);
+  border:var(--hair) solid oklch(from var(--chrome) l c h / .75);
   opacity:.9; pointer-events:none; z-index:4;
 }
 .hud__corner--tl{ top:var(--s-5); left:var(--s-5);  border-right:0; border-bottom:0; }
@@ -1539,14 +1957,14 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .hud.is-busy .hud__reticle{
   border-color:var(--acc);
   opacity:1;
-  box-shadow:0 0 18px rgba(var(--acc-rgb),.35), inset 0 0 12px rgba(var(--acc-rgb),.15);
+  box-shadow:0 0 18px oklch(from var(--acc) l c h / .35), inset 0 0 12px oklch(from var(--acc) l c h / .15);
 }
 .hud__bar{
   position:absolute; left:0; right:0; z-index:5;
   display:flex; align-items:center; gap:var(--s-5);
   padding:var(--s-5);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--text-dim);
   pointer-events:none;
 }
@@ -1554,8 +1972,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .hud__bar--bottom{ bottom:0; }
 .hud__bar b{ color:var(--text); font-weight:400; font-variant-numeric:tabular-nums; }
 .hud__bar .spacer{ margin-left:auto; }
-.hud__rec{ display:inline-flex; align-items:center; gap:var(--s-3); color:#e8908e; text-shadow:0 0 10px rgba(var(--red-rgb),.4); }
-.hud__rec .dot{ background:var(--red); box-shadow:0 0 10px var(--red); animation:hud-blink 1.6s steps(2,start) infinite; }
+.hud__rec{ display:inline-flex; align-items:center; gap:var(--s-3); color:#e8908e; text-shadow:0 0 10px oklch(from var(--red) l c h / .4); } /* nebula-allow: hex - the record lamp, red lifted for the dark HUD */
+.hud__rec .dot{ background:var(--red); box-shadow:0 0 10px var(--red); animation:hud-blink 1.6s steps(2,start) infinite; } /* nebula-allow: duration - a blink is a set piece, not a transition */
 @keyframes hud-blink{ 50%{ opacity:.15; } }
 .fx-lite .hud__rec .dot{ animation:none; }
 @media (prefers-reduced-motion: reduce){ .hud__rec .dot{ animation:none; } }
@@ -1722,7 +2140,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   /* the ghosts sit a couple of units off the mark and must not be cut */
   overflow:visible;
 }
-.piece{ fill:#ffffff; stroke:none; }
+.piece{ fill:#ffffff; stroke:none; } /* nebula-allow: hex - the mark is drawn in white */
 
 /* ---- the chromatic split ----------------------------------------
    Two whole copies of the wing, offset and blended to screen. The two
@@ -1739,14 +2157,14 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   will-change:translate, opacity;
 }
 .mark__ghost .piece--ghost{ stroke-width:1; }
-.mark__ghost--r .piece--ghost{ fill:#7aa6ff; stroke:#7aa6ff; }
-.mark__ghost--b .piece--ghost{ fill:#b478ff; stroke:#b478ff; }
+.mark__ghost--r .piece--ghost{ fill:#7aa6ff; stroke:#7aa6ff; } /* nebula-allow: hex - the split flank, never a palette colour */
+.mark__ghost--b .piece--ghost{ fill:#b478ff; stroke:#b478ff; } /* nebula-allow: hex - the split flank, never a palette colour */
 
 .mark--nav { height:28px; }
 .mark--door{ height:28px; }
 .mark--foot{ height:18px; opacity:.85; }
 .mark--nav, .mark--door{
-  filter:drop-shadow(0 0 12px rgba(var(--acc-rgb),.35));
+  filter:drop-shadow(0 0 12px oklch(from var(--acc) l c h / .35));
   transition:filter var(--dur-2) var(--ease);
 }
 
@@ -1756,7 +2174,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
    transform something else put on the same element. */
 @media (hover: hover){
   .mark--nav:hover, .mark--door:hover{
-    filter:drop-shadow(0 0 16px rgba(var(--acc-rgb),.55));
+    filter:drop-shadow(0 0 16px oklch(from var(--acc) l c h / .55));
   }
   .mark--nav:hover .mark__ghost--r,
   .mark--door:hover .mark__ghost--r{ animation:markSplitR var(--mark-split) steps(4, end); }
@@ -1836,10 +2254,13 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   display:inline-grid; place-items:center;
   width:var(--s-8); height:var(--s-8);
   flex:0 0 auto;
-  border:var(--hair) solid var(--line-strong);
-  background-color:rgba(var(--label-rgb),.08);
+  /* a person is an identity, not a state: with a .hue-* the avatar takes
+     that person's hue, so a board of initials can be told apart at a
+     glance; without one it is neutral as before */
+  border:var(--hair) solid var(--hue-line, var(--line-strong));
+  background-color:var(--hue-wash, oklch(from var(--label) l c h / .08));
   border-radius:var(--radius);
-  color:var(--text);
+  color:var(--hue, var(--text));
   font-family:var(--sans);
   font-size:var(--fs-text-lg); font-weight:600; letter-spacing:var(--tr-head);
   padding:0;
@@ -1850,9 +2271,9 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .avatar--lg{ width:var(--s-9); height:var(--s-9); font-size:var(--fs-text-xl); }
 /* An avatar that opens something is a control, and says so when it is open. */
 .avatar--btn{ cursor:pointer; transition:border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease); }
-.avatar--btn[aria-expanded="true"]{ border-color:var(--acc); background-color:rgba(var(--acc-rgb),.16); }
+.avatar--btn[aria-expanded="true"]{ border-color:var(--acc); background-color:oklch(from var(--acc) l c h / .16); }
 @media (hover: hover){
-  .avatar--btn:hover{ border-color:var(--chrome); background-color:rgba(var(--chrome-rgb),.10); }
+  .avatar--btn:hover{ border-color:var(--chrome); background-color:oklch(from var(--chrome) l c h / .10); }
 }
 
 /* ==================================================================
@@ -1870,8 +2291,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .switch-wrap{ display:inline-flex; align-items:center; gap:var(--s-3); }
 .switch__word{
   min-width:3ch; text-align:right;
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:var(--ui-case);
   color:var(--text-dim);
 }
 .switch{
@@ -1945,6 +2366,83 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .meter--red .meter__fill{ background-color:var(--red); }
 
 /* ==================================================================
+   FOLD  —  more, if you want it
+   ------------------------------------------------------------------
+   A native <details>, so it opens from a keyboard, is announced as
+   expanded or collapsed, and is found by the browser's find-in-page
+   while closed. The summary is furniture (mono, --label); the body is
+   read. Open is a state, so the one accent is the glyph that says so.
+
+   It opens to `height: auto` and animates there, which used to need a
+   script measuring scrollHeight: ::details-content is the box that
+   grows, and interpolate-size (set once in base) lets a transition
+   reach `auto`. Without either, it simply opens.
+
+     <details class="fold"><summary>Why</summary>
+       <div class="fold__body">…</div></details>
+   ================================================================== */
+.fold{
+  border:var(--hair) solid var(--line);
+  border-radius:var(--radius);
+  background-color:var(--glass);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+}
+.fold + .fold{ border-top:0; }
+.fold > summary{
+  list-style:none;
+  display:flex; align-items:center; gap:var(--s-3);
+  min-height:var(--tap);
+  padding:0 var(--s-4);
+  cursor:pointer;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-md); letter-spacing:var(--tr-chrome-md); text-transform:var(--ui-case);
+  color:var(--label);
+  transition:color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.fold > summary::-webkit-details-marker{ display:none; }
+/* a plus that becomes a minus — drawn as two hairlines, not a glyph, so
+   it is square and sits on the same stroke as every other line here */
+.fold > summary::after{
+  content:"";
+  margin-left:auto;
+  width:var(--s-4); height:var(--s-4);
+  flex:none;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% var(--hair) no-repeat,
+    linear-gradient(currentColor, currentColor) center / var(--hair) 100% no-repeat;
+  transition:rotate var(--dur-2) var(--ease-out);
+}
+.fold[open] > summary{ color:var(--text); }
+.fold[open] > summary::after{
+  color:var(--acc);
+  background:linear-gradient(currentColor, currentColor) center / 100% var(--hair) no-repeat;
+  rotate:180deg;
+}
+@media (hover: hover){
+  .fold > summary:hover{ color:var(--chrome); background-color:oklch(from var(--chrome) l c h / .05); }
+}
+.fold > summary:focus-visible{ outline-offset:-3px; }
+.fold::details-content{
+  block-size:0;
+  overflow:clip;
+  transition-property:block-size, content-visibility;
+  transition-duration:var(--dur-2);
+  transition-timing-function:var(--ease);
+  transition-behavior:allow-discrete;
+}
+.fold[open]::details-content{ block-size:auto; }
+.fold__body{
+  padding:var(--s-4);
+  border-top:var(--hair) solid var(--line);
+  color:var(--text-dim);
+  font-size:var(--fs-text-md);
+}
+.fold__body > :first-child{ margin-top:0; }
+.fold__body > :last-child{ margin-bottom:0; }
+.fx-lite .fold::details-content{ transition:none; }
+
+/* ==================================================================
    SETTING ROW  —  a thing, where it stands, and what to do about it
    ------------------------------------------------------------------
    The row every settings screen is made of, inside a .stack so the
@@ -1971,8 +2469,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   color:var(--label);
   font-size:var(--fs-chrome-lg);
 }
-.set__ico--amb{ color:var(--amb); border-color:rgba(var(--amb-rgb),.4); }
-.set__ico--red{ color:var(--red); border-color:rgba(var(--red-rgb),.4); }
+.set__ico--amb{ color:var(--amb); border-color:oklch(from var(--amb) l c h / .4); }
+.set__ico--red{ color:var(--red); border-color:oklch(from var(--red) l c h / .4); }
 .set__ico img{ width:70%; height:auto; }
 .set__text{ display:flex; flex-direction:column; gap:var(--s-1); min-width:0; }
 .set__t{
@@ -1984,7 +2482,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .set__aside{ display:flex; align-items:center; justify-content:flex-end; gap:var(--s-4); flex-wrap:wrap; }
 /* A row something has just pointed at — a search hit, a deep link. That IS
    a state, and it is a brief one: the caller takes the class off again. */
-.set.is-found{ box-shadow:inset 2px 0 0 var(--acc); background-color:rgba(var(--acc-rgb),.06); }
+.set.is-found{ box-shadow:inset 2px 0 0 var(--acc); background-color:oklch(from var(--acc) l c h / .06); }
 
 /* ==================================================================
    TABLE  —  rows of facts
@@ -2000,8 +2498,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .tbl th{
   text-align:left;
   padding:var(--s-3) var(--s-5);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); font-weight:400; letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font);
+  font-size:var(--fs-chrome-xs); font-weight:var(--ui-weight); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--label);
   border-bottom:var(--hair) solid var(--line);
   white-space:nowrap;
@@ -2015,7 +2513,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .tbl td:first-child{ color:var(--text); }
 .tbl tr:last-child td{ border-bottom:0; }
 .tbl td.num{
-  font-family:var(--mono); font-size:var(--fs-chrome-md);
+  font-family:var(--num-font); font-variant-numeric:tabular-nums; font-size:var(--fs-chrome-md);
   letter-spacing:var(--tr-num); color:var(--label);
   white-space:nowrap;
 }
@@ -2045,13 +2543,35 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 }
 .dlg::backdrop{
   background-color:rgba(0,0,0,.6);
-  backdrop-filter:var(--blur-1);
-  -webkit-backdrop-filter:var(--blur-1);
+  /* blur-2, not blur-1: the page steps BACK a plane while the question
+     is asked, which is what makes the dialog read as in front of it */
+  backdrop-filter:var(--blur-2);
+  -webkit-backdrop-filter:var(--blur-2);
 }
-.dlg[open]{ animation:dlg-in var(--dur-2) var(--ease-out); }
-@keyframes dlg-in{ from{ opacity:0; translate:0 var(--s-3); } }
-.fx-lite .dlg[open]{ animation:none; }
-@media (prefers-reduced-motion: reduce){ .dlg[open]{ animation:none; } }
+
+/* In AND out, with no keyframes and no script waiting for an
+   animationend. @starting-style is the frame the dialog opens from;
+   the closed state is the frame it leaves to. `display` and `overlay`
+   in the list, with allow-discrete, are what keep a closing dialog in
+   the top layer and on screen until the fade has finished — without
+   them it is removed on the first frame and only the entrance runs.
+
+   Longhands, not the shorthand: a browser that does not know
+   allow-discrete drops a whole `transition:` that names it, and with it
+   the entrance as well. Here it drops one line and keeps the rest. */
+.dlg, .dlg::backdrop{
+  transition-property:opacity, translate, overlay, display;
+  transition-duration:var(--dur-2);
+  transition-timing-function:var(--ease-out);
+  transition-behavior:allow-discrete;
+}
+.dlg:not([open]){ opacity:0; translate:0 var(--s-3); }
+.dlg:not([open])::backdrop{ opacity:0; }
+@starting-style{
+  .dlg[open]{ opacity:0; translate:0 var(--s-3); }
+  .dlg[open]::backdrop{ opacity:0; }
+}
+.fx-lite .dlg, .fx-lite .dlg::backdrop{ transition:none; }
 
 .dlg__head{
   position:relative;
@@ -2060,8 +2580,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   border-bottom:var(--hair) solid var(--line);
 }
 .dlg__eyebrow{
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--label);
 }
 .dlg__t{ margin:0; font-size:var(--fs-text-xl); font-weight:600; letter-spacing:var(--tr-head); overflow-wrap:anywhere; }
@@ -2105,13 +2625,14 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   border-left:2px solid var(--chrome);
   box-shadow:var(--shadow-2);
   font-size:var(--fs-text-md);
-  animation:toast-in var(--dur-2) var(--ease-out);
-  transition:opacity var(--dur-2) var(--ease), translate var(--dur-2) var(--ease);
+  transition:opacity var(--dur-2) var(--ease-out), translate var(--dur-2) var(--ease-out);
 }
+/* the entrance is the same transition as the exit, run from a starting
+   frame — one motion declared once, instead of a keyframe for coming
+   and a transition for going */
+@starting-style{ .toast{ opacity:0; translate:0 calc(var(--s-3) * -1); } }
 .toast.is-out{ opacity:0; translate:0 calc(var(--s-3) * -1); }
-@keyframes toast-in{ from{ opacity:0; translate:0 calc(var(--s-3) * -1); } }
-.fx-lite .toast{ animation:none; }
-@media (prefers-reduced-motion: reduce){ .toast{ animation:none; } }
+.fx-lite .toast{ transition:none; }
 .toast--ok   { border-left-color:var(--ok); }
 .toast--amb  { border-left-color:var(--amb); }
 .toast--error{ border-left-color:var(--red); }
@@ -2145,16 +2666,16 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 }
 .rail__nav .menu__option > .fa{ width:1.2em; text-align:center; font-size:var(--icon-md); color:var(--glyph-machine); }
 .rail__nav .menu__option:hover{ color:var(--text); background-color:rgba(255,255,255,.04); }
-.rail__nav .menu__option[aria-current="page"]{
+.rail__nav .menu__option:is([aria-current="page"], [aria-current="location"]){
   color:var(--text);
-  background-color:rgba(var(--acc-rgb),.08);
+  background-color:oklch(from var(--acc) l c h / .08);
   box-shadow:inset 2px 0 0 var(--acc);
   font-weight:500;
 }
-.rail__nav .menu__option[aria-current="page"] > .fa{ color:var(--text); }
+.rail__nav .menu__option:is([aria-current="page"], [aria-current="location"]) > .fa{ color:var(--text); }
 .rail__nav .menu__option:focus-visible{ outline:var(--hair) solid var(--acc); outline-offset:-2px; }
 @media (hover: none){
-  .rail__nav .menu__option:hover:not([aria-current="page"]){
+  .rail__nav .menu__option:hover:not(:is([aria-current="page"], [aria-current="location"])){
     color:var(--text-dim); background:none;
   }
 }
@@ -2187,6 +2708,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   border:var(--hair) solid var(--line);
   border-radius:var(--radius);
   padding:var(--s-6) var(--s-5) var(--s-5);
+  box-shadow:var(--shadow-1);
   /* The exit, declared on the RESTING card so it runs the same way every
      time: on success the card leaves under its own power and the
      navigation waits for it, which turns a document swap into a hand-off
@@ -2208,9 +2730,9 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   letter-spacing:var(--tr-display); text-transform:uppercase; color:var(--text);
 }
 .login__mark .brand-sub{
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
-  color:color-mix(in srgb, var(--acc-soft) 30%, var(--acc));
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
+  color:color-mix(in oklch, var(--acc-soft) 30%, var(--acc));
 }
 /* the version is a measured value, and it is data: not cased with the
    label it sits in */
@@ -2228,13 +2750,13 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   margin:0 0 var(--s-3);
   padding:var(--s-3) var(--s-4);
   border-left:2px solid var(--acc);
-  background-color:rgba(var(--acc-rgb),.08);
+  background-color:oklch(from var(--acc) l c h / .08);
   color:var(--text);
   font-size:var(--fs-text-sm);
 }
 .login__label{
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:var(--ui-case);
   color:var(--label);
 }
 .login__field{ position:relative; }
@@ -2242,7 +2764,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   /* 16px is the threshold under which iOS Safari zooms the page on focus,
      leaving the layout scrolled sideways with no way back. A BEHAVIOUR, not
      a type size: it does not come off the scale (rule 5's one exception). */
-  font-size:16px;
+  font-size:16px; /* nebula-allow: px — iOS zoom threshold */
   padding-block:var(--s-3);
 }
 /* a one-time code is read back digit by digit */
@@ -2258,8 +2780,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   background:none; border:0;
   padding:var(--s-1) var(--s-2);
   cursor:pointer;
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
   color:var(--text-ghost);
   transition:color var(--dur-1) var(--ease);
 }
@@ -2271,8 +2793,8 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
 .login__caps{
   margin:0;
   color:var(--amb);
-  font-family:var(--mono);
-  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:uppercase;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-md); text-transform:var(--ui-case);
 }
 /* The one red message on the door. The glyph is what still says "refused"
    without the red, and both appear by `hidden` toggling — a line that
@@ -2294,6 +2816,281 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   line-height:1.9;
 }
 .login__foot code{ font-family:var(--mono); color:var(--text-dim); }
+
+/* ==================================================================
+   2.1 — THE PARTS A REAL APP RUNS INTO
+   ------------------------------------------------------------------
+   The vocabulary had what a screen looks like when everything is
+   there. These are the screens around it: nothing there yet (.empty),
+   not there YET (.skel), too much to show at once (.pager), where am I
+   (.crumbs), what does this do (.tip), give me a file (.drop), and in
+   what order (.tbl th[aria-sort]). Each is made of the same tokens and
+   says which rule it leans on.
+   ================================================================== */
+
+/* ---- EMPTY — nothing here yet -------------------------------------
+   An empty list is a screen in its own right, not a missing one: it
+   says what would be here, why it is not, and the one thing to do
+   about it. The glyph is mist (a kind of place, rule 1), the title is
+   read (rule 4), and the action is the ONE primary of the screen.
+     <div class="empty">
+       <span class="empty__ico"><i class="fa fa-folder-open"></i></span>
+       <p class="empty__t">No albums yet</p>
+       <p class="empty__d">Point the gallery at a folder …</p>
+       <div class="row"><button class="btn btn--primary">Add a folder</button></div>
+     </div> */
+.empty{
+  display:flex; flex-direction:column; align-items:center; gap:var(--s-3);
+  padding:var(--s-8) var(--s-6);
+  text-align:center;
+  border:var(--hair) solid var(--line);
+  background-color:var(--glass);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+}
+.empty__ico{
+  display:grid; place-items:center;
+  width:var(--s-9); height:var(--s-9);
+  margin-bottom:var(--s-2);
+  border:var(--hair) solid var(--line-strong);
+  color:var(--mist);
+  font-size:var(--fs-text-xl);
+}
+.empty__t{ margin:0; font-size:var(--fs-text-lg); font-weight:600; letter-spacing:var(--tr-head); color:var(--text); }
+.empty__d{ margin:0; max-width:46ch; font-size:var(--fs-text-md); color:var(--text-dim); }
+.empty .row{ justify-content:center; margin-top:var(--s-3); }
+/* compact, inside a table or a list that is merely empty for now */
+.empty--sm{ padding:var(--s-6) var(--s-5); border:0; background:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
+.empty--sm .empty__ico{ width:var(--s-7); height:var(--s-7); font-size:var(--fs-chrome-lg); }
+
+/* ---- SKELETON — not there YET -------------------------------------
+   The shape of what is coming, so the layout does not jump when it
+   arrives. A grey block, not a spinner: a spinner says "wait", a
+   skeleton says "this, here, in a moment". The sweep is a set piece
+   (--skel-sweep), off for reduced motion and under .fx-lite, where the
+   block simply holds still. The container carries aria-busy="true"
+   while it loads; the blocks themselves are aria-hidden. */
+.skel{
+  display:block;
+  height:var(--s-4);
+  background-color:oklch(from var(--chrome) l c h / .07);
+  background-image:linear-gradient(90deg,
+    transparent 0%, oklch(from var(--chrome) l c h / .08) 50%, transparent 100%);
+  background-size:200% 100%;
+  background-repeat:no-repeat;
+  animation:skel-sweep var(--skel-sweep) linear infinite;
+}
+.skel--text{ height:.8em; margin-block:.35em; }
+.skel--text:last-child{ width:62%; }
+.skel--title{ height:1.2em; width:48%; }
+.skel--block{ height:auto; aspect-ratio:3 / 2; }
+.skel--avatar{ width:var(--s-7); height:var(--s-7); flex:none; }
+@keyframes skel-sweep{ from{ background-position:150% 0; } to{ background-position:-50% 0; } }
+.fx-lite .skel{ animation:none; background-image:none; }
+@media (prefers-reduced-motion: reduce){ .skel{ animation:none; background-image:none; } }
+
+/* ---- TOOLTIP — what does this do ----------------------------------
+   For an icon-only control or a truncated value, and nothing that
+   matters more than that: a tooltip is never the only place an
+   instruction lives, because touch has no hover. It is a real element,
+   referenced by aria-describedby, so a screen reader reads it; shown
+   on hover AND on keyboard focus, after a short delay so a pointer
+   passing over a toolbar does not set off a row of them.
+     <span class="tip-host">
+       <button class="btn btn--icon" aria-describedby="t1">…</button>
+       <span class="tip" role="tooltip" id="t1">Download originals</span>
+     </span> */
+.tip-host{ position:relative; display:inline-flex; }
+.tip{
+  position:absolute; z-index:150;
+  bottom:calc(100% + var(--s-2)); left:50%;
+  translate:-50% var(--s-1);
+  width:max-content; max-width:32ch;
+  padding:var(--s-2) var(--s-3);
+  background-color:var(--overlay);
+  backdrop-filter:var(--overlay-blur);
+  -webkit-backdrop-filter:var(--overlay-blur);
+  border:var(--hair) solid var(--line-strong);
+  box-shadow:var(--shadow-2);
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-xs); letter-spacing:var(--tr-chrome-xs); text-transform:var(--ui-case);
+  color:var(--text);
+  text-align:center;
+  pointer-events:none;
+  opacity:0; visibility:hidden;
+  transition:opacity var(--dur-1) var(--ease), translate var(--dur-1) var(--ease), visibility 0s linear var(--dur-1);
+}
+.tip--below{ bottom:auto; top:calc(100% + var(--s-2)); translate:-50% calc(var(--s-1) * -1); }
+.tip-host:focus-within > .tip{
+  opacity:1; visibility:visible; translate:-50% 0;
+  transition-delay:0s;
+}
+@media (hover: hover){
+  .tip-host:hover > .tip{
+    opacity:1; visibility:visible; translate:-50% 0;
+    transition-delay:var(--dur-3), var(--dur-3), 0s;
+  }
+}
+
+/* ---- BREADCRUMBS — where am I -------------------------------------
+   The path above a deep screen. Every step but the last is a link;
+   the last is where you are, aria-current="page", in --text and not
+   in the accent: you cannot go somewhere you already are, so it is
+   not a control, and a place is not a state change. Long names
+   truncate per step, so a deep path keeps its shape.
+     <nav aria-label="Breadcrumb"><ol class="crumbs">
+       <li><a href="/">Library</a></li> … <li aria-current="page">IMG_0412</li>
+     </ol></nav> */
+.crumbs{
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--s-1) var(--s-2);
+  margin:0; padding:0; list-style:none;
+  font-family:var(--ui-font); font-weight:var(--ui-weight);
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-chrome-sm); text-transform:var(--ui-case);
+  color:var(--text-dim);
+}
+.crumbs li{ display:inline-flex; align-items:center; gap:var(--s-2); min-width:0; max-width:24ch; }
+.crumbs li + li::before{ content:"/"; color:var(--text-ghost); flex:none; }
+.crumbs a, .crumbs [aria-current]{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.crumbs a{ color:var(--text-dim); transition:color var(--dur-1) var(--ease); }
+@media (hover: hover){ .crumbs a:hover{ color:var(--chrome); } }
+.crumbs [aria-current="page"]{ color:var(--text); }
+
+/* ---- PAGINATION — too much to show at once ------------------------
+   Where you are in a long list, and how to get to the rest. The
+   current page IS a state, so it is the accent — the solid deep face
+   the primary button uses, with white figures. The range sits beside
+   it in the number voice ("41–60 of 412"), because a page number
+   alone does not say how long the list is.
+     <nav class="pager" aria-label="Pages">
+       <span class="pager__range num">41–60 of 412</span>
+       <a class="btn btn--sm" rel="prev">Previous</a>
+       <a class="pager__p">1</a> <span class="pager__gap">…</span>
+       <a class="pager__p" aria-current="page">3</a> …
+       <a class="btn btn--sm" rel="next">Next</a>
+     </nav> */
+.pager{
+  display:flex; flex-wrap:wrap; align-items:center; gap:var(--s-1);
+}
+.pager__range{
+  margin-right:auto;
+  font-family:var(--num-font); font-variant-numeric:tabular-nums;
+  font-size:var(--fs-chrome-sm); letter-spacing:var(--tr-num);
+  color:var(--text-dim);
+}
+.pager__p{
+  appearance:none;
+  display:inline-grid; place-items:center;
+  min-width:var(--s-7); height:var(--s-7);
+  padding:0 var(--s-2);
+  border:var(--hair) solid transparent;
+  border-radius:var(--radius);
+  background:none;
+  font-family:var(--num-font); font-variant-numeric:tabular-nums;
+  font-size:var(--fs-chrome-sm); font-weight:var(--ui-weight);
+  color:var(--text-dim);
+  cursor:pointer;
+  transition:color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+@media (hover: hover){
+  .pager__p:hover:not([aria-current="page"]){ color:var(--text); border-color:var(--line-strong); background-color:oklch(from var(--chrome) l c h / .06); }
+}
+.pager__p[aria-current="page"]{
+  background-color:var(--acc-deep); border-color:var(--acc-deep);
+  color:#fff; /* nebula-allow: hex - white on --acc-deep, which is derived for it */
+  cursor:default;
+}
+.pager__gap{ min-width:var(--s-6); text-align:center; color:var(--text-ghost); }
+.pager [rel="prev"]{ margin-left:var(--s-3); }
+.pager [aria-disabled="true"]{ opacity:.4; pointer-events:none; }
+/* on a phone the range takes a line of its own above the pages */
+@media (max-width: 620px){
+  .pager__range{ flex-basis:100%; margin-bottom:var(--s-2); }
+  .pager [rel="prev"]{ margin-left:0; }
+}
+
+/* ---- DROP ZONE — give me a file -----------------------------------
+   A <label> round a real <input type="file">, so a click, Enter and
+   Space all open the picker with no script at all, and a screen reader
+   hears "choose file" with the label's words. Dragging over it is a
+   state (.is-over, set by script from dragenter/dragleave), so THAT is
+   the accent; at rest it is furniture.
+
+   The one dashed border in the sheet, and on purpose: a dashed edge is
+   the near-universal sign for "a place to put something", and that
+   meaning is the whole job. Everywhere else a dashed border is a
+   sticker (see Wrong), and still not allowed.
+     <label class="drop">
+       <input type="file" class="u-offscreen" multiple>
+       <span class="drop__ico"><i class="fa fa-download"></i></span>
+       <span class="drop__t">Drop photos here, or <u>choose files</u></span>
+       <span class="drop__d">JPEG, HEIC or RAW · up to 200 MB each</span>
+     </label> */
+.drop{
+  position:relative;
+  display:flex; flex-direction:column; align-items:center; gap:var(--s-2);
+  padding:var(--s-7) var(--s-6);
+  text-align:center;
+  border:var(--hair) dashed var(--line-strong);
+  background-color:var(--glass);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  cursor:pointer;
+  transition:border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.drop__ico{ color:var(--mist); font-size:var(--fs-text-xl); margin-bottom:var(--s-1); }
+.drop__t{ font-size:var(--fs-text-md); font-weight:600; color:var(--text); }
+.drop__t u{ color:var(--acc); text-decoration:underline; text-underline-offset:.2em; }
+.drop__d{ font-size:var(--fs-text-sm); color:var(--text-dim); }
+@media (hover: hover){ .drop:hover{ border-color:var(--chrome); background-color:var(--glass-hi); } }
+.drop:focus-within{ border-color:var(--acc); box-shadow:var(--ring-acc); }
+.drop.is-over{
+  border-style:solid; border-color:var(--acc);
+  background-color:oklch(from var(--acc) l c h / .10);
+  box-shadow:var(--ring-acc), var(--glow-acc);
+}
+.drop.is-over .drop__ico{ color:var(--acc); }
+/* the files it has been given, as a stack of rows under it */
+.drop__list{ list-style:none; margin:var(--s-3) 0 0; padding:0; display:flex; flex-direction:column; gap:var(--s-0); }
+.drop__list li{
+  display:flex; align-items:center; gap:var(--s-3);
+  padding:var(--s-2) var(--s-3);
+  border:var(--hair) solid var(--line);
+  font-size:var(--fs-text-sm); color:var(--text);
+}
+.drop__list .num{ margin-left:auto; font-family:var(--num-font); font-variant-numeric:tabular-nums; color:var(--text-dim); }
+
+/* ---- SORTABLE TABLE HEAD — in what order --------------------------
+   The head cell carries aria-sort (what a screen reader hears) and a
+   <button> (what a keyboard reaches); the sheet paints aria-sort. The
+   sorted column is a STATE, so its label and its arrow are the accent;
+   the others show a faint double arrow on hover only, which says
+   "sortable" without twenty arrows standing in the head.
+     <th aria-sort="ascending"><button class="tbl__sort">Name</button></th> */
+.tbl__sort{
+  appearance:none; background:none; border:0; padding:0;
+  display:inline-flex; align-items:center; gap:var(--s-2);
+  font:inherit; letter-spacing:inherit; text-transform:inherit;
+  color:inherit;
+  cursor:pointer;
+}
+.tbl__sort::after{
+  content:"";
+  width:0; height:0;
+  border-inline:var(--s-1) solid transparent;
+  border-block-start:var(--s-1) solid currentColor;
+  opacity:0;
+  transition:opacity var(--dur-1) var(--ease), rotate var(--dur-2) var(--ease-out);
+}
+@media (hover: hover){
+  .tbl__sort:hover{ color:var(--text); }
+  .tbl__sort:hover::after{ opacity:.45; }
+}
+.tbl__sort:focus-visible{ outline-offset:var(--s-1); }
+.tbl th[aria-sort="ascending"] .tbl__sort,
+.tbl th[aria-sort="descending"] .tbl__sort{ color:var(--acc); }
+.tbl th[aria-sort="ascending"] .tbl__sort::after{ opacity:1; rotate:180deg; }
+.tbl th[aria-sort="descending"] .tbl__sort::after{ opacity:1; }
+.tbl th.r .tbl__sort{ flex-direction:row-reverse; }
 
 /* ==================================================================
    THE NARROW SCREEN
@@ -2326,22 +3123,40 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   .btn, .seg__opt, .tag{ min-height:var(--tap); padding-inline:var(--s-4); }
   .btn--sm{ min-height:36px; }
   .menu__option{ min-height:var(--tap); }
-  .menu{ min-width:0; width:100%; }
-
-
-  /* the controls drop to their own line rather than squeezing the prose */
-  .set{ grid-template-columns:auto minmax(0, 1fr); }
-  .set__aside{ grid-column:1 / -1; justify-content:flex-start; }
-  .set__ico{ align-self:start; }
+  .menu:not([popover]){ min-width:0; width:100%; }
 
   .toasts{ left:var(--page-pad); align-items:stretch; }
   /* a static tag is a label, not a target: it does not take --tap */
   .tag--static{ min-height:0; padding:var(--s-1) var(--s-3); }
+}
 
+/* ==================================================================
+   THE NARROW PANE
+   ------------------------------------------------------------------
+   The same steps, asked of the PANE rather than the window. These used
+   to sit in the 760px media query above, which is why a settings
+   stack placed in a side column kept its three-column row and crushed
+   its own prose to a word per line on a 1440px screen: the window was
+   wide, so the row believed it was too.
+
+   The numbers are pane widths, written out for the same reason the
+   breakpoints are — a custom property cannot be read by a query.
+     560  a .set row drops its controls to their own line
+     420  a .kv read-out stacks its label over its value
+     560  a .hud tightens its corners and bars
+   ================================================================== */
+@container pane (max-width: 560px){
+  /* the controls drop to their own line rather than squeezing the prose */
+  .set{ grid-template-columns:auto minmax(0, 1fr); }
+  .set__aside{ grid-column:1 / -1; justify-content:flex-start; }
+  .set__ico{ align-self:start; }
+}
+@container pane (max-width: 420px){
   .kv{ grid-template-columns:1fr; gap:var(--s-0) var(--s-4); }
   .kv dt{ color:var(--text-dim); }
   .kv dd{ margin-bottom:var(--s-3); }
-
+}
+@container hud (max-width: 560px){
   .hud__corner{ width:18px; height:18px; }
   .hud__bar{ padding:var(--s-4); gap:var(--s-4); }
 }
@@ -2362,7 +3177,7 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   .rail__nav{ flex-direction:row; overflow-x:auto; scrollbar-width:none; }
   .rail__nav::-webkit-scrollbar{ display:none; }
   .rail__nav .menu__option{ width:auto; flex:0 0 auto; height:var(--tap); }
-  .rail__nav .menu__option[aria-current="page"]{ box-shadow:inset 0 -2px 0 var(--acc); }
+  .rail__nav .menu__option:is([aria-current="page"], [aria-current="location"]){ box-shadow:inset 0 -2px 0 var(--acc); }
 }
 
 /* ==================================================================
@@ -2374,29 +3189,29 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
    (hover: hover), and touch keeps only the movement.
    ================================================================== */
 @media (hover: none){
-  .card:hover{ background-color:var(--glass); border-color:var(--line); translate:none; box-shadow:none; }
+  .card:hover{ background-color:var(--glass); border-color:var(--line); translate:none; box-shadow:var(--shadow-0); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur); }
   .card:hover::before, .card:hover::after{ opacity:0; }
   .card:hover .card__img img{ scale:1; filter:saturate(.85) brightness(.9); }
   .card:hover .card__hover{ opacity:0; }
   .tag:hover{ color:var(--text-dim); border-color:var(--line); background-color:var(--glass); }
-  .btn:hover:not(:disabled){ color:var(--text-dim); border-color:var(--line); background-color:var(--glass); }
-  .btn--primary:hover:not(:disabled){ color:var(--text); border-color:rgba(var(--acc-rgb),.60); background-color:rgba(var(--acc-rgb),.16); }
+  .btn:hover:not(:disabled){ color:var(--text); border-color:var(--line-strong); background-color:var(--glass); }
+  .btn--primary:hover:not(:disabled){ color:#fff; border-color:var(--acc-deep); background-color:var(--acc-deep); box-shadow:none; } /* nebula-allow: hex - white on --acc-deep */
   .menu__option:hover{ color:var(--text-dim); background:none; border-left-color:transparent; }
   .foot__links a:hover{ color:var(--text-dim); border-bottom-color:transparent; }
 }
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
-  html{ scroll-behavior:auto; }
-}
+
+} /* @layer nebula.components */
+
+@layer nebula.utilities{
 
 /* ==================================================================
    UTILITIES, LAST
    ------------------------------------------------------------------
-   These override components, and a class beats another class only by
-   coming later — so they come last, after every component and every
-   gate. A utility declared next to the base loses to the .tag it was
-   meant to correct, silently, and that is exactly the bug these two
-   were added to fix.
+   These override components. They used to do it by coming last in the
+   file, because a class beats another class only by coming later — a
+   utility declared next to the base lost to the .tag it was meant to
+   correct, silently. Now they do it by being the last LAYER, which
+   holds wherever in the file they are written.
    ================================================================== */
 
 /* Rule 4 says never text-transform DATA — a name, a path, an address, a
@@ -2419,3 +3234,50 @@ input[type="checkbox"], input[type="radio"]{ accent-color:var(--acc); cursor:poi
   overflow:hidden; white-space:nowrap;
   clip-path:inset(50%);
 }
+
+/* A block that settles into place as it scrolls into view — driven by
+   the scroll position itself (animation-timeline: view()), so there is
+   no observer, no class to add, and nothing to go wrong if the script
+   never runs: without support, or for anyone who asked for less
+   motion, or under .fx-lite, the block is simply there. It enters, it
+   does not leave — scrolling back up shows it whole.
+
+   Use it on a specimen or a section, never on a control someone is
+   about to use, and never on the first screen: content that is still
+   arriving when the page opens is content read late. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    html:not(.fx-lite) .u-reveal{
+      animation:u-reveal linear both;
+      animation-timeline:view();
+      animation-range:entry 0% entry 55%;
+    }
+  }
+}
+@keyframes u-reveal{ from{ opacity:0; translate:0 var(--s-6); } }
+
+/* The kind palette, as classes — and WHERE it may go, stated in the
+   selector rather than in a comment. A kind colour belongs to exactly two
+   things (rule 1):
+
+     an IDENTITY    a person's .avatar, an app's or a project's .mark
+     a CATEGORY     a .tag
+
+   Nothing else takes one: not a card, a panel, a heading, a section
+   number, a glyph in front of a label, a row. A .hue-* on any of those
+   matches nothing here and does nothing, so the line cannot drift one
+   "it would look nice" at a time (user, 2026-11-09: "andere Farben nur
+   da wo es Sinn ergibt … keine Nummerierung oder verschiedene Cards").
+   tools/nebula_lint.py flags it in markup as well. */
+:is(.avatar, .tag, .mark).hue-teal { --hue:var(--hue-teal); }
+:is(.avatar, .tag, .mark).hue-sky  { --hue:var(--hue-sky); }
+:is(.avatar, .tag, .mark).hue-lime { --hue:var(--hue-lime); }
+:is(.avatar, .tag, .mark).hue-rose { --hue:var(--hue-rose); }
+:is(.avatar, .tag, .mark).hue-peach{ --hue:var(--hue-peach); }
+:is(.avatar, .tag, .mark).hue-sand { --hue:var(--hue-sand); }
+:is(.avatar, .tag, .mark):is(.hue-teal, .hue-sky, .hue-lime, .hue-rose, .hue-peach, .hue-sand){
+  --hue-line:oklch(from var(--hue) l c h / .42);
+  --hue-wash:oklch(from var(--hue) l c h / .12);
+}
+
+} /* @layer nebula.utilities */

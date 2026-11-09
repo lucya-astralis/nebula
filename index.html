@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<!-- The backdrop: one fixed element, the artwork, a grid overlay and a single
+<!-- The backdrop: one fixed element, the artwork, a neutral key light, a vignette and a single
      accent bloom. Rule 3 starts here — everything above it is a blurred pane,
      not a darker box.
 
@@ -55,6 +55,7 @@
       <button class="seg__opt" data-fx="lite" type="button">Lite</button>
     </div>
   </div>
+  <span class="nav__progress" aria-hidden="true"></span>
 </nav>
 
 <main id="top">
@@ -79,6 +80,7 @@
 
   <div class="section__doc">
     <span>Language <b>Nebula</b></span>
+    <span>Version <b>2.1.0</b></span>
     <span>Accent <b id="doc-acc">#5865F2</b></span>
     <span>Radius <b>0</b></span>
     <span>Faces <b>3</b></span>
@@ -116,10 +118,11 @@
     </li>
     <li class="rule">
       <span class="rule__n">Rule 04</span>
-      <span class="rule__t">Mono is the chrome, sans is the content</span>
+      <span class="rule__t">The chrome is quieter than the content</span>
       <span class="rule__d">
-        Uppercase tracked mono marks the furniture <b>around</b> the content.
-        Anything a person actually reads is Space Grotesk in sentence case.
+        The furniture <b>around</b> the content is one step smaller, one weight
+        heavier and one tone quieter than what a person reads. One face, no
+        console caps; mono only for code.
       </span>
     </li>
     <li class="rule">
@@ -149,25 +152,35 @@
        SIDE NAV
        ============================================================ -->
   <aside class="sidenav" id="sidenav" aria-label="Chapters">
-    <a href="#anatomy"><i class="fa fa-table-cells"></i> 00 · Anatomy</a>
-    <a href="#colour"><i class="fa fa-star"></i> 01 · Colour</a>
-    <a href="#shape"><i class="fa fa-expand"></i> 02 · Shape</a>
-    <a href="#depth"><i class="fa fa-layer-group"></i> 03 · Depth</a>
-    <a href="#voice"><i class="fa fa-align-left"></i> 04 · Voice</a>
-    <a href="#measure"><i class="fa fa-scale-balanced"></i> 05 · Measure</a>
-    <a href="#parts"><i class="fa fa-folder-tree"></i> 06 · Parts</a>
-    <a href="#door"><i class="fa fa-shield-halved"></i> 07 · The door</a>
-    <a href="#wrong"><i class="fa fa-circle-info"></i> 08 · Wrong</a>
-    <a href="#build"><i class="fa fa-route"></i> 09 · Build one</a>
+    <div class="sidenav__head" aria-hidden="true">
+      <span class="sidenav__k">Chapter</span>
+      <span class="sidenav__now num"><b id="sidenav-n">00</b> / 11</span>
+      <span class="sidenav__track"><span class="sidenav__fill"></span></span>
+    </div>
+    <nav class="rail__nav sidenav__list">
+      <a class="menu__option" href="#anatomy"><span class="sidenav__n num">00</span><span class="sidenav__t">Anatomy</span><span class="sidenav__c num" aria-label="2 minute read">2<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#apps"><span class="sidenav__n num">01</span><span class="sidenav__t">Applications</span><span class="sidenav__c num" aria-label="3 minute read">3<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#colour"><span class="sidenav__n num">02</span><span class="sidenav__t">Colour</span><span class="sidenav__c num" aria-label="3 minute read">3<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#shape"><span class="sidenav__n num">03</span><span class="sidenav__t">Shape</span><span class="sidenav__c num" aria-label="1 minute read">1<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#depth"><span class="sidenav__n num">04</span><span class="sidenav__t">Depth</span><span class="sidenav__c num" aria-label="3 minute read">3<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#voice"><span class="sidenav__n num">05</span><span class="sidenav__t">Voice</span><span class="sidenav__c num" aria-label="2 minute read">2<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#measure"><span class="sidenav__n num">06</span><span class="sidenav__t">Measure</span><span class="sidenav__c num" aria-label="2 minute read">2<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#parts"><span class="sidenav__n num">07</span><span class="sidenav__t">Parts</span><span class="sidenav__c num" aria-label="7 minute read">7<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#door"><span class="sidenav__n num">08</span><span class="sidenav__t">The door</span><span class="sidenav__c num" aria-label="3 minute read">3<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#wrong"><span class="sidenav__n num">09</span><span class="sidenav__t">Wrong</span><span class="sidenav__c num" aria-label="2 minute read">2<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#platform"><span class="sidenav__n num">10</span><span class="sidenav__t">Platform</span><span class="sidenav__c num" aria-label="6 minute read">6<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+      <a class="menu__option" href="#build"><span class="sidenav__n num">11</span><span class="sidenav__t">Build one</span><span class="sidenav__c num" aria-label="4 minute read">4<small>min</small></span><span class="sidenav__p" aria-hidden="true"></span></a>
+    </nav>
+    <a class="btn btn--ghost btn--sm sidenav__top" href="#top"><i class="fa fa-arrow-turn-up" aria-hidden="true"></i> Back to top</a>
   </aside>
 
-  <div class="chapters" id="chapters">
+  <div class="chapters" id="chapters" data-sections>
 
   <!-- ============================================================
        00 — ANATOMY
        ============================================================ -->
   <section class="chapter" id="anatomy" data-title="anatomy shell layout app">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Anatomy</span></div>
     </div>
     <p class="chapter__lead">
@@ -178,7 +191,7 @@
       carrying information; there is no band whose job is decoration.
     </p>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>Specimen</span><span>App shell</span><span class="n">01</span></div>
       <div class="spec__stage spec__stage--block spec__stage--flush">
         <div class="shell">
@@ -312,10 +325,251 @@
   </section>
 
   <!-- ============================================================
+       01 — APPLICATIONS  (the same sheet, four apps that are not a gallery)
+       ============================================================ -->
+  <section class="chapter" id="apps" data-title="applications apps examples dashboard monitoring tasks board inbox mail settings account saas">
+    <div class="section__head section__head--numbered">
+      <div class="section__doc">
+        <span>Apps <b>4</b></span>
+        <span>New components <b>0</b></span>
+        <span class="section__doc-mark">Same sheet</span>
+      </div>
+      <div class="section__slug"><span class="name">Applications</span></div>
+    </div>
+    <p class="chapter__lead">
+      The gallery is where Nebula started, not what it is for. Below are four
+      applications that have nothing to do with photographs — an operations
+      dashboard, a task board, an inbox and an account screen — and every one
+      of them is built from the components in <code>nebula.css</code> and
+      nothing else. Only the layout grid around them is new.
+    </p>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>Four apps, one vocabulary</span><span>Switch between them</span><span class="n">01</span></div>
+      <div class="spec__stage spec__stage--block spec__stage--flush">
+        <div class="apps-switch">
+          <div class="seg" role="tablist" aria-label="Example application">
+            <button class="seg__opt is-on" type="button" role="tab" aria-selected="true" aria-controls="app-ops" data-app="ops"><i class="fa fa-chart-simple"></i> Operations</button>
+            <button class="seg__opt" type="button" role="tab" aria-selected="false" aria-controls="app-tasks" data-app="tasks"><i class="fa fa-table-cells"></i> Tasks</button>
+            <button class="seg__opt" type="button" role="tab" aria-selected="false" aria-controls="app-inbox" data-app="inbox"><i class="fa fa-folder-open"></i> Inbox</button>
+            <button class="seg__opt" type="button" role="tab" aria-selected="false" aria-controls="app-settings" data-app="settings"><i class="fa fa-shield-halved"></i> Settings</button>
+          </div>
+        </div>
+
+        <!-- ======================= OPERATIONS ======================= -->
+        <div class="app shell" id="app-ops" role="tabpanel" aria-label="Operations dashboard">
+          <div class="shell__bar">
+            <span class="nav__brand">
+              <span class="app__logo mark mark--square hue-teal" aria-hidden="true"><i class="fa fa-chart-simple"></i></span>
+              <span class="brand-text"><span class="brand-name">Relay</span><span class="brand-sub">operations</span></span>
+            </span>
+            <span class="seg" role="group" aria-label="Section">
+              <button class="seg__opt is-on" type="button" data-demo-seg>Overview</button>
+              <button class="seg__opt" type="button" data-demo-seg>Services</button>
+              <button class="seg__opt" type="button" data-demo-seg>Incidents</button>
+            </span>
+            <span class="status push"><span class="dot dot--ok"></span> All systems normal</span>
+          </div>
+          <div class="shell__body">
+            <div class="tiles">
+              <div class="tile"><span class="tile__k">Uptime, 30 days</span><span class="tile__v">99.98%</span><span class="tile__d is-up">+0.03 pts</span></div>
+              <div class="tile"><span class="tile__k">p95 latency</span><span class="tile__v">142 ms</span><span class="tile__d is-up">−18 ms</span></div>
+              <div class="tile"><span class="tile__k">Error rate</span><span class="tile__v">0.21%</span><span class="tile__d is-down">+0.04 pts</span></div>
+              <div class="tile"><span class="tile__k">Deploys today</span><span class="tile__v">7</span><span class="tile__d">2 rolled back</span></div>
+            </div>
+            <div class="app__cols">
+              <div class="stack">
+                <div class="panel">
+                  <h2><i class="fa fa-layer-group"></i> Services</h2>
+                  <div class="tbl-wrap">
+                    <table class="tbl">
+                      <thead><tr><th>Service</th><th>Region</th><th>Status</th><th class="r">p95</th><th>CPU</th></tr></thead>
+                      <tbody>
+                        <tr><td>api-gateway</td><td>eu-central</td><td><span class="status"><span class="dot dot--ok"></span> Healthy</span></td><td class="num r">118 ms</td><td><span class="meter" role="meter" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100" aria-label="CPU api-gateway" data-p="42"><span class="meter__fill"></span></span></td></tr>
+                        <tr><td>billing</td><td>eu-central</td><td><span class="status"><span class="dot dot--amb"></span> Degraded</span></td><td class="num r">391 ms</td><td><span class="meter meter--amb" role="meter" aria-valuenow="81" aria-valuemin="0" aria-valuemax="100" aria-label="CPU billing" data-p="81"><span class="meter__fill"></span></span></td></tr>
+                        <tr><td>search</td><td>us-east</td><td><span class="status"><span class="dot dot--ok"></span> Healthy</span></td><td class="num r">96 ms</td><td><span class="meter" role="meter" aria-valuenow="27" aria-valuemin="0" aria-valuemax="100" aria-label="CPU search" data-p="27"><span class="meter__fill"></span></span></td></tr>
+                        <tr><td>notifications</td><td>us-east</td><td><span class="status"><span class="dot dot--red"></span> Down</span></td><td class="num r">—</td><td><span class="meter meter--red" role="meter" aria-valuenow="4" aria-valuemin="0" aria-valuemax="100" aria-label="CPU notifications" data-p="4"><span class="meter__fill"></span></span></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="stack">
+                <div class="panel">
+                  <h2><i class="fa fa-circle-info"></i> Open incident</h2>
+                  <dl class="kv">
+                    <dt>Service</dt><dd>notifications</dd>
+                    <dt>Started</dt><dd class="num">09:41 UTC</dd>
+                    <dt>Owner</dt><dd>On-call, platform</dd>
+                    <dt>Impact</dt><dd>Push and e-mail delayed; nothing lost.</dd>
+                  </dl>
+                </div>
+                <div class="panel row">
+                  <button class="btn btn--primary" type="button" data-demo-toast="ok">Acknowledge</button>
+                  <button class="btn" type="button">Open runbook</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================= TASKS ========================== -->
+        <div class="app shell" id="app-tasks" role="tabpanel" aria-label="Task board" hidden>
+          <div class="shell__bar">
+            <span class="nav__brand">
+              <span class="app__logo mark mark--square hue-peach" aria-hidden="true"><i class="fa fa-table-cells"></i></span>
+              <span class="brand-text"><span class="brand-name">Taskline</span><span class="brand-sub">projects</span></span>
+            </span>
+            <span class="seg" role="group" aria-label="View">
+              <button class="seg__opt is-on" type="button" data-demo-seg>Board</button>
+              <button class="seg__opt" type="button" data-demo-seg>List</button>
+              <button class="seg__opt" type="button" data-demo-seg>Timeline</button>
+            </span>
+            <button class="btn btn--primary push" type="button" data-demo-toast="ok">New task</button>
+          </div>
+          <div class="shell__body">
+            <div class="section__doc">
+              <span>Sprint <b>14</b></span>
+              <span>Tasks <b>11</b></span>
+              <span>Ends <b>14 Nov</b></span>
+              <span class="section__doc-mark is-ok">On track</span>
+            </div>
+            <div class="board">
+              <div class="board__col">
+                <h3 class="eyebrow"><i class="fa fa-folder"></i> To do <span class="eyebrow__n">4</span></h3>
+                <div class="task panel"><span class="task__t">Write the migration guide for v3</span><span class="tag-bar"><span class="tag tag--static hue-sand">Docs</span></span><span class="task__foot"><span class="avatar avatar--sm hue-teal" aria-label="Mara K.">MK</span><span class="num">Due 12 Nov</span></span></div>
+                <div class="task panel"><span class="task__t">Rate-limit the public search endpoint</span><span class="tag-bar"><span class="tag tag--static hue-teal">Backend</span><span class="tag tag--static hue-rose">Security</span></span><span class="task__foot"><span class="avatar avatar--sm hue-sky" aria-label="Jonas B.">JB</span><span class="num">Due 13 Nov</span></span></div>
+              </div>
+              <div class="board__col">
+                <h3 class="eyebrow"><i class="fa fa-route"></i> In progress <span class="eyebrow__n">3</span></h3>
+                <div class="task panel is-active"><span class="task__t">Checkout: keep the cart when the session expires</span><span class="tag-bar"><span class="tag tag--static hue-sky">Frontend</span></span><span class="meter" role="meter" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Progress" data-p="60"><span class="meter__fill"></span></span><span class="task__foot"><span class="avatar avatar--sm hue-rose" aria-label="Lea S.">LS</span><span class="num">3 of 5</span></span></div>
+                <div class="task panel"><span class="task__t">Dark-mode screenshots for the store listing</span><span class="tag-bar"><span class="tag tag--static hue-peach">Design</span></span><span class="task__foot"><span class="avatar avatar--sm hue-teal" aria-label="Mara K.">MK</span><span class="num">Due 11 Nov</span></span></div>
+              </div>
+              <div class="board__col">
+                <h3 class="eyebrow"><i class="fa fa-star"></i> Done <span class="eyebrow__n">4</span></h3>
+                <div class="task panel is-done"><span class="task__t">Invoice PDFs carry the VAT number</span><span class="tag-bar"><span class="tag tag--static hue-lime">Billing</span></span><span class="task__foot"><span class="avatar avatar--sm hue-sky" aria-label="Jonas B.">JB</span><span class="num">Done 08 Nov</span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================= INBOX ========================== -->
+        <div class="app shell" id="app-inbox" role="tabpanel" aria-label="Inbox" hidden>
+          <div class="shell__bar">
+            <span class="nav__brand">
+              <span class="app__logo mark mark--square hue-sky" aria-hidden="true"><i class="fa fa-folder-open"></i></span>
+              <span class="brand-text"><span class="brand-name">Postbox</span><span class="brand-sub">mail</span></span>
+            </span>
+            <label class="nav__search app__search" aria-label="Search mail">
+              <i class="fa fa-magnifying-glass" aria-hidden="true"></i>
+              <input type="search" placeholder="Search mail" autocomplete="off">
+            </label>
+            <span class="status push"><span class="dot dot--ok"></span> 2 unread</span>
+          </div>
+          <div class="inbox">
+            <div class="stack inbox__list" role="list">
+              <a class="set inbox__row is-unread" href="#apps" role="listitem" aria-current="true">
+                <span class="avatar avatar--sm hue-peach">AR</span>
+                <span class="set__text"><span class="set__t">Anna Richter <span class="tag tag--static">Unread</span></span><span class="set__d">Quarterly figures — the draft is attached, two tables still open.</span></span>
+                <span class="set__aside num">09:12</span>
+              </a>
+              <a class="set inbox__row is-unread" href="#apps" role="listitem">
+                <span class="avatar avatar--sm hue-lime">TB</span>
+                <span class="set__text"><span class="set__t">Tom Berger <span class="tag tag--static">Unread</span></span><span class="set__d">Can we move Thursday's review to the afternoon?</span></span>
+                <span class="set__aside num">08:47</span>
+              </a>
+              <a class="set inbox__row" href="#apps" role="listitem">
+                <span class="avatar avatar--sm">IT</span>
+                <span class="set__text"><span class="set__t">IT Service</span><span class="set__d">Planned maintenance: VPN, Saturday 22:00–23:00.</span></span>
+                <span class="set__aside num">Yesterday</span>
+              </a>
+              <a class="set inbox__row" href="#apps" role="listitem">
+                <span class="avatar avatar--sm hue-rose">LK</span>
+                <span class="set__text"><span class="set__t">Lina König</span><span class="set__d">Thanks — the contract is signed and on its way.</span></span>
+                <span class="set__aside num">Mon</span>
+              </a>
+            </div>
+            <article class="panel msg">
+              <header class="msg__head">
+                <span class="avatar hue-peach">AR</span>
+                <span class="msg__who"><b>Anna Richter</b><span class="dim">to team-finance · 09:12</span></span>
+              </header>
+              <h2 class="msg__t">Quarterly figures</h2>
+              <p class="msg__p">Hi all, the draft for Q3 is attached. Revenue and cost tables are final; the forecast and the headcount table still need numbers from you.</p>
+              <p class="msg__p">Could you add yours by Wednesday? Then I can send it on Thursday morning.</p>
+              <div class="msg__file"><i class="fa fa-download"></i> <span>Q3-draft.xlsx</span> <span class="num dim">248 KB</span></div>
+              <div class="msg__reply">
+                <textarea rows="2" placeholder="Reply to Anna…" aria-label="Reply"></textarea>
+                <div class="row"><button class="btn btn--primary" type="button" data-demo-toast="ok">Send</button><button class="btn btn--ghost" type="button">Attach</button></div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- ======================== SETTINGS ======================== -->
+        <div class="app shell" id="app-settings" role="tabpanel" aria-label="Account settings" hidden>
+          <div class="shell__bar">
+            <span class="nav__brand">
+              <span class="app__logo mark mark--square hue-rose" aria-hidden="true"><i class="fa fa-shield-halved"></i></span>
+              <span class="brand-text"><span class="brand-name">Northwind</span><span class="brand-sub">account</span></span>
+            </span>
+            <span class="push"></span>
+            <span class="avatar avatar--sm hue-sky" aria-label="Signed in as Sam Weber">SW</span>
+          </div>
+          <div class="settings">
+            <nav class="rail" aria-label="Settings sections">
+              <div class="rail__nav">
+                <a class="menu__option" href="#apps"><i class="fa fa-house"></i> Profile</a>
+                <a class="menu__option" href="#apps" aria-current="page"><i class="fa fa-shield-halved"></i> Security</a>
+                <a class="menu__option" href="#apps"><i class="fa fa-database"></i> Billing</a>
+                <a class="menu__option" href="#apps"><i class="fa fa-circle-info"></i> Notifications</a>
+                <a class="menu__option" href="#apps"><i class="fa fa-folder-tree"></i> Team</a>
+              </div>
+            </nav>
+            <div class="settings__main">
+              <div class="stack">
+                <div class="panel set">
+                  <span class="set__ico"><i class="fa fa-shield-halved"></i></span>
+                  <div class="set__text"><span class="set__t">Two-step sign-in</span><span class="set__d">A code from your phone on every new device.</span></div>
+                  <div class="set__aside"><span class="switch-wrap"><span class="switch__word" aria-hidden="true">On</span><button class="switch" type="button" role="switch" aria-checked="true" aria-label="Two-step sign-in" data-demo-switch></button></span></div>
+                </div>
+                <div class="panel set">
+                  <span class="set__ico"><i class="fa fa-circle-info"></i></span>
+                  <div class="set__text"><span class="set__t">Sign-in alerts</span><span class="set__d">An e-mail when someone signs in from a new place.</span></div>
+                  <div class="set__aside"><span class="switch-wrap"><span class="switch__word" aria-hidden="true">Off</span><button class="switch" type="button" role="switch" aria-checked="false" aria-label="Sign-in alerts" data-demo-switch></button></span></div>
+                </div>
+                <div class="panel set">
+                  <span class="set__ico"><i class="fa fa-database"></i></span>
+                  <div class="set__text"><span class="set__t">Storage</span><span class="set__d">32.1 of 50 GB on the Team plan.</span>
+                    <span class="meter" role="meter" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" aria-label="Storage used" data-p="64"><span class="meter__fill"></span></span></div>
+                  <div class="set__aside"><button class="btn" type="button">Upgrade</button></div>
+                </div>
+                <div class="panel set">
+                  <span class="set__ico set__ico--red"><i class="fa fa-xmark"></i></span>
+                  <div class="set__text"><span class="set__t">Sign out everywhere</span><span class="set__d">Ends every session except this one.</span></div>
+                  <div class="set__aside"><button class="btn btn--danger" type="button" data-demo-toast="amb">Sign out all</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        Four domains, <b>no new component</b>: stat tiles, a table with
+        meters and worded statuses, a key/value read-out, a task card made of a
+        panel, static tags, an avatar and a meter, a message list made of
+        setting rows, a reply field, the rail and the switch. The accent stays
+        rationed in every one of them — the open tab, the current section, a
+        progress fill, the one primary button per screen.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
        01 — COLOUR
        ============================================================ -->
   <section class="chapter" id="colour" data-title="colour accent palette tokens state furniture">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Colour</span></div>
     </div>
     <p class="chapter__lead">
@@ -385,7 +639,7 @@
     <p class="chapter__lead">
       Before colouring anything purple, ask: <b>does it carry state?</b> If it
       doesn't, it is <code>--chrome</code> (hovers, brackets, HUD strokes) or
-      <code>--label</code> (the static mono furniture). Click a swatch to copy
+      <code>--label</code> (the static furniture). Click a swatch to copy
       its token name.
     </p>
 
@@ -451,7 +705,7 @@
        02 — SHAPE
        ============================================================ -->
   <section class="chapter" id="shape" data-title="shape square radius corners brackets">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Shape</span></div>
     </div>
     <p class="chapter__lead">
@@ -477,7 +731,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>Specimen</span><span>Corner brackets · hover a card</span><span class="n">02</span></div>
       <div class="spec__stage spec__stage--block">
         <ul class="card-grid">
@@ -536,7 +790,7 @@
        03 — DEPTH
        ============================================================ -->
   <section class="chapter" id="depth" data-title="depth blur glass scrim wallpaper backdrop fx-lite">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Depth</span></div>
     </div>
     <p class="chapter__lead">
@@ -613,7 +867,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>Specimen</span><span>The surface scale</span><span class="n">03</span></div>
       <div class="spec__stage">
         <div class="stack">
@@ -676,25 +930,30 @@
        04 — VOICE
        ============================================================ -->
   <section class="chapter" id="voice" data-title="voice type typography mono sans display">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Voice</span></div>
     </div>
     <p class="chapter__lead">
-      Three faces, three jobs, and the split is the line the whole stylesheet
-      is sorted on. It took two corrections to find: stripping the chrome to
-      sentence sans made a grid <b>look unfinished</b>, because the labels
-      stopped separating the furniture from the content and dissolved into it.
+      Two voices and a brand face, and the split between the first two is the
+      line the whole stylesheet is sorted on. The chrome used to be set apart
+      by a <b>different typeface</b> — mono, uppercase, tracked — which worked,
+      and made every screen read like a terminal. Now it is set apart the way a
+      desktop application does it: <b>one step smaller, one weight heavier,
+      one tone quieter</b>. Stripping that difference out entirely made a grid
+      look unfinished once already; this keeps the difference and drops the
+      console.
     </p>
 
     <div class="voice">
       <div class="voice__col">
-        <span class="voice__k">JetBrains Mono · uppercase · .16–.24em</span>
-        <span class="voice__sample--mono">Featured &nbsp; Archive &nbsp; 418 frames<br>f/2.0 · 1/125 s · ISO 1600<br>Sort by · Newest first</span>
+        <span class="voice__k">Interface · Space Grotesk 500 · 11.5–14px</span>
+        <span class="voice__sample--ui">Featured &nbsp; Archive &nbsp; 418 frames<br>f/2.0 · 1/125 s · ISO 1600<br>Sort by · Newest first</span>
         <span class="voice__use">
-          The chrome <b>around</b> the content: section labels, counts, badges,
-          dates, corner indices, filters, sort controls, meta lines, and every
-          measured value. If it is a fact the software knows about itself, it
-          is in this voice.
+          The chrome <b>around</b> the content: labels, counts, badges, dates,
+          filters, sort controls, buttons, meta lines and measured values —
+          with tabular figures, so a column of numbers lines up without a
+          monospaced face. Mono is left for what really is code: a token, a
+          hex, a key, a path.
         </span>
       </div>
       <div class="voice__col">
@@ -726,15 +985,17 @@
       <div class="lab__head"><i class="fa fa-circle-info"></i> Heresy switch <span class="hint">rule 04</span></div>
       <div class="lab__row">
         <div class="seg" role="group" aria-label="Rule 04">
-          <button class="seg__opt is-on" type="button" data-heresy="voice" data-on="false">Mono chrome</button>
-          <button class="seg__opt" type="button" data-heresy="voice" data-on="true">Everything in sans</button>
+          <button class="seg__opt is-on" type="button" data-heresy="voice" data-on="false">Interface</button>
+          <button class="seg__opt" type="button" data-heresy="voice" data-on="true">Terminal</button>
         </div>
       </div>
       <p class="lab__note">
-        Flip it and look at the anatomy shell again. Nothing moved and nothing
-        changed colour; the counts, the tags and the buttons simply stopped
-        announcing that they are <b>controls and readouts rather than
-        content</b>, and the screen went soft.
+        Flip it and look at the anatomy shell again. This is how the chrome
+        used to speak: mono, uppercase, tracked open. Nothing moved and nothing
+        changed colour, but every label turned into a <b>console readout</b>,
+        and a page made of them reads as a terminal rather than an application.
+        The switch redefines four tokens and the chrome scale — that is the
+        whole difference.
       </p>
     </div>
 
@@ -751,7 +1012,7 @@
        05 — MEASURE
        ============================================================ -->
   <section class="chapter" id="measure" data-title="measure scale spacing space type size rhythm tokens rule 5">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Measure</span></div>
     </div>
     <p class="chapter__lead">
@@ -769,7 +1030,7 @@
       cannot tell you what is wrong, only that something is.
     </p>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>Specimen</span><span>The space rhythm</span><span class="n">01</span></div>
       <div class="spec__stage spec__stage--block">
         <ul class="ruler" id="ruler"></ul>
@@ -784,7 +1045,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>Specimen</span><span>Two voices, four steps each</span><span class="n">02</span></div>
       <div class="spec__stage spec__stage--block">
         <div class="scale-rows">
@@ -799,9 +1060,9 @@
         </div>
       </div>
       <p class="spec__note">
-        <b>The token name carries the voice.</b> <code>--fs-chrome-*</code> is
-        mono, uppercase and tracked; <code>--fs-text-*</code> is Space Grotesk
-        in sentence case. Reaching for the wrong one is then visible in the
+        <b>The token name carries the voice.</b> <code>--fs-chrome-*</code> sizes
+        the interface voice; <code>--fs-text-*</code> sizes what a person
+        reads. Reaching for the wrong one is then visible in the
         source, not only on screen. And each <code>--fs-chrome-N</code> has
         exactly one <code>--tr-chrome-N</code> beside it, because
         <b>tracking falls as size rises</b> — that is a formula, not a
@@ -841,8 +1102,8 @@
   <!-- ============================================================
        06 — PARTS
        ============================================================ -->
-  <section class="chapter" id="parts" data-title="parts components buttons segmented tags menu fields panel hud mark avatar switch meter setting row table dialog toast rail utilities">
-    <div class="section__head">
+  <section class="chapter" id="parts" data-title="parts components empty state skeleton loading tooltip breadcrumbs pagination pager drop zone upload file sort sortable table buttons segmented tags menu fields panel hud mark avatar switch meter setting row table dialog toast rail utilities">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Parts</span></div>
     </div>
     <p class="chapter__lead">
@@ -851,7 +1112,7 @@
       the names, and a new app is already wearing the language.
     </p>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.btn</span><span>Buttons</span><span class="n">04</span></div>
       <div class="spec__stage">
         <button class="btn" type="button">Default</button>
@@ -870,7 +1131,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.seg</span><span>Segmented control — tabs, language, mode, view</span><span class="n">05</span></div>
       <div class="spec__stage">
         <div class="seg" role="group" aria-label="Demo tabs">
@@ -898,7 +1159,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.tag · .menu</span><span>Filters and a dropdown</span><span class="n">06</span></div>
       <div class="spec__stage spec__stage--block">
         <div class="row row--split">
@@ -909,14 +1170,14 @@
             <button class="tag" type="button" aria-pressed="false" data-tag="snow">Snow</button>
             <button class="tag" type="button" aria-pressed="false" data-tag="portrait">Portrait</button>
           </div>
-          <div class="dropdown">
-            <button class="btn" type="button" id="demo-sort-btn" aria-expanded="false" aria-haspopup="true">
+          <div class="menu-host">
+            <button class="btn" type="button" id="demo-sort-btn" popovertarget="demo-sort-menu">
               <i class="fa fa-arrow-down-wide-short"></i>
               <span class="sortbtn__label">Sort by</span>
               <b class="sortbtn__val" id="demo-sort-val">Newest first</b>
               <i class="fa fa-chevron-down"></i>
             </button>
-            <div class="menu menu--anchored" id="demo-sort-menu" hidden>
+            <div class="menu" id="demo-sort-menu" popover>
               <div class="menu__head">Order</div>
               <button class="menu__option is-active" type="button" data-sort="Newest first"><i class="fa fa-arrow-down-wide-short"></i> Newest first</button>
               <button class="menu__option" type="button" data-sort="Oldest first"><i class="fa fa-arrow-turn-up"></i> Oldest first</button>
@@ -939,7 +1200,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.field</span><span>Form controls · the left edge is the state channel</span><span class="n">07</span></div>
       <div class="spec__stage spec__stage--block">
         <div class="fieldgrid">
@@ -970,7 +1231,7 @@
         </div>
       </div>
       <p class="spec__note">
-        The <b>label is furniture</b> (mono, tracked, <code>--label</code>) and
+        The <b>label is furniture</b> (the interface voice, <code>--label</code>) and
         the <b>help is prose</b> (sans, sentence case) — rule 04 applied inside
         a single component. The left border carries the state so a screen of
         forty keys can be scanned without reading one of them: accent = set,
@@ -978,7 +1239,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.panel · .kv</span><span>A read-out of facts</span><span class="n">08</span></div>
       <div class="spec__stage">
         <div class="stack stack--narrow">
@@ -1006,14 +1267,14 @@
           Panels stack hairline-to-hairline inside a <code>.stack</code> — one
           pane of glass, one border round it and a hairline between the rows —
           rather than floating as separate boxes each with a border of its own. The
-          key is prose; only the <b>measured</b> values take the mono voice
+          key is prose; only the <b>measured</b> values take tabular figures
           (<code>.num</code>). A camera name is something you read; an aperture
           is something the software measured.
         </p>
       </div>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.hud</span><span>The viewfinder idiom — for screens that are instruments</span><span class="n">09</span></div>
       <div class="spec__stage spec__stage--flush">
         <div class="hud hud--tall" id="demo-hud">
@@ -1051,7 +1312,7 @@
       </div>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.mark</span><span>The house mark — hover it</span><span class="n">10</span></div>
       <div class="spec__stage">
         <span class="mark mark--nav" aria-hidden="true">
@@ -1114,7 +1375,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.avatar</span><span>Who this is, in a square</span><span class="n">11</span></div>
       <div class="spec__stage">
         <span class="avatar avatar--lg">AW</span>
@@ -1130,7 +1391,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.switch</span><span>One setting, on or off</span><span class="n">12</span></div>
       <div class="spec__stage">
         <span class="switch-wrap">
@@ -1158,7 +1419,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.meter</span><span>How much of something there is</span><span class="n">13</span></div>
       <div class="spec__stage spec__stage--block">
         <div class="demo-meter">
@@ -1189,7 +1450,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.set</span><span>The settings row</span><span class="n">14</span></div>
       <div class="spec__stage spec__stage--block spec__stage--flush">
         <div class="stack">
@@ -1236,7 +1497,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.tbl</span><span>Rows of facts</span><span class="n">15</span></div>
       <div class="spec__stage spec__stage--block spec__stage--flush">
         <div class="tbl-wrap u-glass">
@@ -1251,7 +1512,7 @@
         </div>
       </div>
       <p class="spec__note">
-        The two voices in one component: the head is mono furniture, the cells
+        The two voices in one component: the head is interface furniture, the cells
         are what a person reads, and a measured column takes <code>.num</code>
         so the digits line up down the page. The album names are <b>data</b> —
         <code>Pride_MUC_26</code> is not <code>PRIDE_MUC_26</code> — which is
@@ -1260,7 +1521,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.dlg</span><span>A question that has to be answered here</span><span class="n">16</span></div>
       <div class="spec__stage">
         <button class="btn" type="button" id="demo-dlg-open">Open the dialog</button>
@@ -1275,7 +1536,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.toast</span><span>That happened</span><span class="n">17</span></div>
       <div class="spec__stage">
         <button class="btn" type="button" data-demo-toast="">Report</button>
@@ -1295,7 +1556,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.rail</span><span>The sections of one app, standing still</span><span class="n">18</span></div>
       <div class="spec__stage spec__stage--block">
         <nav class="rail" aria-label="Demo sections">
@@ -1320,7 +1581,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.u-nocase · .u-offscreen · [hidden]</span><span>The three that are not components</span><span class="n">19</span></div>
       <div class="spec__stage">
         <span class="menu__head">Sort by</span>
@@ -1342,6 +1603,194 @@
         which is the one <code>!important</code> in the language.
       </p>
     </div>
+
+    <h3 class="sub">The screens around the content</h3>
+    <p class="chapter__lead">
+      Everything above is what a screen looks like when everything is there.
+      These are the screens around that: nothing there yet, not there
+      <i>yet</i>, too much at once, where am I, what does this do, give me a
+      file, and in what order.
+    </p>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.empty</span><span>Nothing here yet</span><span class="n">20</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="empty">
+          <span class="empty__ico" aria-hidden="true"><i class="fa fa-folder-open"></i></span>
+          <p class="empty__t">No projects yet</p>
+          <p class="empty__d">A project collects the tasks, files and people for one piece of work. Start one, or import the list you already keep elsewhere.</p>
+          <div class="row">
+            <button class="btn btn--primary" type="button" data-demo-toast="ok">New project</button>
+            <button class="btn" type="button">Import a CSV</button>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        An empty list is a screen of its own, not a missing one: <b>what would be
+        here, why it is not, and the one thing to do</b>. The glyph is mist, the
+        title is read, and the action is the screen's one primary.
+        <code>.empty--sm</code> is the same thing without the frame, for a table
+        that is merely empty for now.
+      </p>
+    </div>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.skel</span><span>Not there yet</span><span class="n">21</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="row row--split skel-demo__bar">
+          <span class="status" id="skel-status"><span class="dot dot--ok"></span> Loaded</span>
+          <button class="btn btn--sm" type="button" id="skel-reload"><i class="fa fa-clock-rotate-left"></i> Reload</button>
+        </div>
+        <div class="skel-demo" id="skel-demo" aria-live="polite">
+          <div class="skel-demo__row" data-skel-ready>
+            <span class="avatar avatar--sm hue-sky">JB</span>
+            <span class="skel-demo__txt"><b>Jonas Berger</b><span class="dim">Moved “Rate-limit search” to In progress · 4 min ago</span></span>
+          </div>
+          <div class="skel-demo__row" data-skel-ready>
+            <span class="avatar avatar--sm hue-rose">LS</span>
+            <span class="skel-demo__txt"><b>Lea Schmid</b><span class="dim">Commented on “Checkout keeps the cart” · 12 min ago</span></span>
+          </div>
+          <div class="skel-demo__row" data-skel-wait hidden aria-hidden="true">
+            <span class="skel skel--avatar"></span>
+            <span class="skel-demo__txt"><span class="skel skel--title"></span><span class="skel skel--text"></span></span>
+          </div>
+          <div class="skel-demo__row" data-skel-wait hidden aria-hidden="true">
+            <span class="skel skel--avatar"></span>
+            <span class="skel-demo__txt"><span class="skel skel--title"></span><span class="skel skel--text"></span></span>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        Press Reload. The skeleton is <b>the shape of what is coming</b>, so the
+        layout does not jump when it arrives. A spinner says "wait"; this says
+        "this, here, in a moment". The container carries
+        <code>aria-busy="true"</code> while it loads. The sweep is off for reduced
+        motion and under Lite, where the blocks simply hold still.
+      </p>
+    </div>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.tip</span><span>What does this do</span><span class="n">22</span></div>
+      <div class="spec__stage">
+        <span class="tip-host">
+          <button class="btn btn--icon" type="button" aria-describedby="tip-dl" aria-label="Download"><i class="fa fa-download"></i></button>
+          <span class="tip" role="tooltip" id="tip-dl">Download originals, not the web copies</span>
+        </span>
+        <span class="tip-host">
+          <button class="btn btn--icon" type="button" aria-describedby="tip-share" aria-label="Open in a new tab"><i class="fa fa-arrow-up-right-from-square"></i></button>
+          <span class="tip" role="tooltip" id="tip-share">Open in a new tab</span>
+        </span>
+        <span class="tip-host">
+          <button class="btn btn--icon" type="button" aria-describedby="tip-shuffle" aria-label="Shuffle"><i class="fa fa-shuffle"></i></button>
+          <span class="tip tip--below" role="tooltip" id="tip-shuffle">Shuffle the order — the album stays sorted</span>
+        </span>
+      </div>
+      <p class="spec__note">
+        Hover, or <b>tab to them</b>. A tooltip is a real element, referenced by
+        <code>aria-describedby</code>, so a screen reader reads it too. It waits a
+        moment on hover, so a pointer crossing a toolbar does not set off a row of
+        them, and none on focus. It is for icon-only controls and truncated
+        values, and never the only place an instruction lives: touch has no
+        hover.
+      </p>
+    </div>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.crumbs</span><span>Where am I</span><span class="n">23</span></div>
+      <div class="spec__stage">
+        <nav aria-label="Breadcrumb">
+          <ol class="crumbs">
+            <li><a href="#parts">Workspace</a></li>
+            <li><a href="#parts">Projects</a></li>
+            <li><a href="#parts">Website relaunch — autumn campaign and landing pages</a></li>
+            <li aria-current="page">Checkout keeps the cart</li>
+          </ol>
+        </nav>
+      </div>
+      <p class="spec__note">
+        Every step but the last is a link; the last is where you are,
+        <code>aria-current="page"</code>, in <code>--text</code> and not in the
+        accent. You cannot go where you already are, so it is not a control.
+        Long names truncate <b>per step</b>, so a deep path keeps its shape.
+      </p>
+    </div>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.pager</span><span>Too much to show at once</span><span class="n">24</span></div>
+      <div class="spec__stage spec__stage--block">
+        <nav class="pager" aria-label="Pages" id="demo-pager">
+          <span class="pager__range" id="demo-pager-range">41–60 of 412</span>
+          <button class="btn btn--sm" type="button" rel="prev" data-pager="prev"><i class="fa fa-chevron-left"></i> Previous</button>
+          <button class="pager__p" type="button" data-pager="1">1</button>
+          <span class="pager__gap" aria-hidden="true">…</span>
+          <button class="pager__p" type="button" data-pager="2">2</button>
+          <button class="pager__p" type="button" data-pager="3" aria-current="page">3</button>
+          <button class="pager__p" type="button" data-pager="4">4</button>
+          <span class="pager__gap" aria-hidden="true">…</span>
+          <button class="pager__p" type="button" data-pager="21">21</button>
+          <button class="btn btn--sm" type="button" rel="next" data-pager="next">Next <i class="fa fa-chevron-right"></i></button>
+        </nav>
+      </div>
+      <p class="spec__note">
+        The current page is a <b>state</b>, so it wears the accent as the same
+        solid face the primary button uses. The range beside it
+        (<code>41–60 of 412</code>) is in the number voice, because a page number
+        alone does not say how long the list is.
+      </p>
+    </div>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.drop</span><span>Give me a file</span><span class="n">25</span></div>
+      <div class="spec__stage spec__stage--block">
+        <label class="drop" id="demo-drop">
+          <input type="file" class="u-offscreen" multiple id="demo-drop-input">
+          <span class="drop__ico" aria-hidden="true"><i class="fa fa-download"></i></span>
+          <span class="drop__t">Drop files here, or <u>choose files</u></span>
+          <span class="drop__d">PDF, images or spreadsheets · up to 50 MB each</span>
+        </label>
+        <ul class="drop__list" id="demo-drop-list" aria-live="polite"></ul>
+      </div>
+      <p class="spec__note">
+        Drag a file over it, or click it. It is a <code>&lt;label&gt;</code>
+        round a real <code>&lt;input type="file"&gt;</code>, so a click, Enter
+        and Space all open the picker with no script. Dragging over it is a
+        state (<code>.is-over</code>), so that is the accent. It is the one
+        <b>dashed</b> border in the sheet, because a dashed edge is the
+        near-universal sign for "a place to put something".
+      </p>
+    </div>
+
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.tbl th[aria-sort]</span><span>In what order</span><span class="n">26</span></div>
+      <div class="spec__stage spec__stage--flush">
+        <div class="tbl-wrap">
+          <table class="tbl" id="demo-sort-tbl">
+            <thead>
+              <tr>
+                <th aria-sort="ascending"><button class="tbl__sort" type="button" data-col="0">Invoice</button></th>
+                <th aria-sort="none"><button class="tbl__sort" type="button" data-col="1">Customer</button></th>
+                <th aria-sort="none"><button class="tbl__sort" type="button" data-col="2">Due</button></th>
+                <th class="r" aria-sort="none"><button class="tbl__sort" type="button" data-col="3" data-num>Amount</button></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>INV-1041</td><td>Northwind GmbH</td><td class="num">2026-11-14</td><td class="num r" data-v="1840">€1,840.00</td></tr>
+              <tr><td>INV-1042</td><td>Alder &amp; Co.</td><td class="num">2026-11-02</td><td class="num r" data-v="320">€320.00</td></tr>
+              <tr><td>INV-1043</td><td>Kestrel Labs</td><td class="num">2026-11-21</td><td class="num r" data-v="12400">€12,400.00</td></tr>
+              <tr><td>INV-1044</td><td>Birchwood Studio</td><td class="num">2026-10-30</td><td class="num r" data-v="760">€760.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="spec__note">
+        Click a column head, and again to reverse it. The head carries
+        <code>aria-sort</code>, which a screen reader hears, and a
+        <code>&lt;button&gt;</code>, which a keyboard reaches; the sheet paints
+        <code>aria-sort</code>. The sorted column is a state, so it is the accent.
+        The others show a faint arrow on hover only, which says "sortable"
+        without twenty arrows standing in the head.
+      </p>
+    </div>
   </section>
 
 
@@ -1349,7 +1798,7 @@
        07 — THE DOOR
        ============================================================ -->
   <section class="chapter" id="door" data-title="door login sign in password reveal caps lock lockout reason">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">The door</span></div>
     </div>
     <p class="chapter__lead">
@@ -1359,7 +1808,7 @@
       app writes is the markup and the script.
     </p>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>.login__card</span><span>The card, as it stands on the page</span><span class="n">01</span></div>
       <div class="spec__stage spec__stage--block">
         <div class="login">
@@ -1452,7 +1901,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>states</span><span>Every one it has — try them</span><span class="n">02</span></div>
       <div class="spec__stage">
         <button class="btn" type="button" data-door-state="refused">Wrong password</button>
@@ -1478,7 +1927,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>?reason=</span><span>Why you are here — an allowlist, never an echo</span><span class="n">03</span></div>
       <div class="spec__stage">
         <button class="btn btn--sm" type="button" data-door-reason="timeout">timeout</button>
@@ -1500,7 +1949,7 @@
       </p>
     </div>
 
-    <div class="spec">
+    <div class="spec u-reveal">
       <div class="spec__label"><span>never</span><span>What the door does not do</span><span class="n">04</span></div>
       <div class="spec__stage spec__stage--block">
         <ul class="dont">
@@ -1526,7 +1975,7 @@
        08 — WRONG
        ============================================================ -->
   <section class="chapter" id="wrong" data-title="wrong antipatterns mistakes bands stamps">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__slug"><span class="name">Wrong</span></div>
     </div>
     <p class="chapter__lead">
@@ -1602,10 +2051,302 @@
   </section>
 
   <!-- ============================================================
-       09 — BUILD ONE  (the instructions for Claude)
+       09 — PLATFORM  (what the browser now does for the sheet)
+       ============================================================ -->
+  <section class="chapter" id="platform" data-title="platform modern css layer container queries view transitions scroll driven popover anchor starting-style details fold text-wrap oklch lint">
+    <div class="section__head section__head--numbered">
+      <div class="section__doc">
+        <span>Script <b>none required</b></span>
+        <span>Floor <b>2024 browsers</b></span>
+        <span class="section__doc-mark">Progressive</span>
+      </div>
+      <div class="section__slug"><span class="name">Platform</span></div>
+    </div>
+    <p class="chapter__lead">
+      A good part of what this sheet used to ask a script for, the browser now
+      does by itself: the order rules win in, a layout that answers to its
+      pane, a menu that knows where it is, an exit animation, a page swap
+      without a white flash. Every specimen below runs on CSS. Where a browser
+      cannot do one of them, the page is <b>the same page without the
+      movement</b> — none of it is load-bearing except the three things named
+      in the first fold.
+    </p>
+
+    <!-- 1 · LAYERS -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>@layer</span><span>The order, stated once</span><span class="n">01</span></div>
+      <div class="spec__stage spec__stage--block">
+        <ol class="layers" aria-label="Cascade order, weakest first">
+          <li><b>nebula.tokens</b><span>:root and the palettes — values only</span></li>
+          <li><b>nebula.base</b><span>reset, backdrop, glass, text-wrap</span></li>
+          <li><b>nebula.components</b><span>the vocabulary and its narrow steps</span></li>
+          <li><b>nebula.gates</b><span>rule 6 — beats every component by position</span></li>
+          <li><b>nebula.utilities</b><span>.u-* — always over components</span></li>
+          <li class="layers__app"><b>your app</b><span>unlayered — beats all of Nebula, no specificity fight</span></li>
+        </ol>
+        <div class="row layers__demo">
+          <button class="btn" type="button">.btn</button>
+          <button class="btn app-demo-btn" type="button">.btn + one app class</button>
+        </div>
+      </div>
+      <p class="spec__note">
+        Hover both. The second button carries <b>one</b> class from an
+        unlayered app sheet, and its dashed border holds against
+        <code>.btn:hover:not(:disabled)</code> — three classes, but in a layer.
+        Before, an app needed more specificity than Nebula to win, and every
+        app found its own way to get it. The gates gained the most: the
+        forced-colours block used to sit above the components and quietly
+        lost to <code>.btn--primary</code> on source order.
+      </p>
+    </div>
+
+    <!-- 2 · CONTAINER QUERIES -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.stack · .panel · @container</span><span>The pane decides, not the window</span><span class="n">02</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="row row--split cq-bar">
+          <div class="seg" role="group" aria-label="Pane width">
+            <button class="seg__opt" type="button" data-cq="320">320</button>
+            <button class="seg__opt" type="button" data-cq="480">480</button>
+            <button class="seg__opt is-on" type="button" data-cq="full">Full</button>
+          </div>
+          <span class="status">Pane <b class="num" id="cq-readout">—</b></span>
+        </div>
+        <div class="cq-demo" id="cq-demo">
+          <div class="stack">
+            <div class="panel set">
+              <span class="set__ico"><i class="fa fa-shield-halved"></i></span>
+              <div class="set__text">
+                <span class="set__t">Two-factor authentication</span>
+                <span class="set__d">Every sign-in on a new device asks for a second factor.</span>
+              </div>
+              <div class="set__aside">
+                <span class="switch-wrap">
+                  <span class="switch__word" aria-hidden="true">On</span>
+                  <button class="switch" type="button" role="switch" aria-checked="true" aria-label="Demo two-factor, pane demo" data-demo-switch></button>
+                </span>
+              </div>
+            </div>
+            <div class="panel">
+              <dl class="kv">
+                <dt>Camera</dt><dd>Fujifilm X-T5</dd>
+                <dt>Exposure</dt><dd class="num">1/250 · f/2.8 · ISO 800</dd>
+                <dt>Taken</dt><dd class="num">2026-11-06 18:42</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        Drag the corner, or pick a width. Under <b>560px of pane</b> the row
+        drops its switch to a line of its own; under <b>420px</b> the read-out
+        stacks its labels. The window has not changed size — which is exactly
+        the case the old 760px media query got wrong: a settings stack in a
+        side column kept its three columns on a wide screen and crushed its
+        own prose.
+      </p>
+    </div>
+
+    <!-- 3 · VIEW TRANSITIONS -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>startViewTransition · @view-transition</span><span>Things move, they do not jump</span><span class="n">03</span></div>
+      <div class="spec__stage spec__stage--block">
+        <div class="row row--split cq-bar">
+          <div class="seg" role="group" aria-label="Order the plates">
+            <button class="seg__opt is-on" type="button" data-vt-sort="date">Newest</button>
+            <button class="seg__opt" type="button" data-vt-sort="name">Name</button>
+            <button class="seg__opt" type="button" data-vt-sort="shuffle"><i class="fa fa-shuffle"></i> Shuffle</button>
+          </div>
+          <a class="btn" href="errors/404.html">Open an error page <i class="fa fa-arrow-right"></i></a>
+        </div>
+        <ul class="card-grid" id="vt-grid">
+          <li class="card" data-name="Alexanderplatz" data-date="6"><a href="#platform"><span class="card__img"><img src="assets/img/plate-02.svg" alt=""><span class="card__idx">A</span></span><span class="card__cap"><span class="card__name">Alexanderplatz</span><span class="card__meta"><span>64 frames</span><span class="date">06 Nov</span></span></span></a></li>
+          <li class="card" data-name="Mitte, blue hour" data-date="5"><a href="#platform"><span class="card__img"><img src="assets/img/plate-01.svg" alt=""><span class="card__idx">M</span></span><span class="card__cap"><span class="card__name">Mitte, blue hour</span><span class="card__meta"><span>96 frames</span><span class="date">05 Nov</span></span></span></a></li>
+          <li class="card" data-name="Tempelhof, snow" data-date="4"><a href="#platform"><span class="card__img"><img src="assets/img/plate-04.svg" alt=""><span class="card__idx">T</span></span><span class="card__cap"><span class="card__name">Tempelhof, snow</span><span class="card__meta"><span>38 frames</span><span class="date">04 Nov</span></span></span></a></li>
+          <li class="card" data-name="Kreuzberg, night" data-date="3"><a href="#platform"><span class="card__img"><img src="assets/img/plate-03.svg" alt=""><span class="card__idx">K</span></span><span class="card__cap"><span class="card__name">Kreuzberg, night</span><span class="card__meta"><span>142 frames</span><span class="date">03 Nov</span></span></span></a></li>
+        </ul>
+      </div>
+      <p class="spec__note">
+        Re-ordering runs inside <code>document.startViewTransition()</code>, so
+        each card travels to its new place instead of the grid redrawing under
+        your eye. The link does the same across <b>documents</b>: every page
+        wearing <code>nebula.css</code> opts into
+        <code>@view-transition</code>, the page crossfades, and the app bar —
+        <code>view-transition-name: nebula-bar</code> — holds still, because a
+        frame that fades with its picture reads as a reload. Both are off for
+        anyone who asked the OS for less motion.
+      </p>
+    </div>
+
+    <!-- 4 · SCROLL-DRIVEN -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>animation-timeline · .nav__progress · .u-reveal</span><span>Driven by the scroll position itself</span><span class="n">04</span></div>
+      <div class="spec__stage spec__stage--flush">
+        <div class="scroll-demo" tabindex="0" role="region" aria-label="Scroll demo">
+          <span class="scroll-demo__bar" aria-hidden="true"></span>
+          <ol class="scroll-demo__list">
+            <li class="u-reveal"><span class="num">01</span> The line on top of this box fills as you scroll it.</li>
+            <li class="u-reveal"><span class="num">02</span> Each row settles in as it enters.</li>
+            <li class="u-reveal"><span class="num">03</span> No scroll listener, no IntersectionObserver.</li>
+            <li class="u-reveal"><span class="num">04</span> Nothing to throttle, nothing to unbind.</li>
+            <li class="u-reveal"><span class="num">05</span> Correct on the first frame of a page that opens scrolled.</li>
+            <li class="u-reveal"><span class="num">06</span> Off under reduced motion and under Lite.</li>
+            <li class="u-reveal"><span class="num">07</span> Without support, the rows are simply there.</li>
+            <li class="u-reveal"><span class="num">08</span> The line on this page's bar is the same thing.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="spec__note">
+        Look at the bottom edge of the app bar: that accent line is how far
+        down this page you are — a <b>progress fill</b>, which rule 1 licenses.
+        The bar's own deeper state, <code>.nav--scrolled</code>, is read off
+        the same timeline; the class survives only for a browser that cannot.
+        Every specimen on this page carries <code>.u-reveal</code>.
+      </p>
+    </div>
+
+    <!-- 5 · POPOVER + ANCHOR -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.menu[popover] · anchor positioning</span><span>A menu that knows where it is</span><span class="n">05</span></div>
+      <div class="spec__stage">
+        <div class="menu-host">
+          <button class="btn" type="button" popovertarget="demo-density-menu">
+            <i class="fa fa-table-cells"></i> Density <b class="sortbtn__val" id="demo-density-val">Comfortable</b> <i class="fa fa-chevron-down"></i>
+          </button>
+          <div class="menu" id="demo-density-menu" popover>
+            <div class="menu__head">Grid density</div>
+            <button class="menu__option is-active" type="button" aria-selected="true" data-density="Comfortable"><i class="fa fa-images"></i> Comfortable</button>
+            <button class="menu__option" type="button" aria-selected="false" data-density="Compact"><i class="fa fa-table-cells"></i> Compact</button>
+            <button class="menu__option" type="button" aria-selected="false" data-density="List"><i class="fa fa-align-left"></i> List</button>
+          </div>
+        </div>
+      </div>
+      <p class="spec__note">
+        <code>popovertarget</code> on the button and <code>popover</code> on
+        the menu, and the browser owns the rest: the top layer, Escape, a click
+        outside, focus coming back, the expanded state a screen reader hears.
+        Placement is anchor positioning — under the button, <b>flipped above
+        when there is no room</b>: scroll this to the bottom of the window and
+        open it. The sort menu in <a href="#parts">Parts</a> is the same
+        component, and <code>anchor-scope</code> keeps the two from finding
+        each other's button.
+      </p>
+    </div>
+
+    <!-- 6 · STARTING STYLE + INVOKERS -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>@starting-style · command / commandfor</span><span>In and out, with no keyframes</span><span class="n">06</span></div>
+      <div class="spec__stage">
+        <button class="btn" type="button" commandfor="demo-dlg" command="show-modal" data-invoker-fallback>Open the dialog</button>
+        <button class="btn" type="button" data-demo-toast="ok">Done</button>
+        <button class="btn" type="button" data-demo-toast="error">Refused</button>
+      </div>
+      <p class="spec__note">
+        The dialog and the toasts enter from an <code>@starting-style</code>
+        frame and leave to their closed state; <code>display</code> and
+        <code>overlay</code> with <code>allow-discrete</code> keep a closing
+        dialog on screen until its fade is done — before, only the entrance
+        ran. The button opens the dialog with <code>command="show-modal"</code>
+        and no click handler; a browser without invoker commands gets a
+        two-line fallback.
+      </p>
+    </div>
+
+    <!-- 7 · TEXT-WRAP -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>text-wrap: balance · pretty</span><span>No orphaned last word</span><span class="n">07</span></div>
+      <div class="spec__stage tw-demo">
+        <div class="tw-demo__col">
+          <span class="tw-demo__k">wrap</span>
+          <h4 class="tw-demo__h tw-demo__h--off">A settings stack placed in a narrow side column</h4>
+        </div>
+        <div class="tw-demo__col">
+          <span class="tw-demo__k">balance</span>
+          <h4 class="tw-demo__h">A settings stack placed in a narrow side column</h4>
+        </div>
+      </div>
+      <p class="spec__note">
+        Headings and titles balance their lines; running text avoids a last
+        line of one word. Set once in base, for every heading the vocabulary
+        owns.
+      </p>
+    </div>
+
+    <!-- 8 · FOLD -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>.fold · ::details-content · interpolate-size</span><span>More, if you want it</span><span class="n">08</span></div>
+      <div class="spec__stage spec__stage--block">
+        <details class="fold">
+          <summary>What is required, and what is an enhancement</summary>
+          <div class="fold__body">
+            <p><b>Required</b> — the page looks wrong without them:
+              <code>@layer</code>, container queries, and relative colour
+              (<code>oklch(from var(--acc) l c h / .16)</code>), which every
+              tint, ring and glow is now written in. Browsers from 2024 on.</p>
+            <p><b>Enhancement</b> — without them the page is the same page,
+              still: view transitions, scroll-driven animation, anchor
+              positioning (a script places the menu instead),
+              <code>@starting-style</code>, this fold's animation,
+              <code>text-wrap</code>, invoker commands (a script opens the
+              dialog instead).</p>
+          </div>
+        </details>
+        <details class="fold">
+          <summary>Why relative colour instead of rgb triplets</summary>
+          <div class="fold__body">
+            <p>Every tint used to be <code>rgba(var(--acc-rgb), .16)</code>,
+              so the accent lived in two tokens that had to agree. A config
+              that set <code>--acc</code> and forgot <code>--acc-rgb</code>
+              got half its states in the old blue. Now there is one source; the
+              triplets stay defined for app sheets that still read them.</p>
+          </div>
+        </details>
+        <details class="fold">
+          <summary>Why the fold animates to height: auto</summary>
+          <div class="fold__body">
+            <p><code>interpolate-size: allow-keywords</code> is set once on
+              <code>:root</code>, so a transition can reach <code>auto</code>.
+              The box that grows is <code>::details-content</code>. Before,
+              this took a script measuring <code>scrollHeight</code>.</p>
+          </div>
+        </details>
+      </div>
+      <p class="spec__note">
+        A native <code>&lt;details&gt;</code>: it opens from a keyboard, is
+        announced as expanded or collapsed, and find-in-page searches it while
+        closed. Open is a state, so the one accent is the minus that says so.
+      </p>
+    </div>
+
+    <!-- 9 · LINT -->
+    <div class="spec u-reveal">
+      <div class="spec__label"><span>tools/nebula_lint.py</span><span>The rules, checked by a machine</span><span class="n">09</span></div>
+<pre class="code">$ python tools/nebula_lint.py nebula.css app.css index.html
+<i>app.css:41    rule-5  raw px in `padding:10px 14px` - take it off the scale</i>
+<i>app.css:88    rule-2  border-radius:6px - corners are var(--radius)</i>
+<i>app.css:112   rule-3  backdrop-filter without -webkit-backdrop-filter (Safari)</i>
+<i>index.html:57 csp     style&#61;"" attribute - a strict CSP drops it</i>
+
+4 finding(s) in 3 file(s).
+
+$ python tools/nebula_lint.py nebula.css showcase.css index.html
+<u>Clean: 3 file(s) speak the language.</u></pre>
+      <p class="spec__note">
+        Rules 1, 2, 3 and 5 and the CSP rule, as one script with no
+        dependencies — the grep from rule 5, grown up. An exception is written
+        where it is made, on the same line, with its reason:
+        <code>/* nebula-allow: px — iOS zoom threshold */</code>. Exit status
+        1 on a finding, so it drops into a pre-commit hook or a CI step as it
+        is. <code>nebula.css</code>, this page and its sheet pass.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       10 — BUILD ONE  (the instructions for Claude)
        ============================================================ -->
   <section class="chapter" id="build" data-title="build claude instructions how to make a nebula app">
-    <div class="section__head">
+    <div class="section__head section__head--numbered">
       <div class="section__doc">
         <span>Audience <b>Claude</b></span>
         <span>Source <b>nebula/NEBULA.md</b></span>
@@ -1641,7 +2382,7 @@
       <li><b>Is it interactive furniture?</b> A hover, a corner bracket, a HUD
         stroke, a frame. → <code>--chrome</code>.</li>
       <li><b>Is it a static label, count, badge or measured value?</b> →
-        <code>--label</code>, in the mono voice, uppercase, tracked.</li>
+        <code>--label</code>, in the interface voice.</li>
       <li><b>Is it something a person reads?</b> → Space Grotesk, sentence case,
         <code>--text</code> / <code>--text-dim</code>.</li>
       <li><b>Does it sit on the page?</b> → <code>--glass</code>. <b>On an
@@ -1742,7 +2483,7 @@ Six rules:
 1. Black ground, grey furniture, ONE accent (--acc). The accent marks
    STATE only: links, focus, active/selected/open, featured, live.
    Furniture is --chrome (hovers, brackets, HUD strokes) or --label
-   (static mono furniture: labels, counts, badges, measured values).
+   (static furniture: labels, counts, badges, measured values).
    Before colouring something purple, ask whether it carries state.
    The accent never sits on its own tint: on an accent fill the label
    is --on-acc or --text. Reading copy bottoms out at --text-dim;
@@ -1754,8 +2495,10 @@ Six rules:
    gets more blur or the -hi step, never a darker fill. A pane is a
    fill, a blur and a hairline: NO bevel, NO gloss gradient - that is
    Aero, and it argues with rule 2.
-4. Mono, uppercase, tracked = the chrome AROUND the content. Space
-   Grotesk, sentence case = everything a person reads. The display face
+4. The chrome AROUND the content is the interface voice: Space
+   Grotesk 500, one step smaller, --label tone, no caps, no tracking
+   (--ui-font / --ui-case / --ui-weight). Everything a person reads is
+   Space Grotesk at --fs-text-*. Mono is for code only. The display face
    is the wordmark's voice and never a heading's. Use --fs-chrome-* vs
    --fs-text-*: the token name carries the voice.
 5. Measure is rationed like colour. Every size, space, duration and
@@ -1798,6 +2541,7 @@ class; never signal state with hue alone.</pre>
     <span class="foot__links">
       <a href="../README.md">Gallery README</a>
       <a href="NEBULA.md">NEBULA.md</a>
+      <a href="CHANGELOG.md">Changelog</a>
       <a href="nebula.css">nebula.css</a>
       <a href="errors/">Error pages</a>
     </span>
