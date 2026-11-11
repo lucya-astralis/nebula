@@ -73,3 +73,13 @@ The two production instances of this language are
 They deploy as separate images and can never share a mount, so a change to the
 language has to be made in **both** — and, if it is a rule rather than a value,
 here as well.
+
+## Licence
+
+Nebula is by **lucya.systems** (https://lucya.systems) and licensed under the
+**Mozilla Public License 2.0** (`LICENSE`). Use it in your own projects, open
+or closed; changes to Nebula's own files stay under the MPL and are made
+available. The copyright notices naming lucya.systems stay in the files.
+
+The names and logos are not licensed with the code, see `TRADEMARKS.md`.
+The fonts keep their own licences, see `NOTICE`.

@@ -1,0 +1,22 @@
+Nebula — part of lucya.systems
+Copyright © 2026 lucya.systems — https://lucya.systems
+
+Original author: lucya.systems (https://lucya.systems).
+
+Nebula is licensed under the Mozilla Public License, version 2.0. The full
+text is in LICENSE. You may use it in your own projects, open or closed;
+changes to Nebula's own files must be made available under the MPL.
+
+Keep the copyright notices: the MPL (section 3.4) does not allow removing
+or altering them, so the attribution to lucya.systems stays with the files.
+
+The licence grants no rights to the names lucya.systems, Lucent, Aperture,
+arca, Facet, Nebula and Nova, or to their logos. See TRADEMARKS.md.
+
+Third-party components
+----------------------
+These are not lucya.systems' work and keep their own licences:
+
+  * JetBrains Mono — SIL Open Font License 1.1 (see the OFL.txt next to the font files)
+  * Space Grotesk — SIL Open Font License 1.1 (see the OFL.txt next to the font files)
+  * Ethnocentric, Typodermic Fonts (Ray Larabie) — the Typodermic font licence (https://typodermicfonts.com/end-user-license-agreement/), not covered by this project's licence

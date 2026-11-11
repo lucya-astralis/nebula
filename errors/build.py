@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MPL-2.0
+# Copyright © 2026 lucya.systems — https://lucya.systems
 """Write the Nebula error pages from one table.
 
     python3 errors/build.py
