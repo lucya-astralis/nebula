@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MPL-2.0
+# Copyright © 2026 lucya.systems — https://lucya.systems
 """Nebula Mono and Nebula Display, drawn from one table of skeletons.
 
 Every glyph is a few strokes on a 4 x 6 grid (x 0..4, cap height 6,

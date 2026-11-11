@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MPL-2.0 · Copyright © 2026 lucya.systems — https://lucya.systems */
 /* The fontset specimen: the voice switch and the two glyph tables. */
 (function () {
   'use strict';
